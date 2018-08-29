@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.深度学习的实用层面1.1 建立机器学习应用训练/开发/测试集在实际中应用机器学习是一个高度迭代的过程：  在构建一个神经网络的时，需要设置许多超参数，例如神经网络的层数、每个隐藏层包含的神经元个数、学习速率、激活函数的选择等。实际上很难在第一次设置的时候就选择到这些最佳的参数，而是需要通过不断地迭代更新来获得。 迭代的过程如下：先有个想法，先选择初始的参数值，构建神经网络模型结构；然后通过代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习课程(二)优化深层神经网络：超参数调试、正则化和最优化">
+<meta property="og:url" content="http://yoursite.com/2017/12/27/深度学习课程(二)优化深层神经网络：超参数调试、正则化和最优化/index.html">
+<meta property="og:site_name" content="Limin&#39;s Notes">
+<meta property="og:description" content="1.深度学习的实用层面1.1 建立机器学习应用训练/开发/测试集在实际中应用机器学习是一个高度迭代的过程：  在构建一个神经网络的时，需要设置许多超参数，例如神经网络的层数、每个隐藏层包含的神经元个数、学习速率、激活函数的选择等。实际上很难在第一次设置的时候就选择到这些最佳的参数，而是需要通过不断地迭代更新来获得。 迭代的过程如下：先有个想法，先选择初始的参数值，构建神经网络模型结构；然后通过代码">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E8%AE%AD%E7%BB%83%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%861.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E8%AE%AD%E7%BB%83%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%862.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E8%AE%AD%E7%BB%83%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%863.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E6%9C%AC%E5%87%86%E5%88%99.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E6%AD%A3%E5%88%99%E5%8C%96-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%AD%A3%E5%88%99%E5%8C%96-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%AD%A3%E5%88%99%E5%8C%96%E5%87%8F%E8%BD%BB%E8%BF%87%E6%8B%9F%E5%90%881.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%AD%A3%E5%88%99%E5%8C%96%E5%87%8F%E8%BD%BB%E8%BF%87%E6%8B%9F%E5%90%882.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/dropout-1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/dropout-2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/dropout-3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%85%B6%E4%BB%96%E6%AD%A3%E5%88%99%E5%8C%96%E6%96%B9%E6%B3%951.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%85%B6%E4%BB%96%E6%AD%A3%E5%88%99%E5%8C%96%E6%96%B9%E6%B3%952.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A0%87%E5%87%86%E5%8C%96%E8%BE%93%E5%85%A51.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A0%87%E5%87%86%E5%8C%96%E8%BE%93%E5%85%A52.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E6%B6%88%E5%A4%B1%E5%92%8C%E6%A2%AF%E5%BA%A6%E7%88%86%E7%82%B8.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%B7%B1%E5%B1%82%E7%BD%91%E7%BB%9C%E7%9A%84%E6%9D%83%E9%87%8D%E5%88%9D%E5%A7%8B%E5%8C%96.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E7%9A%84%E6%95%B0%E5%80%BC%E9%80%BC%E8%BF%91.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%951.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%871.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%872.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%871.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%872.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%87%E7%9A%84%E5%81%8F%E5%B7%AE%E4%BF%AE%E6%AD%A3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%8A%A8%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%8A%A8%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/RMSprop.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Adam1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Adam2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AD%A6%E4%B9%A0%E7%8E%87%E8%A1%B0%E5%87%8F1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AD%A6%E4%B9%A0%E7%8E%87%E8%A1%B0%E5%87%8F2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AD%A6%E4%B9%A0%E7%8E%87%E8%A1%B0%E5%87%8F3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%B1%80%E9%83%A8%E6%9C%80%E4%BC%98%E8%A7%A31.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%B1%80%E9%83%A8%E6%9C%80%E4%BC%98%E8%A7%A32.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%951.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%952.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%953.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E6%90%9C%E7%B4%A2%E5%B0%BA%E5%BA%A61.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E6%90%9C%E7%B4%A2%E5%B0%BA%E5%BA%A62.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E6%90%9C%E7%B4%A2%E5%B0%BA%E5%BA%A63.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%951.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%952.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%961.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%962.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84BatchNorm%E5%AE%9E%E7%8E%B01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96%E6%B5%81%E7%A8%8B.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84BatchNorm%E5%AE%9E%E7%8E%B02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84BatchNorm%E5%AE%9E%E7%8E%B03.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E6%95%881.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E6%95%882.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E6%95%883.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%9C%A8%E6%B5%8B%E8%AF%95%E9%98%B6%E6%AE%B5%E4%BD%BF%E7%94%A8BatchNorm.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Softmax1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Softmax2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Softmax3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%AE%AD%E7%BB%83%E4%B8%80%E4%B8%AASoftmax%E5%88%86%E7%B1%BB%E5%99%A81.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%AE%AD%E7%BB%83%E4%B8%80%E4%B8%AASoftmax%E5%88%86%E7%B1%BB%E5%99%A82.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%AE%AD%E7%BB%83%E4%B8%80%E4%B8%AASoftmax%E5%88%86%E7%B1%BB%E5%99%A83.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A1%86%E6%9E%B6.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/tensorflow1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/tensorflow2.JPG">
+<meta property="og:updated_time" content="2018-01-30T07:16:10.529Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习课程(二)优化深层神经网络：超参数调试、正则化和最优化">
+<meta name="twitter:description" content="1.深度学习的实用层面1.1 建立机器学习应用训练/开发/测试集在实际中应用机器学习是一个高度迭代的过程：  在构建一个神经网络的时，需要设置许多超参数，例如神经网络的层数、每个隐藏层包含的神经元个数、学习速率、激活函数的选择等。实际上很难在第一次设置的时候就选择到这些最佳的参数，而是需要通过不断地迭代更新来获得。 迭代的过程如下：先有个想法，先选择初始的参数值，构建神经网络模型结构；然后通过代码">
+<meta name="twitter:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E8%AE%AD%E7%BB%83%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%861.JPG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/27/深度学习课程(二)优化深层神经网络：超参数调试、正则化和最优化/"/>
+
+
+
+
+
+  <title>深度学习课程(二)优化深层神经网络：超参数调试、正则化和最优化 | Limin's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Limin's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/27/深度学习课程(二)优化深层神经网络：超参数调试、正则化和最优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Limin's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习课程(二)优化深层神经网络：超参数调试、正则化和最优化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-27T15:49:50+08:00">
+                2017-12-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-深度学习的实用层面"><a href="#1-深度学习的实用层面" class="headerlink" title="1.深度学习的实用层面"></a><strong>1.深度学习的实用层面</strong></h1><h2 id="1-1-建立机器学习应用"><a href="#1-1-建立机器学习应用" class="headerlink" title="1.1 建立机器学习应用"></a><strong>1.1 建立机器学习应用</strong></h2><h3 id="训练-开发-测试集"><a href="#训练-开发-测试集" class="headerlink" title="训练/开发/测试集"></a><strong>训练/开发/测试集</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E8%AE%AD%E7%BB%83%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%861.JPG" width="70%" height="70%">在实际中应用机器学习是一个高度迭代的过程：</p>
+<ul>
+<li>在构建一个神经网络的时，需要设置许多超参数，例如神经网络的层数、每个隐藏层包含的神经元个数、学习速率、激活函数的选择等。实际上很难在第一次设置的时候就选择到这些最佳的参数，而是需要通过不断地迭代更新来获得。</li>
+<li>迭代的过程如下：先有个想法，先选择初始的参数值，构建神经网络模型结构；然后通过代码实现；最后，通过实验验证。根据实验结果，对参数进行适当的调整优化，再进行下一次的Idea-&gt;Code-&gt;Experiment循环。</li>
+<li>恰当的将数据分为训练/开发/测试集，可使得迭代效率更高。</li>
+</ul>
+<a id="more"></a> 
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E8%AE%AD%E7%BB%83%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%862.JPG" width="90%" height="90%">一般地，将所有的样本数据分成三个部分：训练(Train)/开发(Dev)/测试(Test)集：</p>
+<ul>
+<li>训练集用来训练你的模型；</li>
+<li>开发集又称交叉验证集(cross validation set)，用来验证不同算法的表现情况，从中选择最好的模型；</li>
+<li>测试集用来测试最好模型的实际表现，给出该模型的无偏估计。</li>
+</ul>
+<p>关于数据集的比例划分，在以前，可获得的数据量不是很大的情况：</p>
+<ul>
+<li>通常设置训练集和测试集的数量比例为70%和30%。如果有开发集，则设置比例为60%、20%、20%，分别对应训练/测试/开发集。</li>
+<li>这种比例分配在样本数量不是很大的情况下，例如100,1000,10000，是比较科学的。</li>
+</ul>
+<p>关于数据集的比例划分，在如今，大数据的时代：</p>
+<ul>
+<li>如果数据量很大的时候，例如数据量达100万，70%/30%或60%/20%/20%的比例分配是不合理的。</li>
+<li>因为开发集的目的是用来比较验证不同模型的优劣，从而选择更好的模型。因此，通常不需要所有样本的20%这么多的数据来进行验证。例如对于100万的样本，往往只需要10000个样本来做验证就够了。测试集的目的是给出已选定最优模型的无偏估计。对于100万的样本，往往也只需要10000个样本就够了。</li>
+<li>科学的做法是要将开发集和测试集的比例设置得很低。因此，对于大数据样本，训练/开发/测试集的比例通常可以设置为98%/1%/1%，或者99%/0.5%/0.5%。样本数据量越大，相应的开发/测试集的比例可以设置的越低一些。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E8%AE%AD%E7%BB%83%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%863.JPG" width="80%" height="80%">现代深度学习还有个重要的问题就是训练集和测试集的分布不匹配，意为是训练集和测试集来自于不同的分布。例如：</p>
+<ul>
+<li>对于一个手机app，可以让用户上传图片，然后app识别出猫的图片。该应用中，训练集可能是从网络抓取的图片，而开发和测试集可能来自不同用户的上传的猫的照片。</li>
+<li>从网络抓取的图片可能像素较高且拍摄专业等等，而用户上传的图片可能像素较低且模糊等等。因此，训练集和验证/测试集可能来自不同的分布。</li>
+<li><strong>解决方法：保证开发集和测试集来自于同一分布。</strong></li>
+</ul>
+<p>注意：</p>
+<ul>
+<li>如果不需要对最终选定的神经网络做出无偏估计，可以没有测试集，只有训练/开发集（也有人说成只有训练/测试集，都可以）。</li>
+</ul>
+<h3 id="偏差-方差"><a href="#偏差-方差" class="headerlink" title="偏差/方差"></a><strong>偏差/方差</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE1.JPG" width="80%" height="80%"> 对于只有$x_1$和$x_2$两个特征的二维数据集，可以绘制数据，可视化偏差和方差。如上图所示：</p>
+<ul>
+<li>左：高偏差，欠拟合</li>
+<li>中：恰好</li>
+<li>右：高方差，过拟合</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE2.JPG" width="80%" height="80%"> 对于高维数据，无法绘制数据以及可视化决策边界。但可通过几个指标来理解偏差和方差。<br>基于人工误差（或贝叶斯误差或最优误差)非常低（约为0%）并且训练集和开发集都来自于同一分布这两个假设，如上图所示：</p>
+<ul>
+<li>训练集误差为1%/开发集误差11%，结合两者说明该算法在训练集上过拟合，导致在开发集上的泛化性能不好，推出高方差。</li>
+<li>训练集误差为15%，在训练集上欠拟合，推出高偏差。开发集误差16%，相比于训练集误差只高1%，并不存在高方差。</li>
+<li>训练集误差为15%，推出高偏差。开发集误差30%，相比于训练集误差高15%，推出高方差。</li>
+<li>训练集误差为0.5%，低偏差。开发集误差1%，相比于训练集误差只高0.5%，低方差。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE3.JPG" width="70%" height="70%"> 上图展示了高偏差和高方差同时存在的可视化情形：</p>
+<ul>
+<li>决策边界为线性，欠拟合，高偏差</li>
+<li>在局部发生过拟合，高方差</li>
+<li>该情形在二维情况下看起来不自然，但对于高维数据，这种情况是容易发生的。</li>
+</ul>
+<h3 id="机器学习的基本准则"><a href="#机器学习的基本准则" class="headerlink" title="机器学习的基本准则"></a><strong>机器学习的基本准则</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E6%9C%AC%E5%87%86%E5%88%99.JPG" width="70%" height="70%"> 当训练好最初的神经网络时：</p>
+<ul>
+<li>高偏差？通过训练集表现来确定，若存在高偏差，则可通过更大的网络或训练更长时间来解决。</li>
+<li>高方差？通过开发集表现来确定，若存在高方差，则可通过获取更多数据及正则化来解决。</li>
+<li>直到找到低偏差且低方差的网络。</li>
+</ul>
+<p>关于偏差和方差的权衡：</p>
+<ul>
+<li>在早期的机器学习时代，有很多关于偏差和方差的权衡的讨论，因为当时没有能够单独减小偏差和单独减小方差的工具。</li>
+<li>而在如今的深度学习和大数据时代，通过扩大网络几乎总是能够较小偏差而不增大方差（只要用恰当的方式正则化）；通过获得更多数据几乎总是能够减小方差而不增大偏差。因此，这也解释了为何深度学习在监督学习中如此有效。</li>
+</ul>
+<h2 id="1-2-正则化神经网络"><a href="#1-2-正则化神经网络" class="headerlink" title="1.2 正则化神经网络"></a><strong>1.2 正则化神经网络</strong></h2><h3 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a><strong>正则化</strong></h3><p>获得更多数据和正则化都是解决过拟合(高方差)的有效方法，但很多时候并不能总是获得更多数据或者获得更多数据的代价太高。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B1/%E6%AD%A3%E5%88%99%E5%8C%96-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92.JPG" width="80%" height="80%">先介绍在逻辑回归中应用正则化，如图：</p>
+<ul>
+<li>逻辑回归：$J(w,b)=\frac1m\sum_{i=1}^mL(\hat y^{(i)},y^{(i)})$</li>
+<li>参数：$w \in R^{n_x}$，$b\in R$</li>
+<li>目的：$\min\limits_{w,b} J(w,b)$；</li>
+<li>$J(w,b)=\frac1m\sum_{i=1}^mL(\hat y^{(i)},y^{(i)})+\frac{\lambda}{2m}||w||_2^2$<ul>
+<li>L2正则化：<code>$||w||_2^2=\sum_{j=1}^{n_x}w_j^2=w^Tw$</code>，其中$\lambda$是正则化参数</li>
+</ul>
+</li>
+<li>$J(w,b)=\frac1m\sum_{i=1}^mL(\hat y^{(i)},y^{(i)})+\frac{\lambda}{2m}||w||_1$<ul>
+<li>L1正则化：<code>$||w||_1=\sum_{j=1}^{n_x}|w_j|$</code>，其中$\lambda$是正则化参数</li>
+</ul>
+</li>
+<li>若使用L1正则化，$w$最后会变得稀疏，即$w$中会有很多0。有人认为这有助于压缩模型，因为有一部分参数是0，只需较少的内存来存储模型。<br>然而在实践中发现，通过L1正则化让模型变得稀疏带来的收效甚微。故吴恩达觉得至少在压缩模型的目标上，它的作用不大。<br>总之，在训练神经网络中，L2正则化应用地更频繁。</li>
+<li>只正则化参数$w$，而省略正则化参数$b$的原因是：$w$是高维矢量参数，$b$只是一个标量，几乎所有的参数都集中在$w$中，$b$只是大量参数中的一个，故可省略。</li>
+<li>注意，在python中，由于<code>lambda</code>是保留字，为了避免冲突，故在编程练习中使用<code>lambd</code>来表示$\lambda$。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%AD%A3%E5%88%99%E5%8C%96-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.JPG" width="50%" height="50%"> 在神经网络中应用正则化，如图：</p>
+<ul>
+<li>代价函数：<code>$J(W^{[1]},b^{[1]},\cdots,W^{[L]},b^{[L]})=\frac1m\sum\limits_{i=1}^mL(\hat y^{(i)},y^{(i)})+\frac{\lambda}{2m}\sum\limits_{l=1}^L||W^{[l]}||_F^2$</code></li>
+<li>其中，矩阵的L2范数称为F范数(Frobenius范数)，<code>$||W^{[l]}||_F^2=\sum_{i=1}^{n^{[l]}}\sum_{j=1}^{n^{[l-1]}}(W_{ij}^{[l]})^2$</code>。</li>
+<li>正则化后的梯度下降法：<ul>
+<li>$dW^{[l]}=dW^{[l]}_{before}+\frac{\lambda}{m}W^{[l]}$</li>
+<li>$W^{[l]} =W^{[l]}-\alpha dW^{[l]}$</li>
+</ul>
+</li>
+</ul>
+<p><strong>L2正则化也被称作权重衰减(weight decay)</strong>。原因如下：</p>
+<ul>
+<li>$$<br>\begin{eqnarray}W^{[l]} &amp;:=&amp;W^{[l]}-\alpha\cdot dW^{[l]}\ &amp;=&amp;W^{[l]}-\alpha\cdot(dW^{[l]}<em>{before}+\frac{\lambda}{m}W^{[l]})\ &amp;=&amp;(1-\alpha\frac{\lambda}{m})W^{[l]}-\alpha\cdot dW^{[l]}</em>{before} \end{eqnarray}<br>$$</li>
+<li>其中，$(1-\alpha\frac{\lambda}{m})&lt;1$。加上L2正则化项后，$W^{[l]}$的每次更新，都会乘以一个小于1的项。即每次迭代更新，都使得$W^{[l]}$不断地减小，故L2正则化又被称为权重衰减。</li>
+</ul>
+<h3 id="为什么正则化可以减轻过拟合"><a href="#为什么正则化可以减轻过拟合" class="headerlink" title="为什么正则化可以减轻过拟合"></a><strong>为什么正则化可以减轻过拟合</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%AD%A3%E5%88%99%E5%8C%96%E5%87%8F%E8%BD%BB%E8%BF%87%E6%8B%9F%E5%90%881.JPG" width="70%" height="70%">直观理解，如上图例一：</p>
+<ul>
+<li>假设由于选择了非常复杂的神经网络模型，因而存在过拟合，如上图左上角所示。</li>
+<li>加上正则化项后，若将正则化参数$\lambda$设置的很大，那么参数$ W^{[l]}\approx0$，参数$W$中的很多数接近于0，这相当于网络中的很多神经元不起作用，这样原本过于复杂的神经网络模型就变得简单化了，故减轻了过拟合。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%AD%A3%E5%88%99%E5%8C%96%E5%87%8F%E8%BD%BB%E8%BF%87%E6%8B%9F%E5%90%882.JPG" width="70%" height="70%">直观理解，如上图例二：</p>
+<ul>
+<li>假设激活函数是<code>tanh</code>函数。<code>tanh</code>函数的特点是在$|z|$较小的区域，函数是近似线性的，而当$|z|$稍大的时候，才会展现出非线性能力。</li>
+<li>若加入正则化，使$\lambda$较大，即对权重$W^{[l]}$的惩罚较大，使得$W^{[l]}$较小。</li>
+<li>因为$z^{[l]}=W^{[l]}a^{[l]}+b^{[l]}$。当$W^{[l]}$较小，$z^{[l]}$也较小。当$z^{[l]}$在较小范围内时，激活函数$g(z)$就会近似于线性函数。因此每一层几乎都是线性的，当隐藏曾的激活函数是线性函数的时候，再多隐藏层也只是计算线性函数。故网络不能拟合复杂的非线性函数，便不容易过拟合了。</li>
+</ul>
+<h3 id="Dropout正则化"><a href="#Dropout正则化" class="headerlink" title="Dropout正则化"></a><strong>Dropout正则化</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/dropout-1.JPG" width="70%" height="70%"> 除了正则化外，还有另外一种防止过拟合的有效方法：Dropout(随机失活)：</p>
+<ul>
+<li>Dropout：在神经网络的训练过程中，每一次迭代，按照一定的概率随机地将其暂时从网络中丢弃。</li>
+<li>也就是说，每一次迭代，每一层都有部分神经元不工作，起到简化复杂网络模型的效果，从而避免发生过拟合。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/dropout-2.JPG" width="50%" height="50%"> Dropout有不同的实现方法，Inverted dropout(反向失活)是目前最常用的实现方法：</p>
+<ul>
+<li><p>假设对于第$l=3$层神经元，设定保留神经元比例概率<code>keep_prob=0.8</code>。在Python中，Inverted dropout可实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">d3 = np.random.rand(a3.shape[<span class="number">0</span>],a3.shape[<span class="number">1</span>]) &lt; keep_prob</span><br><span class="line">a3 = np.multiply(a3,d3) <span class="comment">#逐元素相乘，也可以写成 a3 *= d3</span></span><br><span class="line">a3 /= keep_prob         <span class="comment">#保持a3的期望值不变。这样在测试阶段也不用再对a3值进行缩放</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>最后一步解释：例如<code>keep_prob=0.5</code>，该层将有一般的神经元被关闭，故该层的输出将被0.5缩放，因为只有剩下的一半神经元为计算输出做贡献。除以0.5等价于乘以2。因此输出有了相同的期望值。</li>
+</ul>
+</li>
+<li>反向传播过程：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">da3 = np.multiply(da3,d3) <span class="comment">#前向传播中关闭了某些神经元，反向传播中也关闭</span></span><br><span class="line">da3 /= keep_prob          <span class="comment">#a3缩放了keep_prob尺度，根据微积分的性质，则它的梯度也要缩放</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>注：Dropout仅在训练阶段使用，在测试阶段，不使用Dropout。</p>
+<h3 id="理解Dropout"><a href="#理解Dropout" class="headerlink" title="理解Dropout"></a><strong>理解Dropout</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/dropout-3.JPG" width="50%" height="50%">如图，对于网络中的某一神经元，若采用了dropout，对于每个不同的样本，它的输入特征被消除的特征都不同，因此该神经元不能依靠任一输入特征，故最终网络会分散权重，即所有的权重都不会过大。<br>使用Dropout的时候的几个注意点：</p>
+<ul>
+<li>可为不同网络层设置不同的<code>keep_prob</code>，但该做法的缺点是引入了更多的超参数。可将神经元较多(更容易过拟合)的隐藏层，<code>keep_out</code>设置得较小，如0.5；神经元越少的隐藏层，<code>keep_out</code>设置得较大，例如0.7。<code>keep_out</code>设置为1，表示全部保留，不使用Dropout。</li>
+<li>不建议对输入层进行Dropout，如果输入层维度很大，例如图片，那么可以设置Dropout，但<code>keep_out</code>应设置的大一些，例如0.8，0.9。</li>
+<li>Dropout在计算机视觉领域中应用广泛（实际从AlextNet中提出），因为输入层(图像)维度较大，且通常没有足够多的训练样本。</li>
+<li>Dropout是一种正则化技巧，用来防止过拟合，只有在确认模型过拟合后，再使用它。</li>
+<li>Dropout的一大缺点是代价函数$J$不再被明确定义，每次迭代都会随机移除一些神经元。故失去了检查梯度下降这一项调式工具，即通过绘图检查代价函数$J$是否随着迭代次数而减小（定义明确的代价函数$J$，在每次迭代后都会下降）。故应关闭Dropout(<code>keep_out</code>设置为1)，再进行梯度下降检查。</li>
+</ul>
+<h3 id="其他正则化方法"><a href="#其他正则化方法" class="headerlink" title="其他正则化方法"></a><strong>其他正则化方法</strong></h3><p>除了L2正则化和dropout之外，还有其它的正则化方法，如:数据增强，提前终止(early stopping)。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%85%B6%E4%BB%96%E6%AD%A3%E5%88%99%E5%8C%96%E6%96%B9%E6%B3%951.JPG" width="60%" height="60%">数据增强是对已有的训练样本进行一些处理来“制造”出更多的样本。</p>
+<ul>
+<li>例如图片识别问题中，数据增强是通过对已有的图片进行水平翻转、随机剪裁等方式制造出训练样本。</li>
+<li>虽然这些新样本是基于原有样本的，可能新的训练集有些冗余，但是相对于重新搜集全新独立的数据，数据增强不需要成本。</li>
+<li>因为增加了训练数据，能起到减轻过拟合的作用，故算过正则化方法。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%85%B6%E4%BB%96%E6%AD%A3%E5%88%99%E5%8C%96%E6%96%B9%E6%B3%952.JPG" width="80%" height="80%">另外一种正则化方法early stopping：如图，根据训练集误差曲线(或$J$的曲线)和开发集误差曲线(或$J$的曲线)随着迭代次数的变化趋势，选择使得开发集误差最小的迭代次数，停止训练，即early stopping。</p>
+<ul>
+<li>直观解释：神经网络训练前,$W$的值趋近于0,随着训练的进行，$W$越来越大。early stopping相当于选取了一个不大不小的$W$，类似于$||w||_F$的效果，从而希望此时神经网络的过拟合不严重。</li>
+</ul>
+<p>early stopping的缺点：</p>
+<ul>
+<li>通常来说，机器学习训练模型有两个目标：一是优化代价函数，即减小$J$；二是防止过拟合。这两个任务是分开进行的。把这二者之间的关系称为正交化(orthogonalization)，后面课程会进一步讲解。</li>
+<li>early stopping的做法相当于将两个任务合在一起执行，减少迭代次数停止训练时，$J$就不会足够小，且希望此时不过拟合。</li>
+</ul>
+<p>early stopping的优点：</p>
+<ul>
+<li>相比与L2正则化，early stopping不用选择超参数$\lambda$。</li>
+</ul>
+<p>吴恩达的做法：</p>
+<ul>
+<li>偶尔用early stopping，一般只用L2正则化。</li>
+</ul>
+<h2 id="1-3-设置优化问题"><a href="#1-3-设置优化问题" class="headerlink" title="1.3 设置优化问题"></a>1.3 <strong>设置优化问题</strong></h2><h3 id="归一化输入"><a href="#归一化输入" class="headerlink" title="归一化输入"></a><strong>归一化输入</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A0%87%E5%87%86%E5%8C%96%E8%BE%93%E5%85%A51.JPG" width="80%" height="80%"> 在训练神经网络时，<strong>归一化(normalize)输入</strong>可以<strong>加速训练过程($J$的优化过程)</strong>。<br>归一化输入就是将原始数据减去其均值$\mu$后，再除以其方差$\sigma^2$：</p>
+<ul>
+<li>$\mu=\frac1m\sum_{i=1}^m x^{(i)}$</li>
+<li>$x = x-\mu$</li>
+<li>$\sigma^2=\frac1m\sum_{i=1}^m x^{(i)}**2$</li>
+<li>$x = x/ \sqrt{\sigma^2}$</li>
+<li>注：对于训练集和测试集，应使用同样的$\mu$和$\sigma^2$进行归一化处理，即均使用训练集计算出的$\mu$和$\sigma^2$进行归一化处理。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A0%87%E5%87%86%E5%8C%96%E8%BE%93%E5%85%A52.JPG" width="75%" height="75%"> 上图以二维输入特征为例，解释了为什么归一化输入可以加速训练过程：</p>
+<ul>
+<li>假设输入特征为二维，且$x_1$的范围是[1,1000]，$x_2$的范围是[0,1]。  </li>
+<li>如图左下所示，若不归一化输入，$x_1$与$x_2$之间分布极不平衡，代价函数$J$与$x_1$和$x_2$的等高线是一个细长的椭圆形。对其进行梯度下降算法时，容易发生振荡，且需选择很小的学习速率$\alpha$，来避免$J$发生振荡，一旦$\alpha$较大，必然发生振荡，故学习过程很慢。</li>
+<li>如图右下所示，若归一化输入，$x_1$与$x_2$分布均匀，代价函数$J$与$x_1$和$x_2$的等高线是一个圆形。对其进行梯度下降算法时， 可选取较大的步长$\alpha$，且$J$不易发生振荡，故学习过程较快。</li>
+<li>注意：如果输入特征的尺度非常不同，比如有些特征取值为[0,1]，有些是[1,1000]，那对输入进行归一化就很重要。而如果输入特征本来尺度就相近，那么这一步就不那么重要。</li>
+<li>吴恩达的做法：因为归一化输入的步骤几乎从来没有任何害处，所以无论如何总是进行归一化，尽管不确定它是否会让训练变得更快。</li>
+</ul>
+<h3 id="梯度消失与梯度爆炸"><a href="#梯度消失与梯度爆炸" class="headerlink" title="梯度消失与梯度爆炸"></a><strong>梯度消失与梯度爆炸</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E6%B6%88%E5%A4%B1%E5%92%8C%E6%A2%AF%E5%BA%A6%E7%88%86%E7%82%B8.JPG" width="75%" height="75%"> 当训练深层神经网络时，会出现梯度消失和梯度爆炸问题。如图：</p>
+<ul>
+<li>为便于分析，令各层的激活函数为线性函数，即$g(z)=z$，且令$b=0$。那么，该网络的预测输出$\hat y$为：<ul>
+<li>$\hat y=W^{[L]}W^{[L-1]}W^{[L-2]}\cdots W^{[3]}W^{[2]}W^{[1]}x $</li>
+</ul>
+</li>
+<li>如果各层权重$W^{[l]}$只比1或单位矩阵稍大一点（如1.5），深层神经网络的激活函数将作为层数$l$的函数指数级增长。</li>
+<li>如果各层权重$W^{[l]}$只比1或单位矩阵稍小一点（如0.9），深层神经网络的激活函数将作为层数$l$的函数指数级递减。</li>
+<li>虽然上图只论述了激活函数作为层数$l$的函数指数级增加或减少，同样可以论证表明，计算出的导数或梯度，也会指数级增加或指数级减少。</li>
+<li>在一个非常深的神经网络（如150层）中，如果激活函数或梯度作为$l$的函数指数级的增大或减小，这些值会变得非常大或非常小，这会让训练变得非常困难。尤其是如果梯度作为$l$的函数指数级减小，梯度下降会用很小很小的步子走，梯度下降会用很长时间才能完成学习。</li>
+</ul>
+<h3 id="深层网络的权重初始化"><a href="#深层网络的权重初始化" class="headerlink" title="深层网络的权重初始化"></a><strong>深层网络的权重初始化</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%B7%B1%E5%B1%82%E7%BD%91%E7%BB%9C%E7%9A%84%E6%9D%83%E9%87%8D%E5%88%9D%E5%A7%8B%E5%8C%96.JPG" width="80%" height="80%"> 针对梯度消失和梯度爆炸，有一种部分解决方法，虽然不能完全解决它，但帮助很大，即更小心地随机初始化神经网络。<br>如图，以初始化单个神经元为例，然后再把它应用到深层网络中：</p>
+<ul>
+<li>$z=w_1x_1+w_2x_2+…+w_nx_n$</li>
+<li>为了让$z$不会过大或者过小，思路是让$w$与$n$有关，且$n$越大，$w$应该越小才好。这样能够保证$z$不会过大。</li>
+<li>如果激活函数是<code>tanh</code>，一般在初始化$w$时，令其方差为$\frac1n$，即$Var(w)=\frac1n$：<ul>
+<li>公式表示为：$w^{[l]} = np.random.randn(n^{[l]},n^{[l-1]})*np.sqrt(\frac{1}{n^{[l-1]}})$</li>
+<li>解释：第$l$层中的每个神经元都有$n^{[l-1]}$个输入。标准正态分布均值为0，方差为1，乘以$np.sqrt(\frac{1}{n^{[l-1]}})$，那么$w$的方差便为$\frac{1}{n^{[l-1]}}$<br>方差性质：$C$为常数，$D(CX) = C^2D(X)$</li>
+<li>该初始化方法也称为“Xavier initialization”。</li>
+</ul>
+</li>
+<li>如果激活函数是<code>ReLU</code>，一般在初始化$w$时，令其方差为$\frac2n$，即$Var(w)=\frac2n$：<ul>
+<li>公式表示为：$w^{[l]} = np.random.randn(n^{[l]},n^{[l-1]})*np.sqrt(\frac{2}{n^{[l-1]}})$</li>
+<li>该初始化方法也称为“He initialization”。</li>
+</ul>
+</li>
+<li>除此之外，Yoshua Bengio提出了另外一种初始化$w$的方法，令其方差为$\frac{2}{n^{[l-1]}+n^{[l]}}$：<ul>
+<li>公式表示为：$w^{[l]} = np.random.randn(n^{[l]},n^{[l-1]})*np.sqrt(\frac{2}{n^{[l-1]}+n^{[l]}})$</li>
+</ul>
+</li>
+<li>注：视频中3：15秒处，还有一段关于解释该做法可以有效减缓梯度消失/梯度爆炸的原因，没听懂，待理解。</li>
+</ul>
+<h3 id="梯度的数值逼近"><a href="#梯度的数值逼近" class="headerlink" title="梯度的数值逼近"></a><strong>梯度的数值逼近</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E7%9A%84%E6%95%B0%E5%80%BC%E9%80%BC%E8%BF%91.JPG" width="80%" height="80%"> 对于神经网络的反向传播，有一项重要的测试——梯度检验(gradient checking)。该节先介绍梯度的数值逼近：</p>
+<ul>
+<li>采用双边差分公式进行数值逼近：$f’(\theta) \approx \frac{f(\theta+\varepsilon)-f(\theta-\varepsilon)}{2\varepsilon}$</li>
+<li>如$f(\theta)=theta^3$，当$\theta$为1，$\varepsilon$为0.01时，逼近误差为：0.0001</li>
+<li>注意：不采用单边差分公式：$f’(\theta) \approx \frac{f(\theta+\varepsilon)-f(\theta)}{\varepsilon}$进行梯度的数值逼近的原因是：<ul>
+<li>单边差分公式的逼近误差是$O(\varepsilon)$。</li>
+<li>双边差分公式的逼近误差是$O(\varepsilon^2)$，逼近误差更小，故本课程采用此方法。</li>
+</ul>
+</li>
+<li>即利用的是该导数定义：$$ f’(\theta) = \lim\limits_{\varepsilon \to 0} \frac{f(\theta + \varepsilon) - f(\theta - \varepsilon)}{2 \varepsilon} $$，而不是该导数定义：$$f’(\theta) = \lim\limits_{\varepsilon \to 0} \frac{f(\theta + \varepsilon) - f(\theta)}{\varepsilon}$$</li>
+</ul>
+<h3 id="梯度检验"><a href="#梯度检验" class="headerlink" title="梯度检验"></a><strong>梯度检验</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C1.JPG" width="75%" height="75%"> <img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C2.JPG" width="75%" height="75%"> 进行梯度检验，可验证代码中的反向传播是否有错误：</p>
+<ul>
+<li>首先，将$W^{[1]},b^{[1]},\cdots,W^{[L]},b^{[L]}$ 这些矩阵逐个转变为一维向量，然后连接成一个大的一维向量$\theta$。这样$J(W^{[1]},b^{[1]},\cdots,W^{[L]},b^{[L]})$ 就可表示成$J(\theta)$。</li>
+<li>然后，将反向传播过程通过梯度下降算法得到的$dW^{[1]},db^{[1]},\cdots,dW^{[L]},db^{[L]}$同上一步骤一样构造成一个大的一维向量 $d\theta$。注意到，$d\theta$的维度与$\theta$是一致的。</li>
+<li>接着，对$\theta$中的每个元素$\theta_i$，计算近似梯度：<br>$$d\theta_{approx}[i]=\frac{J(\theta_1,\theta_2,\cdots,\theta_i+\varepsilon,\cdots)-J(\theta_1,\theta_2,\cdots,\theta_i-\varepsilon,\cdots)}{2\varepsilon}$$</li>
+<li>最终，得到$d\theta_{approx}$。</li>
+<li>将<code>$d\theta_{approx}$</code>与<code>$d\theta$</code>相比较，检查是否一致，即是否<code>$d\theta_{approx} \approx d\theta $</code>，也即是否每一元素<code>$d\theta_{approx}[i] \approx d\theta[i] $</code>。</li>
+<li>检验相似度的标准如下：<br>$$\frac{||d\theta_{approx}-d\theta||<em>2}{||d\theta</em>{approx}||_2+||d\theta||_2}$$<ul>
+<li>解释：首先计算<code>$d\theta_{approx}$</code>与<code>$d\theta$</code>的欧氏距离，即差值的L2范数。然后根据向量的长度将其归一化，即除以两个向量的欧几里德长度和，除以该分母的原因是：防止分子过大或过小，这样整个式子就成了一个比值。</li>
+<li>在实际中，选用$\varepsilon=10^{-7}$：</li>
+<li>如果相似度的值小于$10^{-7}$，表明梯度逼近误差极小，通过梯度检查，代码是对的。</li>
+<li>如果相似度在$10^{-5}$左右，代码可能是对的，但还是会逐个检查向量<code>$d\theta_{approx}$</code>与<code>$d\theta$</code>的每一项，看是否有某一项过大。则该处代码可能存在错误，下节会稍详细讲解此点。</li>
+<li>如果相似度在$10^{-3}$左右，代码中一定有错误。</li>
+</ul>
+</li>
+</ul>
+<h3 id="运用梯度检验的注意事项"><a href="#运用梯度检验的注意事项" class="headerlink" title="运用梯度检验的注意事项"></a><strong>运用梯度检验的注意事项</strong></h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9.JPG" width="75%" height="75%"> 在运用梯度检查时有几点注意事项：</p>
+<ul>
+<li>一旦确定反向传播正确，即关闭梯度检验，否则训练过程会极慢。<ul>
+<li>解释：梯度检验很慢,故不在训练的每一次迭代中都使用。只要确定反向传播代码正确, 就关闭它。</li>
+</ul>
+</li>
+<li>如果梯度检验出现错误，找到对应出错项，尝试识别出bug位置：<ul>
+<li>解释：逐个对比向量<code>$d\theta_{approx}$</code>与<code>$d\theta$</code>的每一项，看是否有某一项<code>$d\theta[i]$</code>过大。例如，过大项<code>$d\theta[i]$</code>属于$dw^{[l]}$，而同一层的$db^{[l]}$未出错，则可能bug在关于$dw^{[l]}$的代码中。</li>
+<li>有时这样的分析虽然无法帮助精确定位出bug位置，但可以帮助我们猜测bug的位置。</li>
+</ul>
+</li>
+<li>如果进行了正则化，则计算近似梯度$d\theta_{approx}$的时候要包括进去。</li>
+<li>梯度检验时关闭dropout，梯度检验完毕后再打开dropout。<ul>
+<li>解释：dropout使得$J$没有精确的定义，无法进行$d\theta_{approx}$的计算。故先梯度检验，通过后，再开启dropout。</li>
+</ul>
+</li>
+<li>随机初始化时运行梯度检验，经过一些训练后再次进行梯度检验（不常用）。<ul>
+<li>为了预防你的反向传播算法在$w$和$b$在接近0的时候是正确的，但当$w$和$b$变大时，算法精度有所下降。</li>
+<li>故在一些迭代后，当$w$和$b$变大时，再次进行梯度检验。</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-优化算法"><a href="#2-优化算法" class="headerlink" title="2.优化算法"></a>2.优化算法</h1><h2 id="2-1-优化算法"><a href="#2-1-优化算法" class="headerlink" title="2.1 优化算法"></a>2.1 优化算法</h2><h3 id="小批量梯度下降法"><a href="#小批量梯度下降法" class="headerlink" title="小批量梯度下降法"></a>小批量梯度下降法</h3><p>开篇即说过，机器学习应用是一个高度依赖经验的需要大量迭代的过程。优化算法可以加快神经网络的训练速度，从而提高效率。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%951.JPG" width="80%" height="80%"> 批量梯度下降法(batch gradient descent)：</p>
+<ul>
+<li>每次迭代，对所有样本进行训练，故其训练速度很慢。</li>
+</ul>
+<p>小批量梯度下降法(mini-batch gradient descent)：</p>
+<ul>
+<li>将$m$个训练样本分成若干个子集，称为mini-batch。</li>
+<li>然后每次迭代，在单一子集(mini-batch)上进行神经网络训练，每次迭代所需时间大幅减少。</li>
+</ul>
+<p>如图中示例：</p>
+<ul>
+<li>总的训练样本$X_{(n_x,m)}=[x^1,x^{(2)},…,x^{(m)}]$，其中$m=5,000,000$。</li>
+<li>总的训练样本的标签$Y_{(1,m)}=[y^1,y^{(2)},…,y^{(m)}]$，其中$m=5,000,000$。</li>
+<li>将$X$分成5000个mini-batch，每mini-batch含1000个样本，将每个mini-batch记为<code>$X^{\{t\}}$</code> ，其维度为<code>$(n_x,1000)$</code>,且<code>$t=1,2,\cdots,5000$</code>。</li>
+<li>每个mini-batch对应的标签记为<code>$Y^{\{t\}}$</code>，其维度为<code>$(1,1000)$</code>，且<code>$t=1,2,\cdots,5000$</code>。</li>
+</ul>
+<p>总结一下遇到的神经网络中几类字母的上标含义：</p>
+<ul>
+<li>$x^{(i)}$ ：第$i$个样本</li>
+<li>$z^{[l]}$ ：神经网络第$l$层网络的线性输出</li>
+<li><code>$X^{\{t\}},Y^{\{t\}}$</code>：第$t$个mini-batch</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D2.JPG" width="80%" height="80%"> 如图：</p>
+<ul>
+<li>对于小批量梯度下降法来说，一个周期(epoch)是指：将所有mini_batch（<code>$X^{\{t\}},Y^{\{t\}}$</code>）训练一次(前向传播、计算$J$、反向传播、参数更新)，即遍历一次总体训练集。</li>
+<li>对于批量梯度下降法，一个周期只进行一次梯度下降步骤；而对于小批量梯度下降法，一个周期会进行$T$次梯度下降步骤。</li>
+<li>通常，会多次遍历训练集(一个显式的for循环)直到收敛到某个值。</li>
+</ul>
+<h3 id="理解小批量梯度下降法"><a href="#理解小批量梯度下降法" class="headerlink" title="理解小批量梯度下降法"></a>理解小批量梯度下降法</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D1.JPG" width="80%" height="80%"></p>
+<ul>
+<li>使用批量梯度下降法，每次迭代将遍历整个训练集，$J$都会减小，若没有减小，则一定是某处错了。</li>
+<li>使用小批量梯度下降法，每次迭代是在不同的mini-batch上训练，其代价函数$J$和迭代次数(也即mini-batch/t)的曲线存在噪声，上下振荡，但整体的趋势是下降的。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D2.JPG" width="80%" height="80%"> 对于mini-batch尺寸的选择：</p>
+<ul>
+<li>如果mini-batch尺寸为m：即为批量梯度下降((Batch) Gradient Descent)。<code>$X^{\{t\}},Y^{\{t\}}=(X,Y)$</code></li>
+<li>如果mini-batch尺寸为1：即为随机梯度下降(Stochastic Gradient Descent, SGD)。每个样本都是一个mini-batch。</li>
+<li>实际操作中：mini-batch尺寸的选择在1到m之间。</li>
+</ul>
+<p>如图，比较各梯度下降方法的代价函数的等高线图：</p>
+<ul>
+<li>蓝色曲线代表批量梯度下降：<ul>
+<li>它的噪声相对较小。</li>
+<li>每一步相对较大。</li>
+<li>并且最终可以达到最小值。</li>
+<li>缺点：每次迭代所需时间太长。</li>
+</ul>
+</li>
+<li>紫色曲线代表随机梯度下降：<ul>
+<li>对于每一次迭代，就在一个样本上做梯度下降，噪声非常大。</li>
+<li>一般来说它会沿着正确的方向，但有时也会指向错误的方向。</li>
+<li>最后也不会收敛到一个点，它一般会在最低点附近摆动，但是不会达到并且停在那里。 </li>
+<li>缺点：失去了通过向量化来加速计算这个工具。</li>
+</ul>
+</li>
+<li>绿色曲线代表实际中mini-batch尺寸为1~m之间的梯度下降：<ul>
+<li>优点：有着最快的学习速度：1.可在每一个mini-batch运用向量化。2.每次迭代所需时间少。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D3.JPG" width="75%" height="75%"></p>
+<ul>
+<li>如果总体样本数量$m$($m\leq2000$)，建议直接使用批量梯度下降。</li>
+<li>如果总体样本数量$m$很大时，建议将样本分成许多mini-batch。</li>
+<li>推荐常用的mini-batch 尺寸为64,128,256,512(这些都是2的幂。之所以这样设置的原因是计算机存储数据一般是2的幂，这样设置可以提高运算速度)。</li>
+<li>但要确保每一个mini-batch（<code>$X^{\{t\}},Y^{\{t\}}$</code>）能装进CPU/GPU。</li>
+<li>在实践中，要得到不同的mini-batches，需要两个步骤：1.对数据集洗牌(shuffle)；2.分割(partition)。</li>
+</ul>
+<h3 id="指数加权平均"><a href="#指数加权平均" class="headerlink" title="指数加权平均"></a>指数加权平均</h3><p>接下来介绍几个优化算法，它们比梯度下降更快，为了理解这些算法，需要用到一种叫指数加权平均(exponentially weighted average)的操作，在统计学上也被称为指数加权滑动平均。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%871.JPG" width="80%" height="80%"> 如图，通过指数加权平均来计算最近10天的温度：</p>
+<ul>
+<li>设$V_0=0$，当成第0天的气温值</li>
+<li>第一天的气温与第0天的气温有关：$V_1=0.9V_0+0.1\theta_1$</li>
+<li>第二天的气温与第一天的气温有关：$V_2=0.9V_1+0.1\theta_2$</li>
+<li>第$t$天与第$t-1$天的气温迭代关系为：<code>$V_t = 0.9V_{t-1}+0.1\theta_t$</code></li>
+<li>经过指数加权平均得到的气温如图中红色曲线所示。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%872.JPG" width="80%" height="80%"> 指数加权平均的一般形式为：</p>
+<ul>
+<li><code>$V_t=\beta V_{t-1}+(1-\beta)\theta_t$</code></li>
+<li><code>$V_t$</code>是在约<code>$\frac{1}{1-\beta}$</code>天的温度上的平均的近似值。</li>
+<li>当$\beta=0.5$，则$\frac{1}{1-\beta}=2$，表示将前2天进行指数加权平均。由于仅仅平均两天的气温，即只在很小的窗口内计算平均。得到结果中会有更多的噪声，更容易受到异常值的影响，但它可以更快地适应温度变化。如图中黄色曲线所示。</li>
+<li>当$\beta=0.9$，则$\frac{1}{1-\beta}=10$，表示将前10天进行指数加权平均。如图中红色曲线所示。</li>
+<li>当$\beta=0.98$，则$\frac{1}{1-\beta}=50$，表示将前50天进行指数加权平均。如图中绿色曲线所示。</li>
+<li>$\beta$值越大，则指数加权平均的天数越多，平均后的曲线则更平滑，但是同时曲线会右移，因为在一个更大的窗口内计算平均温度，在温度变化时，适应地更加缓慢，这就造成了一些延迟。</li>
+<li>可将$\beta$视为一个超参数，通过调整这个参数，就可以得到略微不同的收效。通常取中间的某个值效果最好，也就是这里的红色的曲线。</li>
+</ul>
+<h3 id="理解指数加权平均"><a href="#理解指数加权平均" class="headerlink" title="理解指数加权平均"></a>理解指数加权平均</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%871.JPG" width="80%" height="80%"> 上图解释了为什么指数加权平均的结果<code>$V_t$</code>是在约<code>$\frac{1}{1-\beta}$</code>天的温度上的平均的近似值：</p>
+<ul>
+<li>准确来说，指数加权平均算法跟之前所有天的数值都有关系，如图中的推导公式:<ul>
+<li>$$\begin{eqnarray}V_{100} &amp;=&amp; 0.1\theta_{100}+ 0.1\cdot0.9\theta_{99}+  0.1\cdot0.9^{2}\theta_{98}+ 0.1\cdot0.9^{3}\theta_{97} + 0.1\cdot0.9^{4}\theta_{96}+ … \end{eqnarray}$$</li>
+</ul>
+</li>
+<li>其中每一$\theta_{i}$项都是指数衰减的，一般认为衰减到原始的$\frac1e$就可以忽略不计了。</li>
+<li>$\beta^{\frac{1}{1-\beta}}=\frac1e$，例如，此处$\beta=0.9$，$0.9^{10}\approx 0.35\approx \frac{1}{e}$。</li>
+<li>故<code>$V_t$</code>是在约<code>$\frac{1}{1-\beta}$</code>天的温度上的平均的近似值。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%90%86%E8%A7%A3%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%872.JPG" width="80%" height="80%">  实际应用中，使用这样的语句来实现指数加权平均算法：<br><code>$V_{\theta}=0$</code><br><code>$Repeat\ \{$</code><br><code>$\ \ \ \ Get\ next\ \theta_t$</code><br><code>$\ \ \ \ V_{\theta}:=\beta V_{\theta}+(1-\beta)\theta_t$</code><br><code>$\}$</code></p>
+<h3 id="指数加权平均中的偏差修正"><a href="#指数加权平均中的偏差修正" class="headerlink" title="指数加权平均中的偏差修正"></a>指数加权平均中的偏差修正</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%8C%87%E6%95%B0%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%87%E7%9A%84%E5%81%8F%E5%B7%AE%E4%BF%AE%E6%AD%A3.JPG" width="80%" height="80%"></p>
+<ul>
+<li>上文中提到当$\beta=0.98$时，指数加权平均结果如下图绿色曲线所示。但是实际上，得不到绿色曲线，真实曲线如紫色曲线所示。</li>
+<li>紫色曲线与绿色曲线的区别是：紫色曲线开始的时候相对较低一些。这是因为设置$V_0=0$，所以初始值会相对小一些，直到后面受前面的影响渐渐变小，趋于正常:<ul>
+<li>$V_0=0$</li>
+<li>$V_1 = 0.98V_0+0.02\theta_1$</li>
+<li>$V_2 = 0.98V_1+0.02\theta_2=0.98 \cdot 0.02\theta_1+0.02\theta_2=0.0196\theta_1+0.02\theta_2$</li>
+</ul>
+</li>
+</ul>
+<p>修正这种问题的方法是进行偏移修正(bias correction):</p>
+<ul>
+<li>将$V_t$取值变为$\frac{V_t}{1-\beta^t}$</li>
+<li>在刚开始的时候，$t$比较小，$(1-\beta^t)&lt;1$，这样就将$V_t$修正得更大一些，效果是把紫色曲线开始部分向上提升一些，与绿色曲线接近重合。</li>
+<li>随着$t$增大，$(1-\beta^t)\approx1$，$V_t$基本不变，紫色曲线与绿色曲线依然重合。</li>
+<li>这样就实现了简单的偏移校正，得到我们希望的绿色曲线。</li>
+<li>在机器学习中，多数的指数加权平均运算并不会使用偏差修正。因为大多数人更愿意在初始阶段，用一个稍带偏差的值进行运算。</li>
+<li>不过，如果在初始阶段就开始考虑偏差，指数加权移动均指仍处于预热阶段，偏差修正可以帮你尽早做出更好的估计。</li>
+</ul>
+<h3 id="动量梯度下降法"><a href="#动量梯度下降法" class="headerlink" title="动量梯度下降法"></a>动量梯度下降法</h3><p>有一种算法叫做动量(Momentum)梯度下降算法，它几乎总会比标准的梯度下降算法更快。算法的主要思想是：计算梯度的指数加权平均，然后使用这个梯度来更新权重。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%8A%A8%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D1.JPG" width="80%" height="80%"> <img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%8A%A8%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D2.JPG" width="80%" height="80%"></p>
+<ul>
+<li>假设要优化一个代价函数，如图中的等高线图,红色的点表示最小值的位置。</li>
+<li>无论是批量梯度下降或小批量梯度下降，梯度下降算法会向着最小值缓慢地振荡前进。这种上下的振荡会减慢梯度下降的速度，同时也让你无法使用较大的学习率。如果你使用的学习率很大，可能会超调(overshoot)，发散出去。因此为了避免振荡过大，你只能使用比较小的学习率。如图1中的蓝色曲线所示。</li>
+<li>因此，在垂直方向上，希望学习慢一点，因为你不希望有这些振荡；但是在水平方向上，你希望加快学习速度。 </li>
+</ul>
+<p>动量梯度下降算法的过程如下:<br><code>$V_{dW}=0,V_{db}=0$</code><br><code>$On\ iteration\$</code><br><code>$\ \ \ \ Compute\ dW,\ db\ on\ the\ current\ mini-batch$</code><br><code>$\ \ \ \ V_{dW}=\beta V_{dW}+(1-\beta)dW$</code><br><code>$\ \ \ \ V_{db}=\beta V_{db}+(1-\beta)db$</code><br><code>$\ \ \ \ W=W-\alpha V_{dW},\ b=b-\alpha V_{db}$</code></p>
+<ul>
+<li>使用<code>$v_{dW}$</code>更新权重，而不是<code>$dW$</code>。同样地用<code>$v_{db}$</code>更新<code>$b$</code>，而不是<code>$db$</code>。</li>
+<li>$v_{dW}$是在近10个$dW$上的指数加权平均，故<strong>在垂直方向上，其平均值接近于0</strong>。然而<strong>在水平方向上，所有导数都指向水平方向的右边，所以水平方向的平均值仍然较大</strong>。</li>
+<li>因此，<strong>动量梯度下降算法的每一步，在垂直方向上的振荡非常小，且在水平方向上运动得更快</strong>。这会让你的算法选择更加直接的路径，或者说减弱了前往最小值的路径上的振荡，如图1中红色曲线所示。 </li>
+</ul>
+<p>另外：</p>
+<ul>
+<li>使用动量梯度下降法有两个超参数：$\alpha$和$\beta$。$\beta$最常用的取值是0.9，就像之前计算最近10天气温的平均值，这里就是计算前10次迭代的梯度的平均值。在实践中，使用$\beta=0.9$效果很好，你也可以尝试不同的值，做一些超参数搜索，但是0.9是非常稳健的参数值。</li>
+<li>至于偏差修正，即是否需要让<code>$v_{dW}$</code>或<code>$v_{db}$</code>除以<code>$1-\beta^t$</code>。实际上，通常人们不会这么做，因为在10次迭代之后，滑动平均值就不再是一个偏差估计，所以在实现梯度下降或动量梯度下降时，不用做偏差修正。</li>
+</ul>
+<h3 id="RMSprop"><a href="#RMSprop" class="headerlink" title="RMSprop"></a>RMSprop</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/RMSprop.JPG" width="80%" height="80%"> RMSprop的算法的全称为均方根传递(Root Mean Square prop)，它同动量梯度下降法一样，也可以加速梯度下降：</p>
+<ul>
+<li>批量梯度下降或小批量梯度下降在实现梯度下降时，可能会在垂直方向上出现巨大的振荡，即使它试图在水平方向上前进。</li>
+<li>假设垂直方向代表参数$b$，水平方向代表参数$W$，当然这里也可以是$W_1$和$W_2$等其他参数，使用$b$和$W$是为了便于标记解释。 </li>
+<li>你希望减慢$b$方向的学习，也就是垂直方向，同时加速或至少不减慢水平方向的学习，这就是RMSprop算法要做的。</li>
+<li>RMSprop算法步骤：<br><code>$S_{dW},\ S_{db}=0$</code><br><code>$On\ iteration\ t:$</code><br><code>$\ \ \ \ Compute\ dW,\ db \ on \ current \ mini-batch$</code><br><code>$S_{dw}=\beta S_{dW}+(1-\beta)dW^2$</code><br><code>$S_{db}=\beta S_{db}+(1-\beta)db^2$</code><br><code>$W:=W-\alpha \frac{dW}{\sqrt{S_{dw}+\varepsilon}},\ b:=b-\alpha \frac{db}{\sqrt{S_{db}+\varepsilon}}$</code><ul>
+<li>其中，$dW^2$和$db^2$是逐元素平方。</li>
+<li>其中，$\varepsilon=10^{-8}$。为了防止除以0。$\epsilon$的值取多少并不重要，$10^{-8}$是一个合理的默认值，能轻微提高数值稳定性。</li>
+</ul>
+</li>
+<li>从图中蓝色曲线可以看出，$db$很大，而$dW$相对较小，因此，<code>$S_{dW}$</code>相对<code>$S_{db}$</code>较小。</li>
+<li>因此RMSprop中垂直方向的$b$的更新较小，这有助于减弱振荡，垂直方向$W$的更新较大。另一个收效是：可以使用更大的学习率$\alpha$，学习得更快，而不用担心在垂直方向上发散。如图中绿色曲线所示。</li>
+</ul>
+<h3 id="Adam优化算法"><a href="#Adam优化算法" class="headerlink" title="Adam优化算法"></a>Adam优化算法</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Adam1.JPG" width="90%" height="90%"> Adam算法（Adaptive Moment Estimation，自适应矩估计)将动量和RMSprop梯度下降结合起来，被广泛使用且已经被证明在很多不同种类的神经网络构架中都是十分有效的。</p>
+<ul>
+<li>Adam算法流程为：<br><code>$V_{dW}=0,\ S_{dW},\ V_{db}=0,\ S_{db}=0$</code><br><code>$On\ iteration\ t:$</code><br><code>$\ \ \ \ Cpmpute\ dW,\ db \ on \ current \ mini-batch$</code><br><code>$\ \ \ \ V_{dW}=\beta_1V_{dW}+(1-\beta_1)dW,\ V_{db}=\beta_1V_{db}+(1-\beta_1)db$</code><br><code>$\ \ \ \ S_{dW}=\beta_2S_{dW}+(1-\beta_2)dW^2,\ S_{db}=\beta_2S_{db}+(1-\beta_2)db^2$</code><br><code>$\ \ \ \ V_{dW}^{corrected}=\frac{V_{dW}}{1-\beta_1^t},\ V_{db}^{corrected}=\frac{V_{db}}{1-\beta_1^t}$</code><br><code>$\ \ \ \ S_{dW}^{corrected}=\frac{S_{dW}}{1-\beta_2^t},\ S_{db}^{corrected}=\frac{S_{db}}{1-\beta_2^t}$</code><br><code>$\ \ \ \ W:=W-\alpha\frac{V_{dW}^{corrected}}{\sqrt{S_{dW}^{corrected}}+\varepsilon},\ b:=b-\alpha\frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}}+\varepsilon}$</code><ul>
+<li>注意到：在构建Adam算法的过程中需要进行偏差修正。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Adam2.JPG" width="80%" height="80%"></p>
+<ul>
+<li>Adam算法中的超参数：$\alpha$，$\beta_1$，$\beta_2$，$\varepsilon$。</li>
+<li>超参数$\beta_1$的默认值设置为0.9，这是关于动量算法的$dW$的加权平均计算。</li>
+<li>对于超参数$\beta_2$，Adam算法论文的作者推荐使用0.999，这是关于$dW^2$的加权平均计算。</li>
+<li>超参数$\varepsilon$，如何选择影响都不大，Adam论文的作者推荐使用$10^{-8}$作为默认值。</li>
+<li>在使用Adam算法的时候，业内通常对$\beta_1$、$\beta_2$以及$\varepsilon$都直接使用默认值，然后尝试不同的学习率$\alpha$来以获得最好的训练效果。</li>
+</ul>
+<h3 id="学习速率衰减"><a href="#学习速率衰减" class="headerlink" title="学习速率衰减"></a>学习速率衰减</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AD%A6%E4%B9%A0%E7%8E%87%E8%A1%B0%E5%87%8F1.JPG" width="80%" height="80%"> 学习速率衰减，即逐渐地减小学习率，可使得学习算法运行更快：</p>
+<ul>
+<li>如图，当采用小批量梯度下降法进行迭代时：<ul>
+<li>当学习率$\alpha$采用固定值，会逐步向最小值靠近，但不会完全收敛到这点。如图中蓝色曲线所示。</li>
+<li>当采用学习率衰减，那么在初始阶段，因为学习率$\alpha$取值还比较大，学习速度仍然可以比较快。但随着学习率降低$\alpha$变小，步长也会渐渐变小。所以，最终将围绕着离极小值点更近的区域摆动，即使继续训练下去也不会漂游远离。如图中绿色曲线所示。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AD%A6%E4%B9%A0%E7%8E%87%E8%A1%B0%E5%87%8F2.JPG" width="80%" height="80%"></p>
+<ul>
+<li>如图所示，可由以下公式，实现学习率衰减：<ul>
+<li>$$\alpha=\frac{1}{1+decay _ rate*epoch}\alpha_0$$</li>
+<li>其中，deacy_rate是参数（可调），epoch是周期数。随着epoch增加，$\alpha$会不断变小。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AD%A6%E4%B9%A0%E7%8E%87%E8%A1%B0%E5%87%8F3.JPG" width="50%" height="50%"> 实现学习率衰减还有其它可供选择的计算公式，如图所示:</p>
+<ul>
+<li>$\alpha=0.95^{epoch}\cdot \alpha_0$</li>
+<li>$\alpha=\frac{k}{\sqrt{epoch}}\cdot \alpha_0\ \ \ \ or\ \ \ \ \frac{k}{\sqrt{t}}\cdot \alpha_0$</li>
+<li>离散阶梯衰减。</li>
+<li>手动衰减。</li>
+</ul>
+<p>另外：</p>
+<ul>
+<li><strong>学习率衰减的确可以帮助加速训练，但学习率衰减通常位于应该尝试的事情中比较靠后的位置</strong>。</li>
+<li><strong>设置一个固定数值的$\alpha_0$，且使得优化良好，对结果有着巨大影响</strong>。</li>
+<li>下周，将对超参数进行系统地讲解。</li>
+</ul>
+<h3 id="局部最优解的问题"><a href="#局部最优解的问题" class="headerlink" title="局部最优解的问题"></a>局部最优解的问题</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%B1%80%E9%83%A8%E6%9C%80%E4%BC%98%E8%A7%A31.JPG" width="80%" height="80%"></p>
+<ul>
+<li>在深度学习的早期阶段，人们常常担心优化算法会陷入糟糕的局部最优解(Local Optima)之中。但随着深度学习理论的发展，我们对局部最优的理解也在改变。</li>
+<li>在使用梯度下降算法不断减小代价函数时，可能会得到局部最优解而不是全局最优解。之前我们对局部最优解的理解是如上图左边所示。</li>
+<li>但对于神经网络，其参数维数很高，梯度为零的点，在每个方向上，有可能是凸函数，有可能是凹函数。因此，梯度为零的点很可能都是右边所示的马鞍状的鞍点。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%B1%80%E9%83%A8%E6%9C%80%E4%BC%98%E8%A7%A32.JPG" width="80%" height="80%"> 总结：</p>
+<ul>
+<li>局部最优不是问题，不太可能陷入极差的局部最优问题中（只要训练的是一个较大的神经网络，即有很多参数，代价函数$J$定义在一个相对高维的空间上时）。</li>
+<li>停滞区让学习过程变得相当慢。<ul>
+<li>解释：停滞区指的是导数长时间接近于零的一段区域，因为梯度为零或接近于零，曲面很平。在离开停滞区继续下降之前，需要花费很长的时间，缓慢地渡过在停滞区。</li>
+<li>解决方法：更复杂的算法，比如Adam算法，可以加快沿停滞区向下移动然后离开停滞区的速度。</li>
+</ul>
+</li>
+</ul>
+<h1 id="3-超参数调试、批量归一化以及编程框架"><a href="#3-超参数调试、批量归一化以及编程框架" class="headerlink" title="3.超参数调试、批量归一化以及编程框架"></a>3.超参数调试、批量归一化以及编程框架</h1><h2 id="3-1-超参数调试"><a href="#3-1-超参数调试" class="headerlink" title="3.1 超参数调试"></a>3.1 超参数调试</h2><h3 id="调试过程"><a href="#调试过程" class="headerlink" title="调试过程"></a>调试过程</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%951.JPG" width="80%" height="80%"> 深度神经网络需要调试的超参数较多，包括：</p>
+<ul>
+<li>$\alpha$ ：学习速率</li>
+<li>$\beta$ ：动量梯度下降因子</li>
+<li>$\beta_1,\beta_2,\varepsilon$ ：Adam算法参数</li>
+<li>#layers：神经网络层数</li>
+<li>#hidden units：各隐藏层神经元个数</li>
+<li>learning rate decay：学习速率衰减参数</li>
+<li>mini-batch size：每一mini-batch包含的样本个数</li>
+</ul>
+<p>对于以上超参数的优先级：</p>
+<ul>
+<li>优先级1：学习速率$\alpha$需要调试的超参数中最重要的一个，没有之一。</li>
+<li>优先级2：接下来会调整动量梯度下降参数$\beta$，0.9是不错的默认值；还会调整Mini-Batch的大小，来保证最优化算法的运行效率；还经常调试隐藏单元数量。这三个超参数的重要性仅次于学习速率$\alpha$。</li>
+<li>优先级3：网络层数有时候对结果起到重要作用，学习率衰减有时也一样。</li>
+<li>优先级4：当使用Adam优化算法时，几乎不调节$\beta_1,\beta_2,\varepsilon$，几乎都是用0.9，0.999和$10^{-8}$。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%952.JPG" width="80%" height="80%"> 当调整超参数时，对于超参数值的组合：</p>
+<ul>
+<li>在早期的机器学习算法中，如果有两个超参数（超参数1和超参数2），人们经常会像这样：在一个网格中对点进行规则抽样，然后系统化地尝试这些点所代表的值。如在图中5*5的网格中采样25个点后，选择最优的超参数。当超参数的数量相对较少时，这样的取参方法较为实用。 </li>
+<li>但在深度学习中，推荐采取另一种方法：在网格中进行随机抽样，无论最重要的超参数是哪个，将帮助你更充分地为最重要的超参数尝试尽可能多的值的组合。超参数值域的随机抽样，能更有效地搜索超参数空间。如图中，随机采样25个点，然后在这些随机选取的点中，尝试所有的超参数。对于多维情况，也是如此在多维空间中进行随机采样，然后尝试多个超参数的组合值。<ul>
+<li>这样做的原因：事先很难知道，哪一个超参数对于你的模型更重要。  </li>
+<li>解释：假设超参数1是学习速率$\alpha$，超参数2是Adam优化算法中的$\varepsilon$。若在网格中取样，因为$\varepsilon$对结果没有什么影响，所以训练了25个模型，但是只相当于尝试了5个有用的α的值；相比较而言，如果在网格中随机取样 那么将获得25个不同的学习速率$\alpha$，因此你找到理想值的概率也就变得更大。 </li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%953.JPG" width="80%" height="80%"> 由粗糙到精细的搜索策略：</p>
+<ul>
+<li>继续以二维空间为例，当在此空间进行完随机采样后，发现在某些点能产生最好的结果，大体能确定这个区域内取的值能产生最优结果，即最理想的超参数来自于这个区域。即在对整个框定范围进行粗略的抽样后，结果会引导你集中在一个更小的区域内。</li>
+<li>然后，继续采用区域定位的抽样方案：即在这个更小的区域内进行密度更高的随机抽样。</li>
+</ul>
+<h3 id="用合适的尺度去选择超参数"><a href="#用合适的尺度去选择超参数" class="headerlink" title="用合适的尺度去选择超参数"></a>用合适的尺度去选择超参数</h3><p>上一节讲解的超参数值域的随机抽样，能帮助更有效地搜索超参数空间。但随机抽样并不意味着在有效值范围内的均匀随机抽样(sampleing uniformly at random)。相反，更重要的是选取适当的尺度(scale)，用以研究这些超参数。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E6%90%9C%E7%B4%A2%E5%B0%BA%E5%BA%A61.JPG" width="80%" height="80%"></p>
+<ul>
+<li>对于超参数#layers和#hidden units，采用均匀随机抽样是合理的方案，但它并不是对所有的超参数都适用。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E6%90%9C%E7%B4%A2%E5%B0%BA%E5%BA%A62.JPG" width="80%" height="80%"></p>
+<ul>
+<li>对于超参数学习率$\alpha$，待调范围是$[0.0001, 1]$。如果使用均匀随机抽样，那么有90%的采样点分布在$[0.1, 1]$之间，只有10%分布在$[0.0001, 0.1]$之间，并不合理。</li>
+<li>更合理的方法：在对数尺度(log scale)上进行采样，而不是用线性尺度(linear scale)。即分为$[0.0001, 0.001]，[0.001, 0.01]，[0.01, 0.1]，[0.1, 1]$这几个区间。</li>
+<li>一般解法是，如果线性区间为$[a,b]$，令$m=log(a)$，$n=log(b)$，则对应的$log$区间为$[m,n]$。对$log$区间的$[m,n]$进行随机均匀采样，然后得到的采样值$r$，最后反推到线性区间，即$10^r$。$10^r$就是最终采样的超参数。相应的Python代码为：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">m = np.log10(a)</span><br><span class="line">n = np.log10(b)</span><br><span class="line">r = np.random.rand() <span class="comment">#[0,1)</span></span><br><span class="line">r = m + (n-m)*r <span class="comment">#[m,n)</span></span><br><span class="line">r = np.power(<span class="number">10</span>,r)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%B6%85%E5%8F%82%E6%95%B0%E6%90%9C%E7%B4%A2%E5%B0%BA%E5%BA%A63.JPG" width="80%" height="80%"></p>
+<ul>
+<li>除了$\alpha$之外，动量梯度下降法中的参数$\beta$在超参数调试时，同样应在对数尺度上进行采样。</li>
+<li>一般$\beta$的取值范围在$[0.9, 0.999]$之间，那么$1-\beta$的取值范围就在$[0.001, 0.1]$之间。那么直接对$1-\beta$在$[0.001, 0.1]$区间内进行对数尺度采样(即$10^r$)，然后再推出$\beta$(即$1-10^r$)即可。</li>
+<li>为什么$\beta$也需要向$\alpha$那样做非均匀采样:公式$\frac{1}{1-\beta}$在当$\beta$趋于1时，它对$\beta$的值的改变非常敏感。</li>
+</ul>
+<p>最后：</p>
+<ul>
+<li>如果对于某个超参数你选择的尺度是不对的，或即使在存在更优尺度的情况下，你依然选择了均匀尺度(uniform scale) 你仍然可能得到不错的结果，尤其是如果你采取从粗到精(coarse to fine)的搜索策略。</li>
+</ul>
+<h3 id="实践中的超参数调试：Pandas-vs-Caviar"><a href="#实践中的超参数调试：Pandas-vs-Caviar" class="headerlink" title="实践中的超参数调试：Pandas vs. Caviar"></a>实践中的超参数调试：Pandas vs. Caviar</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%951.JPG" width="80%" height="80%"></p>
+<ul>
+<li>经过调试选择完最佳的超参数并不是一成不变的，一段时间之后（例如一个月），需要根据新的数据和实际情况（如数据集改变、有了更先进的服务器等），再次调试超参数，以获得实时的最佳模型。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%952.JPG" width="80%" height="80%"></p>
+<ul>
+<li>精心照料一个模型(“Panda” approach)：受计算能力所限，只能对一个模型进行训练，调试不同的超参数，使得这个模型有最佳的表现。 </li>
+<li>并行训练多个模型(“Caviar” approach)：可以对多个模型同时进行训练，每个模型上调试不同的超参数，根据表现情况，选择最佳的模型。</li>
+</ul>
+<h2 id="3-2-批量归一化"><a href="#3-2-批量归一化" class="headerlink" title="3.2 批量归一化"></a>3.2 批量归一化</h2><h3 id="归一化网络的激活函数"><a href="#归一化网络的激活函数" class="headerlink" title="归一化网络的激活函数"></a>归一化网络的激活函数</h3><p>在深度学习不断兴起的过程中,最重要的创新之一是一种叫批量归一化(Batch Normalization)的算法，可让超参搜索变得很简单，让神经网络对于超参数的选择上不再那么敏感，并且可以更容易地训练非常深的网络 。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%961.JPG" width="80%" height="80%"> 批量归一化原理：</p>
+<ul>
+<li>对于单一逻辑回归神经元，归一化输入的操作：$X=\frac{X-\mu}{\sqrt{\sigma^2}}$，提高模型的训练速度。</li>
+<li>批量归一化：对$A^{[l-1]}$进行归一化处理，提高$W^{[l]}$和$b^{[l]}$的训练速度。</li>
+<li>批量归一化在实际操作时，归一化的不是$A^{[i]}$，而是$Z^{[i]}$，即激活函数前的值。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%962.JPG" width="80%" height="80%"> 单隐藏层的批量归一化的实现：</p>
+<ul>
+<li>对第$l$层隐藏层的输入<code>$Z^{[l-1]}=[z^{[l-1](1)},z^{[l-1](2)},...,z^{[l-1](m)}]$</code>做如下归一化处理，忽略上标$[l-1]$：<ul>
+<li>$\mu=\frac1m\sum_iz^{(i)}$</li>
+<li>$\sigma^2=\frac1m\sum_i(z_i-\mu)^2$</li>
+<li>$z^{(i)}_{norm}=\frac{z^{(i)}-\mu}{\sqrt{\sigma^2+\varepsilon}}$</li>
+<li>其中，$m$是单个mini-batch包含样本个数，$\varepsilon$是为了防止分母为零，可取值$10^{-8}$。这样，使得该隐藏层的所有输入 $z^{(i)}$均值为0，方差为1。</li>
+</ul>
+</li>
+<li>但是，大部分情况下并不希望所有的$z^{(i)}$均值都为0，方差都为1，也不太合理。通常需要对$z^{(i)}$进行进一步处理：<ul>
+<li>$\tilde z^{(i)}=\gamma\cdot z^{(i)}_{norm}+\beta$</li>
+<li>式中，$\gamma$和$\beta$是可学习的参数，类似于$W$和$b$一样，可以通过梯度下降等算法求得。这里，$\gamma$和$\beta$的作用是让$\tilde z^{(i)}$的均值和方差为任意值，只需调整其值就可以了。</li>
+<li>例如，令：$\gamma=\sqrt{\sigma^2+\varepsilon}$,$\beta=\mu$，则$\tilde z^{(i)}=z^{(i)}$。可见，设置$\gamma$和$\beta$为不同的值，可以得到任意的均值和方差。</li>
+</ul>
+</li>
+<li>这样，通过批量归一化，对隐藏层的各个<code>$z^{[l](i)}$</code>进行归一化处理，得到<code>$\tilde z^{[l](i)}$</code>，替代<code>$z^{[l](i)}$</code>。</li>
+<li>值得注意的是，<strong>输入层的归一化处理和隐藏层的归一化处理是有区别的</strong>。<strong>归一化输入使所有输入的均值为0，方差为1</strong>。而<strong>隐藏层的归一化处理可使各隐藏层输入的均值和方差为任意值</strong>。实际上，从激活函数的角度来说，如果各隐藏层的输入均值在靠近0的区域即处于激活函数的线性区域，则无法更好的利用激活函数非线性的特性，而不是所有的值都集中在线性区域。这就是为什么通过设置$\gamma$和$\beta$来控制<code>$z^{[l](i)}$</code>在希望的范围内，或者说<strong>批量归一化真正实现的是通过两个参数$\gamma$和$\beta$来让隐藏单元有可控的均值和方差</strong>。</li>
+</ul>
+<h3 id="将批量归一化用于神经网络"><a href="#将批量归一化用于神经网络" class="headerlink" title="将批量归一化用于神经网络"></a>将批量归一化用于神经网络</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84BatchNorm%E5%AE%9E%E7%8E%B01.JPG" width="80%" height="80%"> 对于$L$层神经网络，实施批量归一化的整体流程如下：</p>
+<ul>
+<li><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96%E6%B5%81%E7%A8%8B.jpg" width="100%" height="100%"></li>
+<li>其中，参数为$W^{[1]}$,$b^{[1]}$,$W^{[2]}$,$b^{[2]}$,…,$W^{[L]}$,$b^{[L]}$以及$\beta^{[1]}$,$\gamma^{[1]}$,$\beta^{[2]}$,$\gamma^{[2]}$,…,$\beta^{[L]}$,$\gamma^{[L]}$。$\beta^{[l]}$与$\gamma^{[l]}$的学习同$W^{[l]}$与$b^{[l]}$一样，采用梯度下降法。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84BatchNorm%E5%AE%9E%E7%8E%B02.JPG" width="80%" height="80%"> 在mini-batch上应用批量归一化：</p>
+<ul>
+<li>分别用每个mini-batch的数据(均值和方差)进行批量归一化。</li>
+<li>因为批量归一化对各隐藏层$Z^{[l]}=W^{[l]}A^{[l-1]}+b^{[l]}$有去均值的操作，所以这里的常数项$b^{[l]}$可以消去，其数值效果完全可以由$\tilde Z^{[l]}$中的$\beta^{[l]}$来实现。因此，我们在使用批量归一化的时候，可以忽略各隐藏层的常数项$b^{[l]}$。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84BatchNorm%E5%AE%9E%E7%8E%B03.JPG" width="80%" height="80%"> 概述了应用批量归一化时，梯度下降(或动量或RMSprop或Adam)的整个过程。</p>
+<h3 id="批量归一化为什么有效"><a href="#批量归一化为什么有效" class="headerlink" title="批量归一化为什么有效"></a>批量归一化为什么有效</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E6%95%881.JPG" width="80%" height="80%"> <img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E6%95%882.JPG" width="80%" height="80%"> <img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E6%95%883.JPG" width="80%" height="80%"></p>
+<ul>
+<li>解释1：归一化输入，使得输入$X$的均值为0，方差为1，大幅加速学习过程。批量归一化同理。</li>
+<li>解释2：批量归一化使得网络的每一层相对独立。</li>
+<li>解释3：批量归一化具有轻微的正则化效果。</li>
+</ul>
+<h3 id="在测试阶段使用批量归一化"><a href="#在测试阶段使用批量归一化" class="headerlink" title="在测试阶段使用批量归一化"></a>在测试阶段使用批量归一化</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E5%9C%A8%E6%B5%8B%E8%AF%95%E9%98%B6%E6%AE%B5%E4%BD%BF%E7%94%A8BatchNorm.JPG" width="50%" height="50%"> </p>
+<ul>
+<li>首先，回顾批量归一化在训练过程中，在每一mini-batch，在网络的每一层中，做如下操作：<ul>
+<li>$\mu=\frac1m\sum_iz^{(i)}$</li>
+<li>$\sigma^2=\frac1m\sum_i(z^{(i)}-\mu)^2$</li>
+<li>$z_{norm}^{(i)}=\frac{z^{(i)}-\mu}{\sqrt{\sigma^2+\varepsilon}}$</li>
+<li>$\tilde z^{(i)}=\gamma\cdot z^{(i)}_{norm}+\beta$ </li>
+<li>其中，$\mu$和$\sigma^2$是对单个mini-batch中所有$m$个样本求得的。</li>
+</ul>
+</li>
+<li>在测试阶段，如果只有一个样本，求其均值和方差是没有意义的，就需要对$\mu$和$\sigma^2$进行估计。实际应用中一般采用指数加权平均（exponentially weighted average）的方法来预测测试过程单个样本的$\mu$和$\sigma^2$：<ul>
+<li>指数加权平均的做法:对于第$l$层隐藏层，考虑所有mini-batch在该隐藏层下的$\mu^{[l]}$和$\sigma^{2[l]}$，然后用指数加权平均的方式来预测得到当前单个样本的$\mu^{[l]}$和$\sigma^{2[l]}$。这样就实现了对测试过程单个样本的均值和方差估计。</li>
+<li>最后，再利用训练过程得到的$\gamma$和$\beta$值计算出各层的$\tilde z^{(i)}$值。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-3-多类别分类"><a href="#3-3-多类别分类" class="headerlink" title="3.3 多类别分类"></a>3.3 多类别分类</h2><h3 id="Softmax回归"><a href="#Softmax回归" class="headerlink" title="Softmax回归"></a>Softmax回归</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Softmax1.JPG" width="80%" height="80%"> </p>
+<ul>
+<li>用神经网络进行多分类，<code>$C=\#class=4$</code>，0为其他，1为猫，2为狗，3为小鸡。</li>
+<li>对于单个输入样本$x$，网络的最后一层(第$L$层)为Softmax层，$\hat{y}=a^{[L]}$，维度为$(4,1)$。</li>
+<li>Softmax层中各神经元的输出依次代表$P(other|x)$，$P(cat|x)$，$P(dog|x)$，$P(baby \ chicks|x)$。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Softmax2.JPG" width="80%" height="80%"></p>
+<ul>
+<li>Softmax层的激活函数计算过程如下：<ul>
+<li><code>$z^{[L]}=W^{[L]}a^{[L-1]}+b^{[L]}$</code></li>
+<li><code>$t=e^{(z^{[L]})}$</code></li>
+<li><code>$a^{[L]}=\frac{e^{z^{[L]}}}{\sum_{i=1}^C t_i}$</code></li>
+<li><code>$a^{[L]}_i=\frac{t_i}{\sum_{i=1}^C t_i}$</code></li>
+<li>也可看成是$a^{[L]}=g^{[L]}(z^{[L]})$，只不是该激活函数的输入是向量，输入也是向量。</li>
+<li>其中，Softmax层每个神经元的输出<code>$a^{[L]}_i$</code>对应属于该类的概率，满足：<code>$\sum_{i=1}^Ca^{[L]}_i=1$</code></li>
+<li><code>$a^{[L]}= \hat{y}$</code>，维度为$(C, 1)$。</li>
+</ul>
+</li>
+<li>具体计算示例如图。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/Softmax3.JPG" width="80%" height="80%"></p>
+<ul>
+<li>上图为没有隐藏层，只有单一Softmax层的神经网络，其经Softmax分类的效果如图所示，为线性多分类效果，各两类之间的决策边界均为线性。</li>
+<li>当网络具有很多隐藏层，可构成更复杂的非线性决策边界。</li>
+</ul>
+<h3 id="训练一个softmax分类器"><a href="#训练一个softmax分类器" class="headerlink" title="训练一个softmax分类器"></a>训练一个softmax分类器</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%AE%AD%E7%BB%83%E4%B8%80%E4%B8%AASoftmax%E5%88%86%E7%B1%BB%E5%99%A81.JPG" width="80%" height="80%"> 理解Softmax：</p>
+<ul>
+<li>Softmax回归是Logistic回归向多类别的泛化。</li>
+<li>当$C=2$时，Softmax回归将简化成Logistic回归。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%AE%AD%E7%BB%83%E4%B8%80%E4%B8%AASoftmax%E5%88%86%E7%B1%BB%E5%99%A82.JPG" width="80%" height="80%"></p>
+<ul>
+<li>假设$C=4$，某个样本的预测输出$\hat y$和目标输出(真实值标签)$y$为：<ul>
+<li>$$\hat y=\left[ \begin{matrix} 0.3 \ 0.2 \ 0.1 \ 0.4 \end{matrix} \right]$$</li>
+<li>$$y=\left[ \begin{matrix} 0 \ 1 \ 0 \ 0 \end{matrix} \right]$$</li>
+</ul>
+</li>
+<li>Loss function：$L(\hat y,y)=-\sum_{j=1}^4y_j\cdot log\ \hat y_j$<ul>
+<li>然而，由于只有当$j=2$时，$y_2=1$，其它情况下，$y_j=0$。所以，上式中的$L(\hat y,y)$可以简化为：$L(\hat y,y)=-y_2\cdot log\ \hat y_2=-log\ \hat y_2$</li>
+<li>要让$L(\hat y,y)$更小，就应该让$\hat y_2$越大越好。$\hat y_2$反映的是概率，完全符合我们之前的定义。 </li>
+</ul>
+</li>
+<li>Cost function：$J(W^{[1]},b^{[1]},…)=\frac1m\sum_{i=1}^mL(\hat{y}^{(i)},y^{(i)})$</li>
+<li>若对于m个样本，其预测输出向量$A^{[L]}$即$\hat Y$的维度为$(4, m)$，样本标签$Y$的维度也为$(4, m)$。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E8%AE%AD%E7%BB%83%E4%B8%80%E4%B8%AASoftmax%E5%88%86%E7%B1%BB%E5%99%A83.JPG" width="80%" height="80%"> 梯度下降的过程中，输出层Softmax的梯度推导，即$dZ^{[L]}$的推导：</p>
+<ul>
+<li>$$da^{[L]}=-\frac{1}{a^{[L]}}$$</li>
+<li>$$\frac{\partial a^{[L]}}{\partial z^{[L]}}=\frac{\partial}{\partial z^{[L]}}\cdot (\frac{e^{z^{[L]}<em>i}}{\sum</em>{i=1}^Ce^{z^{[L]}_i}})=a^{[L]}\cdot (1-a^{[L]})$$</li>
+<li>$$dz^{[L]}= \frac{\partial J}{\partial z^{[L]}}= da^{[L]}\cdot \frac{\partial a^{[L]}}{\partial z^{[L]}}=a^{[L]}-1=a^{[L]}-y$$</li>
+<li>对于所有$m$个训练样本：$$dZ^{[L]}=A^{[L]}-Y$$</li>
+<li>可见$dZ^{[L]}$的表达式与二元分类结果是一致的，虽然推导过程不太一样。然后就可以继续进行反向传播过程的梯度下降算法了，推导过程与二元分类神经网络完全一致。</li>
+</ul>
+<h2 id="3-4-编程框架介绍"><a href="#3-4-编程框架介绍" class="headerlink" title="3.4 编程框架介绍"></a>3.4 编程框架介绍</h2><h3 id="深度学习框架"><a href="#深度学习框架" class="headerlink" title="深度学习框架"></a>深度学习框架</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A1%86%E6%9E%B6.JPG" width="80%" height="80%"> 如图，介绍了目前的深度学习框架，和选择深度学习框架的标准。</p>
+<h3 id="TensorFlow"><a href="#TensorFlow" class="headerlink" title="TensorFlow"></a>TensorFlow</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/tensorflow1.JPG" width="80%" height="80%"> <img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B2/tensorflow2.JPG" width="80%" height="80%"> 本节介绍TensorFlow程序的典型结构。</p>
+<p>举个例子来说明，代价函数是参数<code>w</code>的函数：$J=w^2-10w+25$。<br>如果使用TensorFlow对代价函数进行优化，求出最小值对应的<code>w</code>，程序如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">w = tf.Variable(<span class="number">0</span>,dtype=tf.float32)</span><br><span class="line"><span class="comment">#cost = tf.add(tf.add(w**2,tf.multiply(-10,w)),25)</span></span><br><span class="line">cost = w**<span class="number">2</span> - <span class="number">10</span>*w +<span class="number">25</span></span><br><span class="line">train = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>).minimize(cost)</span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line">session = tf.Session()</span><br><span class="line">session.run(init)</span><br><span class="line">print(session.run(w))</span><br></pre></td></tr></table></figure></p>
+<p><code>&gt;&gt;0.0</code><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">session.run(train)</span><br><span class="line">print(session.run(w))</span><br></pre></td></tr></table></figure></p>
+<p><code>&gt;&gt;0.1</code><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">    session.run(train)</span><br><span class="line">print(session.run(w))</span><br></pre></td></tr></table></figure></p>
+<p><code>&gt;&gt;4.99999</code><br>TensorFlow框架内可以直接调用梯度下降优化算法。在运行1000次梯度下降算法后，<code>w</code>的解为4.99999，已经非常接近<code>w</code>的最优值5了。<br>针对上面这个例子，如果对<code>w</code>前的系数用变量<code>x</code>来代替，程序如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">cofficients = np.array([[<span class="number">1.</span>],[<span class="number">-10.</span>],[<span class="number">25.</span>]])</span><br><span class="line"></span><br><span class="line">w = tf.Variable(<span class="number">0</span>,dtype=tf.float32)</span><br><span class="line">x = tf.placeholder(tf.float32,[<span class="number">3</span>,<span class="number">1</span>])</span><br><span class="line"><span class="comment">#cost = tf.add(tf.add(w**2,tf.multiply(-10,w)),25)</span></span><br><span class="line"><span class="comment">#cost = w**2 - 10*w +25</span></span><br><span class="line">cost = x[<span class="number">0</span>][<span class="number">0</span>]*w**<span class="number">2</span> + x[<span class="number">1</span>][<span class="number">0</span>]*w + x[<span class="number">2</span>][<span class="number">0</span>]</span><br><span class="line">train = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>).minimize(cost)</span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line">session = tf.Session()</span><br><span class="line">session.run(init)</span><br><span class="line">print(session.run(w))</span><br></pre></td></tr></table></figure></p>
+<p><code>&gt;&gt;0.0</code><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">session.run(train, feed_dict=(x:coefficients))</span><br><span class="line">print(session.run(w))</span><br></pre></td></tr></table></figure></p>
+<p><code>&gt;&gt;0.1</code><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">    session.run(train, feed_dict=(x:coefficients))</span><br><span class="line">print(session.run(w))</span><br></pre></td></tr></table></figure></p>
+<p><code>&gt;&gt;4.99999</code><br>结果跟之前是一样的。除此之外，我们还可以更改<code>x</code>即<code>cofficients</code>的值，而得到不同的优化结果<code>w</code>。<br>另外，上段程序中的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">session = tf.Session()</span><br><span class="line">session.run(init)</span><br><span class="line">print(session.run(w))</span><br></pre></td></tr></table></figure></p>
+<p>有另外一种写法：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(w))</span><br></pre></td></tr></table></figure></p>
+<p>TensorFlow的最大优点就是采用数据流图(data flow graphs)来进行数值运算。图中的节点(Nodes)表示数学操作，图中的线(edges)则表示在节点间相互联系的多维数据数组，即张量(tensor)。而且它灵活的架构让你可以在多种平台上展开计算，例如台式计算机中的一个或多个CPU(或GPU)，服务器，移动设备等。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/21/深度学习课程(一)神经网络与深度学习/" rel="next" title="深度学习课程(一)神经网络与深度学习">
+                <i class="fa fa-chevron-left"></i> 深度学习课程(一)神经网络与深度学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/28/计算机网络笔记/" rel="prev" title="计算机网络笔记">
+                计算机网络笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lm.zhang@aliyun.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-深度学习的实用层面"><span class="nav-text">1.深度学习的实用层面</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-建立机器学习应用"><span class="nav-text">1.1 建立机器学习应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#训练-开发-测试集"><span class="nav-text">训练/开发/测试集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#偏差-方差"><span class="nav-text">偏差/方差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#机器学习的基本准则"><span class="nav-text">机器学习的基本准则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-正则化神经网络"><span class="nav-text">1.2 正则化神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则化"><span class="nav-text">正则化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么正则化可以减轻过拟合"><span class="nav-text">为什么正则化可以减轻过拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dropout正则化"><span class="nav-text">Dropout正则化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解Dropout"><span class="nav-text">理解Dropout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他正则化方法"><span class="nav-text">其他正则化方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-设置优化问题"><span class="nav-text">1.3 设置优化问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#归一化输入"><span class="nav-text">归一化输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度消失与梯度爆炸"><span class="nav-text">梯度消失与梯度爆炸</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深层网络的权重初始化"><span class="nav-text">深层网络的权重初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度的数值逼近"><span class="nav-text">梯度的数值逼近</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度检验"><span class="nav-text">梯度检验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运用梯度检验的注意事项"><span class="nav-text">运用梯度检验的注意事项</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-优化算法"><span class="nav-text">2.优化算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-优化算法"><span class="nav-text">2.1 优化算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#小批量梯度下降法"><span class="nav-text">小批量梯度下降法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解小批量梯度下降法"><span class="nav-text">理解小批量梯度下降法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指数加权平均"><span class="nav-text">指数加权平均</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解指数加权平均"><span class="nav-text">理解指数加权平均</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指数加权平均中的偏差修正"><span class="nav-text">指数加权平均中的偏差修正</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动量梯度下降法"><span class="nav-text">动量梯度下降法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RMSprop"><span class="nav-text">RMSprop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adam优化算法"><span class="nav-text">Adam优化算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#学习速率衰减"><span class="nav-text">学习速率衰减</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局部最优解的问题"><span class="nav-text">局部最优解的问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-超参数调试、批量归一化以及编程框架"><span class="nav-text">3.超参数调试、批量归一化以及编程框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-超参数调试"><span class="nav-text">3.1 超参数调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#调试过程"><span class="nav-text">调试过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用合适的尺度去选择超参数"><span class="nav-text">用合适的尺度去选择超参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实践中的超参数调试：Pandas-vs-Caviar"><span class="nav-text">实践中的超参数调试：Pandas vs. Caviar</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-批量归一化"><span class="nav-text">3.2 批量归一化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#归一化网络的激活函数"><span class="nav-text">归一化网络的激活函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将批量归一化用于神经网络"><span class="nav-text">将批量归一化用于神经网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#批量归一化为什么有效"><span class="nav-text">批量归一化为什么有效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在测试阶段使用批量归一化"><span class="nav-text">在测试阶段使用批量归一化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-多类别分类"><span class="nav-text">3.3 多类别分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Softmax回归"><span class="nav-text">Softmax回归</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练一个softmax分类器"><span class="nav-text">训练一个softmax分类器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-编程框架介绍"><span class="nav-text">3.4 编程框架介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#深度学习框架"><span class="nav-text">深度学习框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TensorFlow"><span class="nav-text">TensorFlow</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
