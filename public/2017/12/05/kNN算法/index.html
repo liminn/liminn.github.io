@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="k近邻法（k-nearest neighbor, kNN）是一种基本分类与回归方法。k近邻不具有显式的学习过程，k近邻实际上是利用训练数据集对特征空间进行划分，并作为其分类的“模型”。k近邻法的三个基本要素：$k$值的选择、距离度量及分类决策规则。本文记录分类问题中的kNN算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kNN算法">
+<meta property="og:url" content="http://yoursite.com/2017/12/05/kNN算法/index.html">
+<meta property="og:site_name" content="Limin&#39;s Notes">
+<meta property="og:description" content="k近邻法（k-nearest neighbor, kNN）是一种基本分类与回归方法。k近邻不具有显式的学习过程，k近邻实际上是利用训练数据集对特征空间进行划分，并作为其分类的“模型”。k近邻法的三个基本要素：$k$值的选择、距离度量及分类决策规则。本文记录分类问题中的kNN算法。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-03T08:25:33.734Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kNN算法">
+<meta name="twitter:description" content="k近邻法（k-nearest neighbor, kNN）是一种基本分类与回归方法。k近邻不具有显式的学习过程，k近邻实际上是利用训练数据集对特征空间进行划分，并作为其分类的“模型”。k近邻法的三个基本要素：$k$值的选择、距离度量及分类决策规则。本文记录分类问题中的kNN算法。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/05/kNN算法/"/>
+
+
+
+
+
+  <title>kNN算法 | Limin's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Limin's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/05/kNN算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Limin's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kNN算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T20:52:50+08:00">
+                2017-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>k近邻法（k-nearest neighbor, kNN）是一种基本分类与回归方法。k近邻不具有显式的学习过程，k近邻实际上是利用训练数据集对特征空间进行划分，并作为其分类的“模型”。k近邻法的三个基本要素：$k$值的选择、距离度量及分类决策规则。<br>本文记录分类问题中的kNN算法。<br><a id="more"></a> </p>
+<h1 id="一、kNN算法"><a href="#一、kNN算法" class="headerlink" title="一、kNN算法"></a>一、kNN算法</h1><p>kNN算法简单且直观：给定一个训练数据集，对新的输入实例，在训练数据集中找到与该实例最邻近的$k$个实例，这$k$个实例中的多数属于某个类，就把该输入实例分为这个类。</p>
+<h2 id="1-1-kNN算法"><a href="#1-1-kNN算法" class="headerlink" title="1.1 kNN算法"></a>1.1 kNN算法</h2><p>输入：训练数据集$T= \lbrace (x_1, y_1), (x_2, y_2),…,(x_N, y_N) \rbrace$；实例特征向量$x$；<br>输出：实例$x$所属的类$y$<br>（1）根据所给的距离度量，在训练集$T$中找到与$x$最近的$k$个点，涵盖这$k$个点的$x$的邻域记作$N_k(x)$；<br>（2）在$N_k(x)$中根据分类决策规则（如多数表决）决定$x$的类别$y$：</p>
+<script type="math/tex; mode=display">y = arg\max_{c_j} \sum_{x_i \in N_k(x)} I(y_i = c_j),\ \ i=1, 2,…, N;\ \ j=1, 2,…, K</script><p>其中$I$为指示函数，即当$y_i = c_j$时$I$为1，否则为0。</p>
+<h2 id="1-2-kNN的三大基本要素"><a href="#1-2-kNN的三大基本要素" class="headerlink" title="1.2 kNN的三大基本要素"></a>1.2 kNN的三大基本要素</h2><h3 id="距离度量"><a href="#距离度量" class="headerlink" title="距离度量"></a>距离度量</h3><p>特征空间中两个实例点的距离是两个实例点相似程度的反映。<br>一般最常用的距离函数是欧氏距离，也称作$L_2$距离。也可使用其他距离，如更一般的$L_p$距离。<br>设特征空间$X$是$n$维实数向量空间$R^n$，$x_i,x_j \in R^n$，$x_i=(x_i^{(1)},x_i^{(2)},…,x_i^{(n)})^T$，$x_j=(x_j^{(1)},x_j^{(2)},…, x_j^{(n)})^T$，则$x_i, x_j$的$L_p$距离定义为</p>
+<script type="math/tex; mode=display">L_p(x_i,x_j)=(\sum_{l=1}^{n}|x_i^{(l)}-x_j^{(l)}|^p)^{\frac{1}{p}}</script><p>这里$p \geq 1$。当$p=2$时称为欧氏距离，$p=1$时称为曼哈顿距离。<br>不同的距离度量所确定的最近邻点是不同的。<br>注：需对特征向量各维度进行归一化，否则数值较大的特征将占主导因素。</p>
+<h3 id="k-值的选择"><a href="#k-值的选择" class="headerlink" title="$k$值的选择"></a>$k$值的选择</h3><p>$k$值较小意味着整体模型变得复杂，容易发生过拟合。<br>$k$值较大意味着整体模型变得简单，容易发生欠拟合。<br>在应用中，$k$值一般取一个比较小的数值。通常采用交叉验证法来选取最优的$k$值。</p>
+<h3 id="分类决策规则"><a href="#分类决策规则" class="headerlink" title="分类决策规则"></a>分类决策规则</h3><p>kNN中的分类决策规则通常是多数表决，即由输入实例的$k$个近邻的训练实例中的多数类决定输入实例的类。<br>多数表决规则等价于经验风险最小化。</p>
+<h1 id="二、kd树"><a href="#二、kd树" class="headerlink" title="二、kd树"></a>二、kd树</h1><h2 id="2-1-kd树简介"><a href="#2-1-kd树简介" class="headerlink" title="2.1 kd树简介"></a>2.1 kd树简介</h2><p>实现kNN算法的核心问题是如何对训练数据进行快速k近邻搜索，尤其是在特征空间的维数大及训练数据容量大的情况下。<br>kNN算法最简单的实现方法是线性扫描，即计算输入实例与每一个训练实例的距离。当训练集很大时，计算非常耗时，故此方法不可行。<br>常用的有效方法是使用特殊的结构存储训练数据，以减少计算距离的次数，从而提高k近邻搜索的效率。如用kd树存储训练数据，然后搜索kd树。<br>kd树是一种对$k$维空间中的实例点进行存储以便对其进行快速检索的树形数据结构。<strong>kd树是二叉树</strong>，表示对$k$维空间的一个划分（partition）。构造kd树相当于不断地用垂直于坐标轴的超平面将$k$维空间切分，构成一系列的$k$维超矩形区域。kd树的每个结点对应于一个$k$维超矩形区域。<br>注：kd树是存储$k$维空间数据的树结构，这里的$k$与k近邻法的$k$意义不同。</p>
+<h2 id="2-2-构造KD树"><a href="#2-2-构造KD树" class="headerlink" title="2.2 构造KD树"></a>2.2 构造KD树</h2><p>输入：$k$维空间数据集$T= \lbrace x_1, x_2,…, x_N \rbrace$，其中$x_i=(x_i^{(1)},x_i^{(2)},…,x_i^{(k)})^T$,$i=1,2,…,N$<br>输出：kd树<br>（1）开始：构造根结点，根结点对应于包含$T$的$k$维空间的超矩形区域。选择$x^{(1)}$为坐标轴，以$T$中所有实例的$x^{(1)}$坐标的<strong>中位数</strong>为切分点，将根结点对应的超矩形区域切分为两个子区域。切分由通过切分点并与坐标轴$x^{(1)}$垂直的超平面实现。<br>由根结点（深度为0）生成深度为1的左、右子结点：左子结点对应坐标$x^{(1)}$小于切分点的子区域，右子结点对应于坐标$x^{(1)}$大于切分点的子区域。<br>将落在切分超平面上的实例点保存在根结点。<br>注：中位数：一组数据按大小顺序排列起来，处在中间位置的一个树或者最中间两个数的平均值。<br>（2）重复：<strong>对于深度为$j$的结点，选择$x^{(l)}$为切分的坐标轴，$l=(j+1)\ mod\ k$</strong>，以该结点区域中所有实例的$x^{(l)}$坐标的中位数为切分点，将根结点对应的超矩形区域切分为两个子区域。切分由通过切分点并与坐标轴$x^{(l)}$垂直的超平面实现。<br>由该结点生成深度为$j+1$的左、右结点：左子结点对应坐标$x^{(l)}$小于切分点的子区域；右子结点对应坐标$x^{(l)}$大于切分点的子区域。<br>将落在切分超平面上的实例点保存在该结点。<br>（3）直到两个区域<strong>没有实例存在时停止</strong>。从而形成kd树的区域划分。</p>
+<p>示例见《统计学习方法书》中或<a href="https://www.joinquant.com/post/2843" target="_blank" rel="noopener">kd树算法之详细篇（推荐）</a>中。</p>
+<h2 id="2-3-搜索KD树"><a href="#2-3-搜索KD树" class="headerlink" title="2.3 搜索KD树"></a>2.3 搜索KD树</h2><p>输入：已构造的kd树；目标点p；<br>输出：p的k近邻<br>（零）设$L$为一个有$k$个空位的列表，用于保存已搜寻到的最近点。<br>（一）根据$p$的坐标值和每个节点的切分向下搜索（也就是说，如果树的节点是按照$x_r=a$进行切分，并且$p$的$r$坐标小于$a$，则向左枝进行搜索；反之则向右枝进行搜索）。<br>（二）当达到一个底部节点时，将其标记为访问过。如果$L$里不足$k$个点，则将当前节点的特征坐标加入$L$；如果$L$满并且当前节点的特征与$p$的距离小于$L$里最长的距离，则用当前特征替换掉$L$中离$p$最远的点。<br>（三）如果当前节点不是整棵树最顶端节点，执行（a）；反之，输出$L$，算法完成。<br>　　（a）向上爬一个节点。如果当前（向上爬之后的）节点未曾被访问过，将其标记为被访问过，然后执行（1）和（2）；如果当前节点被访问过，再次执行（a）。<br>　　　　（1）如果此时$L$里不足$k$个点，则将节点特征加入$L$；如果$L$中已满$k$个点，且当前节点与$p$的距离小于$L$里最长的距离，则用节点特征替换掉$L$中离最远的点。<br>　　　　（2）计算$p$和当前节点切分线的距离。如果该距离大于等于$L$中距离$p$最远的距离并且$L$中已有$k$个点，则在切分线另一边不会有更近的点，执行(三)；如果该距离小于$L$中最远的距离或者$L$中不足$k$个点，则切分线另一边可能有更近的点，因此在当前节点的另一个枝从(一)开始执行。</p>
+<p>示例见《统计学习方法书》中或<a href="https://www.joinquant.com/post/2843" target="_blank" rel="noopener">kd树算法之详细篇（推荐）</a>中。</p>
+<h1 id="三、KNN模型的优缺点（待改进）"><a href="#三、KNN模型的优缺点（待改进）" class="headerlink" title="三、KNN模型的优缺点（待改进）"></a>三、KNN模型的优缺点（待改进）</h1><p>1.优点：<br>（1）思想简单，理论成熟，既可以用来做分类也可以用来做回归<br>（2）可用于非线性分类<br>（3）训练时间复杂度为$O(n)$<br>（4）准确度高，对数据没有假设，对异常值不敏感<br>2.缺点：<br>（1）计算量大<br>（2）样本不平衡问题（即有些类别的样本数量很多，而其它样本的数量很少）<br>（3）需要大量的内存</p>
+<h1 id="四、参考资料"><a href="#四、参考资料" class="headerlink" title="四、参考资料"></a>四、参考资料</h1><ul>
+<li>李航，统计机器学习方法</li>
+<li><a href="https://www.joinquant.com/post/2227?f=study&amp;m=math" target="_blank" rel="noopener">肖睿，一只兔子帮你理解KNN</a></li>
+<li><a href="https://www.joinquant.com/post/2627" target="_blank" rel="noopener">肖睿，kd树算法之思路篇</a></li>
+<li><a href="https://www.joinquant.com/post/2843" target="_blank" rel="noopener">肖睿，kd树算法之详细篇</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/04/Softmax回归模型/" rel="next" title="Softmax回归模型">
+                <i class="fa fa-chevron-left"></i> Softmax回归模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/05/PCA算法/" rel="prev" title="PCA算法">
+                PCA算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">弥补快速遗忘的记忆</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lm.zhang@aliyun.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、kNN算法"><span class="nav-text">一、kNN算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-kNN算法"><span class="nav-text">1.1 kNN算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-kNN的三大基本要素"><span class="nav-text">1.2 kNN的三大基本要素</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#距离度量"><span class="nav-text">距离度量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k-值的选择"><span class="nav-text">$k$值的选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类决策规则"><span class="nav-text">分类决策规则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、kd树"><span class="nav-text">二、kd树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-kd树简介"><span class="nav-text">2.1 kd树简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-构造KD树"><span class="nav-text">2.2 构造KD树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-搜索KD树"><span class="nav-text">2.3 搜索KD树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、KNN模型的优缺点（待改进）"><span class="nav-text">三、KNN模型的优缺点（待改进）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、参考资料"><span class="nav-text">四、参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

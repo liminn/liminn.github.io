@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.卷积神经网络基础1.1 卷积神经网络计算机视觉 举了计算机视觉中的几个典型应用：  图像分类 目标检测 风格迁移">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习课程(四)卷积神经网络">
+<meta property="og:url" content="http://yoursite.com/2018/01/11/深度学习课程(四)卷积神经网络/index.html">
+<meta property="og:site_name" content="Limin&#39;s Notes">
+<meta property="og:description" content="1.卷积神经网络基础1.1 卷积神经网络计算机视觉 举了计算机视觉中的几个典型应用：  图像分类 目标检测 风格迁移">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%891.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%892.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B%E7%A4%BA%E4%BE%8B1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B%E7%A4%BA%E4%BE%8B2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B%E7%A4%BA%E4%BE%8B3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%9B%B4%E5%A4%9A%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%9B%B4%E5%A4%9A%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%9B%B4%E5%A4%9A%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%A1%AB%E5%85%851.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%A1%AB%E5%85%852.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%AD%A5%E9%95%BF1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%AD%A5%E9%95%BF2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%AD%A5%E9%95%BF3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%AF%B9%E4%BD%93%E8%BF%9B%E8%A1%8C%E5%8D%B7%E7%A7%AF2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%AF%B9%E4%BD%93%E8%BF%9B%E8%A1%8C%E5%8D%B7%E7%A7%AF3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%95%E5%B1%82%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%95%E5%B1%82%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C4.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%95%E5%B1%82%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%95%E5%B1%82%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%AE%80%E5%8D%95%E5%8D%B7%E7%A7%AF%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%AE%80%E5%8D%95%E5%8D%B7%E7%A7%AF%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B1%A0%E5%8C%96%E5%B1%821.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B1%A0%E5%8C%96%E5%B1%822.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B1%A0%E5%8C%96%E5%B1%823.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B1%A0%E5%8C%96%E5%B1%824.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B3.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E5%B1%821.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E5%B1%822.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E5%B1%823.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9B%E8%A1%8C%E6%A1%88%E4%BE%8B%E5%AD%A6%E4%B9%A0.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9C1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9C2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9C3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/ResNets1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/ResNets2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88ResNet%E6%9C%89%E6%95%881.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88ResNet%E6%9C%89%E6%95%882.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/netwrok%20in%20network1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/network%20in%20network2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Inception%E5%8A%A8%E6%9C%BA1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Inception%E5%8A%A8%E6%9C%BA2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Inception%E5%8A%A8%E6%9C%BA3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/InceptionNetwork1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/InceptionNetworkk2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/InceptionNetwork3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%8E%B0%E7%8A%B61.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%8E%B0%E7%8A%B62.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%8E%B0%E7%8A%B63.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E5%AE%9A%E4%BD%8D1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E5%AE%9A%E4%BD%8D2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E5%AE%9A%E4%BD%8D3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%89%B9%E5%BE%81%E7%82%B9%E6%A3%80%E6%B5%8B.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%9A%84%E5%8D%B7%E7%A7%AF%E5%AE%9E%E7%8E%B01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%9A%84%E5%8D%B7%E7%A7%AF%E5%AE%9E%E7%8E%B02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%9A%84%E5%8D%B7%E7%A7%AF%E5%AE%9E%E7%8E%B03.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%85%E5%9B%B4%E8%BE%B9%E6%A1%86%E9%A2%84%E6%B5%8B1JPG.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%85%E5%9B%B4%E8%BE%B9%E6%A1%86%E9%A2%84%E6%B5%8B2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%85%E5%9B%B4%E8%BE%B9%E6%A1%86%E9%A2%84%E6%B5%8B3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BA%A4%E5%B9%B6%E6%AF%94.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%9D%9E%E6%9E%81%E5%A4%A7%E5%80%BC%E6%8A%91%E5%88%B61.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%9D%9E%E6%9E%81%E5%A4%A7%E5%80%BC%E6%8A%91%E5%88%B62.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%9D%9E%E6%9E%81%E5%A4%A7%E5%80%BC%E6%8A%91%E5%88%B63.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/anchorboxes1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/anchorboxes2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/anchorboxes3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/yolo%E7%AE%97%E6%B3%951.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/yolo%E7%AE%97%E6%B3%952.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/yolo%E7%AE%97%E6%B3%95%E6%B3%953.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%BA%E5%9F%9F%E5%BB%BA%E8%AE%AE1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%BA%E5%9F%9F%E5%BB%BA%E8%AE%AE2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/one-shot%20learning1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/one-shot%20learning2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Siamese%E7%BD%91%E7%BB%9C1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Siamese%E7%BD%91%E7%BB%9C2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/tripletloss1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/tripletloss2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/tripletloss3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/tripletloss4.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BA%BA%E8%84%B8%E9%AA%8C%E8%AF%81%E5%92%8C%E4%BA%8C%E5%85%83%E5%88%86%E7%B1%BB1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BA%BA%E8%84%B8%E9%AA%8C%E8%AF%81%E5%92%8C%E4%BA%8C%E5%85%83%E5%88%86%E7%B1%BB2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%80%E4%B9%88%E6%98%AF%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B7%B1%E5%BA%A6%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E5%88%B0%E7%9A%84%E6%98%AF%E4%BB%80%E4%B9%881.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B7%B1%E5%BA%A6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E5%88%B0%E7%9A%84%E6%98%AF%E4%BB%80%E4%B9%882.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%86%85%E5%AE%B9%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B0.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%A3%8E%E6%A0%BC%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%A3%8E%E6%A0%BC%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%A3%8E%E6%A0%BC%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B03.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%A3%8E%E6%A0%BC%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B04.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%8E1%E7%BB%B4%E5%8D%B7%E7%A7%AF%E5%88%B03%E7%BB%B4%E5%8D%B7%E7%A7%AF1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%8E1%E7%BB%B4%E5%8D%B7%E7%A7%AF%E5%88%B03%E7%BB%B4%E5%8D%B7%E7%A7%AF2.JPG">
+<meta property="og:updated_time" content="2018-01-31T13:41:31.271Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习课程(四)卷积神经网络">
+<meta name="twitter:description" content="1.卷积神经网络基础1.1 卷积神经网络计算机视觉 举了计算机视觉中的几个典型应用：  图像分类 目标检测 风格迁移">
+<meta name="twitter:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%891.JPG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/11/深度学习课程(四)卷积神经网络/"/>
+
+
+
+
+
+  <title>深度学习课程(四)卷积神经网络 | Limin's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Limin's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/11/深度学习课程(四)卷积神经网络/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Limin's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习课程(四)卷积神经网络</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-11T17:21:50+08:00">
+                2018-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-卷积神经网络基础"><a href="#1-卷积神经网络基础" class="headerlink" title="1.卷积神经网络基础"></a>1.卷积神经网络基础</h1><h2 id="1-1-卷积神经网络"><a href="#1-1-卷积神经网络" class="headerlink" title="1.1 卷积神经网络"></a>1.1 卷积神经网络</h2><h3 id="计算机视觉"><a href="#计算机视觉" class="headerlink" title="计算机视觉"></a>计算机视觉</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%891.JPG" width="50%" height="50%"> 举了计算机视觉中的几个典型应用：</p>
+<ul>
+<li>图像分类</li>
+<li>目标检测</li>
+<li>风格迁移</li>
+</ul>
+<a id="more"></a> 
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%892.JPG" width="80%" height="80%"> 在应用计算机视觉时，所面临的一个挑战是数据的输入可能会非常大：</p>
+<ul>
+<li>对$64 \times 64$的小图片，输入特征的维度是$12288(64\times 64\times 3)$。</li>
+<li>对稍大的$1000\times 1000$的图片，输入特征的维度是$3million(1000\times 1000\times 3)$：<ul>
+<li>神经网络的输入$x\in R^{3m}$，假设第一个隐藏层有1000个神经元，则第一层的参数$W^{[1]}$的维度为$(1000,3m)$，即包含30亿个参数。</li>
+<li>对于如此大量的参数，难以获取足够多的数据来防止过拟合。</li>
+<li>内存需要处理30个参数的神经网络，所需内存太大。</li>
+<li>要解决这个问题，需进行卷积操作。</li>
+</ul>
+</li>
+</ul>
+<h3 id="边缘检测示例"><a href="#边缘检测示例" class="headerlink" title="边缘检测示例"></a>边缘检测示例</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B%E7%A4%BA%E4%BE%8B1.JPG" width="90%" height="90%"> 以边缘检测为例，说明卷积操作是如何进行的。如图：</p>
+<ul>
+<li>卷积神经网络的浅层检测到的是边缘，然后是物体的部件，深层检测到整体。</li>
+<li>想要检测图像中的垂直边缘，下图继续。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B%E7%A4%BA%E4%BE%8B2.JPG" width="90%" height="90%"> 介绍卷积操作：</p>
+<ul>
+<li>$6\times 6$的图像(灰度图，单通道)与可检测垂直边缘的$3\times 3$大小的卷积核/滤波器，以步长为1，进行卷积操作，结果如图。<ul>
+<li>$*$ 表示卷积操作。Python中，卷积用函数conv_forward()；tensorflow中，卷积用函数tf.nn.conv2d()；keras中，卷积用函数Conv2D()。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B%E7%A4%BA%E4%BE%8B3.JPG" width="90%" height="90%"> </p>
+<ul>
+<li>$6\times 6$的图像(灰度图，单通道)的左半部分像素强度较大，即较白，右半部分像素强度较小，故较暗（其实灰度图中白为255，黑为0）。</li>
+<li>仍是上图中可检测垂直边缘的$3\times 3$大小的卷积核/滤波器。左侧较白，中间较暗，右侧最暗。</li>
+<li>卷积结果如图所示。输出图像像中中间有一条较白的宽带，即垂直边缘。<ul>
+<li>输出图像中边缘太粗，是因为图像过小，若对$1000\times 1000$的图像进行卷积，输出图像中的边缘将不会显得这么粗。</li>
+</ul>
+</li>
+</ul>
+<h3 id="更多边缘检测内容"><a href="#更多边缘检测内容" class="headerlink" title="更多边缘检测内容"></a>更多边缘检测内容</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%9B%B4%E5%A4%9A%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B1.JPG" width="90%" height="90%"> </p>
+<ul>
+<li>图片边缘有两种边缘过渡方式，一种是由明变暗，另一种是由暗变明。从输出图像可看出，该垂直边缘滤波器，可以区别出这两种明暗变化的区别。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%9B%B4%E5%A4%9A%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B2.JPG" width="90%" height="90%"></p>
+<ul>
+<li>如图，垂直边缘检测和水平边缘检测的滤波器如图所示。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%9B%B4%E5%A4%9A%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B3.JPG" width="90%" height="90%"></p>
+<ul>
+<li>更经典的Sobel滤波器和Scharr滤波器。<ul>
+<li>Sobel滤波器的优点是增加了中间一行的权重，也就是处在中央的像素点，使得结果更鲁棒一些。</li>
+<li>图中为进行垂直边缘检测的形式，翻转90度后即得进行水平边缘检测的形式。</li>
+</ul>
+</li>
+<li>随着深度学习的兴起，我们学习到的事情是：当你想检测出某些复杂图像的边缘，你不一定要去使用那些研究者们手工设计的滤波器。而将滤波器中的数字当作参数，通过神经网络学习这些参数。学习到的滤波器对于数据的统计特性的捕捉能力甚至比任何一个手工设计的滤波器要好。</li>
+</ul>
+<h3 id="填充"><a href="#填充" class="headerlink" title="填充"></a>填充</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%A1%AB%E5%85%851.JPG" width="90%" height="90%"><br>不进行填充(padding)：</p>
+<ul>
+<li>$n\times n$的图像与$f \times f$的卷积核/滤波器进行卷积运算，输出尺寸为$(n-f+1)\times (n-f+1)$。<ul>
+<li>理解公式：$1$为卷积核位于图像最后一个位置，即进行一次卷积操作，$(n-f)$表示图像空出最后一个卷积核位置后的尺寸，也即可进行卷积的次数。故总的输出尺寸为$(n-f+1)$。</li>
+<li>如$6\times 6$的图像与$3 \times 3$的卷积核/滤波器进行卷积运算，输出尺寸尺寸为$4\times 4$。</li>
+</ul>
+</li>
+<li>缺点：每次做卷积操作后：<ul>
+<li>图像会缩小(图像的高度和宽度都会缩小)。</li>
+<li>丢失边缘信息(原图像中处于边缘的像素进行较少次的卷积运算，而处于中间的像素进行较多次的卷积运算)。</li>
+</ul>
+</li>
+<li>解决方法：对图像进行填充后，进行卷积。</li>
+</ul>
+<p>进行填充：</p>
+<ul>
+<li>$n\times n$的图像,进行$p=padding=p$的填充后，与$f \times f$的卷积核/滤波器进行卷积运算，输出尺寸为$(n+2p-f+1)\times (n+2p-f+1)$。<ul>
+<li>如$6\times 6$的图像,进行$p=1$的填充后，尺寸为$8\times 8$。与$3 \times 3$的卷积核/滤波器进行卷积运算，输出尺寸为$6\times 6$。</li>
+<li>通常采用零填充(zero-padding)，即在图像边缘填充的值为0。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%A1%AB%E5%85%852.JPG" width="90%" height="90%"></p>
+<ul>
+<li>“Valid” convolution：不进行填充。即$p=0$。 </li>
+<li>“Same” convolution：进行填充，使得输出尺寸和输入尺寸相同(保留图像的高度和宽度。但输入和输出的通道数可以不同)。<ul>
+<li>进行填充的输出尺寸为：$(n+2p-f+1)\times (n+2p-f+1)$，原始输入尺寸为：$n\times n$。令$(n+2p-f+1)=n$，则$p=\frac{f-1}{2}$。</li>
+</ul>
+</li>
+<li>另外，按照惯例，在计算机视觉中，对于卷积核/滤波器的尺寸$f \times f$，$f$通常是奇数。<ul>
+<li>如果$f$是偶数，则只能使用一些不对称的填充。$f$是奇数，才能有自然的填充。</li>
+<li>奇数的卷积核/滤波器，会有一个中心位置。在计算机视觉中，有一个中间像素，便于指出卷积核的位置。</li>
+<li>大小为$3\times 3$、$5\times 5$和$7\times 7$的卷积核很常见，$1\times 1$也有意义。稍后讲解。</li>
+</ul>
+</li>
+</ul>
+<h3 id="步长"><a href="#步长" class="headerlink" title="步长"></a>步长</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%AD%A5%E9%95%BF1.JPG" width="90%" height="90%"> <img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%AD%A5%E9%95%BF2.JPG" width="90%" height="90%"></p>
+<ul>
+<li>输入图片尺寸为$n \times n$，卷积核尺寸为$f \times f$，填充(padding)为$p$，步长(stride)为$s$。<ul>
+<li>则输出尺寸为：<script type="math/tex">\lfloor\frac{n+2p-f}{s}+1\rfloor\ \times \ \lfloor\frac{n+2p-f}{s}+1\rfloor</script></li>
+<li>其中，$\lfloor z \rfloor=floor(z)$，为向下取整，地板除法。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%AD%A5%E9%95%BF3.JPG" width="90%" height="90%"></p>
+<ul>
+<li>在机器学习或深度学习领域，我们所使用的卷积操作，严格意义上应叫做互相关(cross-correlation)。</li>
+<li>在数学或信号处理的教科书中，卷积操作需先对卷积核进行翻转(双重镜像)后，再进行卷积操作。包含对卷积核的反转，可使得卷积运算拥有$(A*B)*C=A*(B*C)$的结合律性质。</li>
+<li>本课程按照机器学习或深度学习中的惯例，将不包含翻转操作的互相关，称为卷积操作。</li>
+</ul>
+<h3 id="对体进行卷积操作"><a href="#对体进行卷积操作" class="headerlink" title="对体进行卷积操作"></a>对体进行卷积操作</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%AF%B9%E4%BD%93%E8%BF%9B%E8%A1%8C%E5%8D%B7%E7%A7%AF2.JPG" width="90%" height="90%"></p>
+<ul>
+<li>彩色图像的尺寸为$6 \times 6 \times 3$，分别表示图片的高度(height)、宽度(weight)和通道数(#channels)。</li>
+<li>卷积核的尺寸为$3 \times 3 \times 3$，分别表示卷积核的高度(height)、宽度(weight)和通道数(#channels)。</li>
+<li>输出尺寸为$4 \times 4$。<ul>
+<li>解释：卷积核置于起始卷积位置(输入图像的左上)，卷积核的各通道与输入图像的各通道做卷积操作，然后3个通道的各个输出(各一个数)相加，得到最终输出(一个数)。卷积核移动，进行下一次卷积。</li>
+</ul>
+</li>
+<li>其中，输入图像的通道数(#channels)与卷积核的通道数必须相等。</li>
+<li>其中，通道数(#channels)也称为深度(depth)，但容易与神经网络的深度混淆，本课程只称其为通道数(#channels)。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%AF%B9%E4%BD%93%E8%BF%9B%E8%A1%8C%E5%8D%B7%E7%A7%AF3.JPG" width="90%" height="90%"></p>
+<ul>
+<li>输入图像的尺寸为$6 \times 6 \times 3$</li>
+<li>两个卷积核，第一个卷积核用来检测垂直边缘，其尺寸为$3 \times 3 \times 3$。第二个卷积核用来检测水平边缘，其尺寸为$3 \times 3 \times 3$。</li>
+<li>输出尺寸为$4 \times 4 \times 2$。</li>
+</ul>
+<p>总结，假设$p=0$，$s=1$：</p>
+<ul>
+<li>输入尺寸：$n \times n \times n_c$</li>
+<li>卷积核尺寸：$f \times f \times n_c$ </li>
+<li>输出尺寸为：$(n-f+1) \times (n-f+1) \times n_c^{\prime}$。<ul>
+<li>其中$n_c^{\prime}$为输出尺寸的通道数，等于卷积核个数(#filters)。</li>
+</ul>
+</li>
+</ul>
+<h3 id="单层卷积网络"><a href="#单层卷积网络" class="headerlink" title="单层卷积网络"></a>单层卷积网络</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%95%E5%B1%82%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C1.JPG" width="90%" height="90%"> </p>
+<ul>
+<li>单层卷积神经网络结构如图所示，重绘如下：<img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%95%E5%B1%82%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C4.jpg" width="90%" height="90%"><ul>
+<li>相比之前的卷积过程，CNN的单层结构多了激活函数ReLU和偏置$b$(每个卷积核有一个偏置，例如图中两个卷积核各有一个偏置)。</li>
+<li>整个过程与标准的神经网络单层结构非常类似：<script type="math/tex; mode=display">Z^{[l]}=W^{[l]}A^{[l-1]}+b</script><script type="math/tex; mode=display">A^{[l]}=g^{[l]}(Z^{[l]})</script></li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%95%E5%B1%82%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C2.JPG" width="90%" height="90%"> 单卷积层中的参数：</p>
+<ul>
+<li>若一个卷积层有，卷积核个数为10，每个卷积核尺寸为$3 \times 3 \times 3$，每个卷积核有1个偏置参数(一个实数)。</li>
+<li>则，单卷积层中的参数个数为：$(3*3*3+1)*10=280$个参数。</li>
+<li><strong>注意到，无论输入图像的尺寸多大，该卷积层的参数个数始终为280个。即使图片很大，参数依然很少，因此卷积神经网络不容易过拟合(less prone to overfitting)</strong>。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%95%E5%B1%82%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C3.JPG" width="90%" height="90%"> <strong>总结CNN中的符号表示</strong>，若第$l$层是卷积层：</p>
+<ul>
+<li>符号表示：<ul>
+<li>$f^{[l]} = $卷积核尺寸(filter size)</li>
+<li>$p^{[l]} = $填充(padding)</li>
+<li>$s^{[l]} = $步长(stride)</li>
+<li>$n_c^{[l]} = $卷积核个数(number of filters)</li>
+</ul>
+</li>
+<li>输入尺寸：$n_H^{[l-1]} \times n_W^{[l-1]} \times n_c^{[l-1]}$</li>
+<li>每个卷积核的尺寸：$f^{[l]} \times f^{[l]} \times  n_c^{[l-1]}$</li>
+<li>权重尺寸为： $f^{[l]} \times f^{[l]} \times n_c^{[l-1]} \times  n_c^{[l]}$</li>
+<li>偏置尺寸为：$n_c^{[l]}$ 或$(1,1,1,n_c^{[l]})$</li>
+<li>输出$a^{[l]}$的尺寸为： $n_H^{[l]} \times n_W^{[l]} \times  n_c^{[l]}$</li>
+<li>输出$A^{[l]}$的尺寸为： $m \times n_H^{[l]} \times n_W^{[l]} \times  n_c^{[l]}$<ul>
+<li>其中，<script type="math/tex">n_H^{[l]}=\lfloor \frac{n_H^{[l-1]}+2p^{[l]}-f^{[l]}}{s^{[l]}}+1 \rfloor</script>，<script type="math/tex">n_W^{[l]}=\lfloor \frac{n_W^{[l-1]}+2p^{[l]}-f^{[l]}}{s^{[l]}}+1 \rfloor</script></li>
+</ul>
+</li>
+</ul>
+<h3 id="简单的卷积网络示例"><a href="#简单的卷积网络示例" class="headerlink" title="简单的卷积网络示例"></a>简单的卷积网络示例</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%AE%80%E5%8D%95%E5%8D%B7%E7%A7%AF%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B1.JPG" width="100%" height="100%"></p>
+<ul>
+<li>该CNN模型各层结构如上图所示。</li>
+<li>需要注意的是，$a^{[3]}$的维度是$7 \times 7 \times 40$，将$a^{[3]}$排列成1列，维度为$1960 \times 1$，然后连接最后一级输出层。输出层可以是一个神经元，即二元分类（logistic）；也可以是多个神经元，即多元分类（softmax）。最后得到预测输出 $\hat y$。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%AE%80%E5%8D%95%E5%8D%B7%E7%A7%AF%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B2.JPG" width="90%" height="90%"> CNN有三种类型的层：</p>
+<ul>
+<li>卷积层(Convolution, CONV）</li>
+<li>池化层(Pooling, POOL）</li>
+<li>全连接层(Fully connected, FC）</li>
+</ul>
+<h3 id="池化层"><a href="#池化层" class="headerlink" title="池化层"></a>池化层</h3><p>除了卷积层(convolutional layers)，CNN中也经常使用池化层(pooling layers)来减小模型来加速计算，同时让检测到的特征更鲁棒。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B1%A0%E5%8C%96%E5%B1%821.JPG" width="100%" height="100%"> 最大池化(max pooling)，即取滤波器区域内的最大值。对二维矩阵做最大池化：</p>
+<ul>
+<li>输入尺寸为$4 \times 4$</li>
+<li>超参数：$f=2$，$s=2$</li>
+<li>没有参数。 </li>
+<li>输出尺寸为$2 \times 2$</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B1%A0%E5%8C%96%E5%B1%822.JPG" width="90%" height="90%"> 对三维矩阵做最大池化：</p>
+<ul>
+<li>输入尺寸为$5 \times 5 \times n_c$</li>
+<li>超参数：$f=3$，$s=1$</li>
+<li>没有参数。 </li>
+<li>输出尺寸为$3 \times 3 \times n_c$<ul>
+<li>注意，对每一通道，分别做最大池化，故输出尺寸的通道数等于输入尺寸的通道数。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B1%A0%E5%8C%96%E5%B1%823.JPG" width="90%" height="90%"> 平均池化(average pooling)，即计算滤波器区域内的平均值。其它同上。</p>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B1%A0%E5%8C%96%E5%B1%824.JPG" width="90%" height="90%"> 总结：</p>
+<ul>
+<li>池化层的超参数：<ul>
+<li>滤波器尺寸(filter size)：$f$</li>
+<li>步长(stride)：$s$</li>
+<li>极少使用填充(padding)</li>
+<li>最大池化(max pooling)或平均池化(average pooling)。最大池化层更常用。</li>
+</ul>
+</li>
+<li>常用的池化层超参数有$f=2$，$s=2$，相当于将输入尺寸(高度和宽度)缩小一半。也有$f=3$，$s=2$用法。</li>
+<li>没有参数！<ul>
+<li>池化过程中没有参数需要学习。只有需要设置的上述超参数，可能是手工设置，也可能是通过交叉验证设置。</li>
+</ul>
+</li>
+<li>输入尺寸为：$n_H \times n_W \times n_c$</li>
+<li>输出尺寸为： $\lfloor \frac{n_H-f}{s}+1 \rfloor \times \lfloor \frac{n_W-f}{s}+1 \rfloor \times n_c$<ul>
+<li>注意到，输出尺寸的通道数与输入尺寸的通道数相同。</li>
+</ul>
+</li>
+</ul>
+<h3 id="卷积神经网络示例"><a href="#卷积神经网络示例" class="headerlink" title="卷积神经网络示例"></a>卷积神经网络示例</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B1.JPG" width="100%" height="100%"> 该CNN为了识别0~9的数字。该CNN类似Yann LeCun提出的LeNet-5:</p>
+<ul>
+<li>卷积神经网络结构如图所示，重绘如下：<img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B3.jpg" width="100%" height="100%"> </li>
+<li>输入为0~9的数字的图像。</li>
+<li>将CONV1和POOL1称为网络的第一层(Layer 1)。<ul>
+<li>在CNN相关文献中，一种惯例是将一个卷积层和一个池化层合称为一层；一种惯例是将一个卷积层称为一层，一个池化层称为一层。</li>
+<li>本课程在统计网络层数时，只统计有权重的层，即将CONV1和POOL1作为网络第一层。 </li>
+</ul>
+</li>
+<li>将CONV2和POOL2称为网络的第二层(Layer 2)。然后，将POOL2的输出平整化为维度为$400\times 1$的向量。</li>
+<li>全连接层FC3为网络第三层(Layer 3)。全连接层即为标准神经网络结构。输入的400个单元和该层的120个单元每个都相连接，故称为全连接层。权重$W^{[3]}$的维度为$(120,400)$。偏置$b^{[3]}$的维度为$(120,1)$</li>
+<li>全连接层FC4为网络第四层(Layer 4)。</li>
+<li>最后的输出层为softmax层，由10个神经元构成(识别0~9的数字)。</li>
+<li>注意到，随着网络深度的加深，高度$n_H$和宽度$n_W$会减小，而通道数$n_c$会增加。</li>
+<li>CNN的另一种常见模式是一个或多个卷积层后面跟一个池化层，然后一个或多个卷积层后面再跟一个池化层，然后是几个全连接层，最后是一个softmax。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%A4%BA%E4%BE%8B2.JPG" width="90%" height="90%"> 展示上图中CNN的各层的激活值维度和参数数量：</p>
+<ul>
+<li>池化层没有参数。</li>
+<li>卷积层的参数相对较少，许多参数都存在于全连接层。</li>
+<li>随着网络的加深，激活函数的尺寸逐渐变小。减小的太快会影响网络性能，故是逐渐减小。</li>
+</ul>
+<h3 id="为什么使用卷积层？"><a href="#为什么使用卷积层？" class="headerlink" title="为什么使用卷积层？"></a>为什么使用卷积层？</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E5%B1%821.JPG" width="90%" height="90%"> 相比标准神经网络，CNN的优势之一就是参数数目要少得多：</p>
+<ul>
+<li>对于一张$32 \times 32 \times 3$的图片。卷积层的超参数为$f=5$，卷积核的个数为$n_c=6$。则输出维度为$28 \times 28 \times 6$。</li>
+<li>输入尺寸为$32 \times 32 \times 3=3072$，输出尺寸为$28 \times 28 \times 6=4704$。</li>
+<li>若采用标准神经网络，则参数$W$的维度为$(4704,3072)$，共$4704 \times 3072+4704 \approx 14m$个参数。仅对于$32 \times 32 \times 3$的小图片，就有如此多的参数。</li>
+<li>而采用卷积层，每个卷积核的参数为$5\times 5 +1=26$，有6个卷积核，则共有$6 \times 26= 156$个参数。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E5%B1%822.JPG" width="90%" height="90%"> CNN的参数数目少的原因有两个：</p>
+<ul>
+<li>参数共享：一个特征检测器（例如垂直边缘检测器）如果适用于图片的某个区域，那么它也可能适用于图片的其他区域。</li>
+<li>稀疏连接：每一层的每个输出只与一小部分输入有关。<ul>
+<li>如图，输出矩阵的左上角的0，只与输入矩阵的左上角的$3\times 3$的矩阵有关。其他像素值都不会对该输出产生影响。</li>
+</ul>
+</li>
+<li>通过以上两种机制，CNN有较少的参数，允许我们以较小的训练集训练它，从而不易过拟合。</li>
+<li>此外，CNN善于捕捉平移不变性(translation invariance)。即CNN进行分类时，不易受物体所处图片位置发生平移的影响，更鲁棒。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E5%B1%823.JPG" width="90%" height="90%"> 如何训练一个CNN：</p>
+<ul>
+<li>为了构建一个猫的检测器。</li>
+<li>训练集为$(x^{(1)},y^{(1)})…(x^{(m)},y^{(m)})$，$x^{(i)}$为输入图像，$y^{(i)}$为标签。</li>
+<li>如图，若选定了CNN结构：包含输入层，卷积层，池化层，全连接层和softmax输出层。</li>
+<li>依然同之前课程一样，定义代价函数$J=\frac{1}{m}\sum_{i=1}^m L(\hat{y}^{(i)},y^{(i)})$。</li>
+<li>采用优化算法(如梯度下降/Momentum/RMSprop/Adam)，来优化网络中的所有参数，去减小代价函数$J$。</li>
+</ul>
+<h1 id="2-深度卷积模型：案例学习"><a href="#2-深度卷积模型：案例学习" class="headerlink" title="2.深度卷积模型：案例学习"></a>2.深度卷积模型：案例学习</h1><h2 id="2-1-案例学习"><a href="#2-1-案例学习" class="headerlink" title="2.1 案例学习"></a>2.1 案例学习</h2><h3 id="为什么进行案例学习"><a href="#为什么进行案例学习" class="headerlink" title="为什么进行案例学习"></a>为什么进行案例学习</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9B%E8%A1%8C%E6%A1%88%E4%BE%8B%E5%AD%A6%E4%B9%A0.JPG" width="90%" height="90%">  </p>
+<ul>
+<li>这一周会讲解的经典CNN模型：<ul>
+<li>LeNet-5</li>
+<li>AlexNet</li>
+<li>VGG</li>
+</ul>
+</li>
+<li>另外，还会讲解：<ul>
+<li>ResNet</li>
+<li>Inception </li>
+</ul>
+</li>
+</ul>
+<h3 id="经典卷积网络"><a href="#经典卷积网络" class="headerlink" title="经典卷积网络"></a>经典卷积网络</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9C1.JPG" width="100%" height="100%"> LeNet-5由Yann LeCun于1998年提出，用于识别0~9的手写数字：</p>
+<ul>
+<li>针对灰度图像，故输入图片维度为$32\times 32\times 1$</li>
+<li>对于卷积层，那时人们不使用填充(padding)，即通常采取”valid” convolution。</li>
+<li>对于池化层，那时人们更多使用平均池化(现在通常使用最大池化)。</li>
+<li>该模型约有6万个参数。</li>
+<li>后来沿用的模式一：<strong>随着网络的加深，图像的高度$n_H$和宽度$n_W$在减小，而通道数$n_c$在增加</strong>。</li>
+<li>后来沿用的模式二：一个或多个卷积层接一个池化层，一个或多个卷积层接一个池化层，然后是几个全连接层，然后是输出层。</li>
+<li>对于激活函数，那时人们使用的是sigmoid/tanh(如今通常使用ReLU，AlexNet提出)。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9C2.JPG" width="100%" height="100%"> AlexNet是由Alex Krizhevsky、Ilya Sutskever和Geoffrey Hinton于2012年共同提出，用于识别ImageNet中的1000类图像：</p>
+<ul>
+<li>AlexNet模型与LeNet-5模型类似，但更大，约有6千万个参数。</li>
+<li>对于激活函数，AlexNet使用了ReLU激活函数。</li>
+<li>当时，GPU还较慢，AlexNet采用了在两个GPU上并行计算。</li>
+<li>AlexNet中含有一种特殊的层，叫做局部相应归一化层(Local Response Normalization, LRN)。但后来研究者发现效果有限，故如今并不使用。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9C3.JPG" width="100%" height="100%"></p>
+<ul>
+<li>VGG-16中一个精彩的地方在于，没有那么多的超参数，专注于构建简单的网络结构：<ul>
+<li>对于卷积层，只使用$f=3$，$s=1$，”same”填充。</li>
+<li>对于池化层，只使用$f=2$，$s=2$的最大池化层。</li>
+</ul>
+</li>
+<li>每次池化后，图像的高度$n_H$和宽度$n_W$缩小一半。每一组卷积层之后，通道数$n_c$增加一倍，直到512。</li>
+<li>缺点：包含1亿三千万个参数，以现在的标准来看，都是非常大的网络，有太多参数需要训练。</li>
+<li>优点：VGG-16的结构并不复杂，<strong>结构很规整</strong>，这一点非常吸引研究者。</li>
+<li>VGG-16中的16指的是包含权重的卷积层、全连接层和输出层(未计没有参数的池化层)。</li>
+<li>VGG-19的表现与VGG-16差不多，更多的人使用VGG-16。</li>
+</ul>
+<h3 id="ResNets"><a href="#ResNets" class="headerlink" title="ResNets"></a>ResNets</h3><p>由于梯度消失(vanishing gradients)和梯度爆炸(exploding gradients)的原因，非常非常深的网络是难以训练的。这一节学习跳跃连接(skip connection)，它可从某一层网络获取激活值，然后喂给更深的一层网络。通过跳跃连接，即可构建出ResNets(Residual Networks)，让我们可以训练非常非常深的网络。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/ResNets1.JPG" width="100%" height="100%"> ResNet是由残差模块(residual block)构建的，上图介绍残差模块：</p>
+<ul>
+<li>残差模块的主路径(main path)为：$a^{[l]}$ -&gt; 线性操作 -&gt; ReLU(得$a^{[l+1]}$) -&gt; 线性操作 -&gt; ReLU(得$a^{[l+2]}$)。</li>
+<li>残差模块的捷径(short cut)/跳跃连接为：$a^{[l]}$ 直接隔层与$l+2$层的线性输出相连，与$z^{[l+2]}$共同通过激活函数（ReLU）输出 $a^{[l+2]}$。</li>
+<li>具体公式如下：<ul>
+<li>$z^{[l+1]}=W^{[l+1]}a^{[l]}+b^{[l+1]}$</li>
+<li>$a^{[l+1]}=g(z^{[l+1]})$</li>
+<li>$z^{[l+2]}=W^{[l+2]}a^{[l+1]}+b^{[l+2]}$</li>
+<li>$a^{[l+2]}=g(z^{[l+2]}+a^{[l]})$</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/ResNets2.JPG" width="100%" height="100%"> 通过堆叠许多残差模块在一起，即构建成ResNet：</p>
+<ul>
+<li>在ResNet论文中，将非Residual Network称为Plain Network。</li>
+<li>在一个Plain Network中，加上捷径/跳跃连接，如图中每两层构成一个残差模块，共5个残差模块。整体即构成一个残差网络(residual network)。</li>
+<li>若用优化算法优化一个朴素的网络(plain network)，其效果如图：<ul>
+<li>理论上：随着网络深度的加深，训练误差应越来越小。</li>
+<li>实际上：起初，训练误差会降低。但随着层数的增多，训练误差上升。</li>
+</ul>
+</li>
+<li>若用优化算法优化一个ResNet，其效果如图：<ul>
+<li>随着网络深度的加深，训练误差越来越小。</li>
+</ul>
+</li>
+<li>跳跃连接确实有助于解决梯度消失和梯度爆炸的问题，让我们在训练十分深层的网络时得到好的性能。</li>
+</ul>
+<h3 id="RestNets为何有效"><a href="#RestNets为何有效" class="headerlink" title="RestNets为何有效"></a>RestNets为何有效</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88ResNet%E6%9C%89%E6%95%881.JPG" width="100%" height="100%"> 给一个深度网络，增加了一个残差模块后，网络的深度得到了增加：</p>
+<ul>
+<li>$a^{[l+2]}$的表达式为：$a^{[l+2]}=g(z^{[l+2]}+a^{[l]})=g(W^{[l+2]}a^{[l+1]}+b^{[l+2]}+a^{[l]})$。</li>
+<li>注意到，如果使用L2正则化或权重衰减，将会使得$W^{[l+2]}$不断减小。假设$W^{[l+2]}=0$，$b^{[l+2]}=0$（发生梯度消失）。</li>
+<li>那么，<script type="math/tex">a^{[l+2]}=g(a^{[l]})=ReLU(a^{[l]})=a^{[l]}</script>（$a^{[l]}$本就大于等于0，再经过ReLU激活函数，还是$a^{[l]}$本身）。</li>
+<li>以上结果表明：恒等函数(identity function)对于残差模块来说，非常容易学习。因此，尽管增加了残差模块，一方面没有伤害网络的效率，另一方面还提升了网络的性能。</li>
+<li>残差网络有效的原因：<ul>
+<li>残差模块学习恒等函数非常容易(没有伤害网络的学习效率)。</li>
+<li>残差模块的添加起码不会降低网络的表现，很多时候可以提升网络的表现。</li>
+</ul>
+</li>
+<li>另外，残差网络的另一个细节是：$a^{[l+2]}=g(z^{[l+2]}+a^{[l]})$中$z^{[l+2]}$与$a^{[l]}$拥有相同的维度：<ul>
+<li>故ResNets中使用了许多”same”卷积。</li>
+<li>若$a^{[l+2]}$与$a^{[l]}$维度不一样，可以引入矩阵$W_s$，使得$W_s \cdot a^{[l]}$的维度与$a^{[l+2]}$一致，即<script type="math/tex">a^{[l+2]}=g(z^{[l+2]}+W_s \cdot a^{[l]})</script>。矩阵$W_s$可以设置为通过网络学习的参数矩阵，也可以设置为固定矩阵(如只是给$a^{[l]}$进行零填充)。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%B8%BA%E4%BB%80%E4%B9%88ResNet%E6%9C%89%E6%95%882.JPG" width="100%" height="100%"> 简单分析ResNets结构特点：</p>
+<ul>
+<li>ResNets中采用了很多$3\times 3$的same卷积。<ul>
+<li>same卷积是为了进行$a^{[l+2]}=g(z^{[l+2]}+a^{[l]})$中的$z^{[l+2]}+a^{[l]}$。</li>
+</ul>
+</li>
+<li>池化层后需调整$W_s$的维度，即进行<script type="math/tex">a^{[l+2]}=g(z^{[l+2]}+W_s \cdot a^{[l]})</script>。</li>
+<li>ResNets的网络结构是几个卷积层接一个池化层，然后重复，然后是一个全连接层，然后是softmax输出层。</li>
+</ul>
+<h3 id="Network-in-NetWork以及1x1卷积"><a href="#Network-in-NetWork以及1x1卷积" class="headerlink" title="Network in NetWork以及1x1卷积"></a>Network in NetWork以及1x1卷积</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/netwrok%20in%20network1.JPG" width="100%" height="100%"></p>
+<ul>
+<li>如图上半部分，对于单通道的二维矩阵，进行$1\times 1$卷积的效果就是乘以一个数字。</li>
+<li>如图下半部分，对$6 \times 6 \times 32$的体，卷积核为$1 \times 1 \times 32$，进行卷积的效果是：<ul>
+<li>对于输入体的36个切片，每个切片的维度都为(1,1,32)。每一个切片都与卷积核逐元素相乘，然后求和，得到一个实数，即输出矩阵中的一个绿点。</li>
+<li>若应用在CNN中，则相当于：输入体中的每一切片逐元素乘以卷积核中的权重，然后求和，加上偏置，然后进行ReLU激活，如输出矩阵中的一个黄点。</li>
+<li>若有多个卷积核，则输出结果为多通道。</li>
+</ul>
+</li>
+<li>因此，$1\times 1$卷积应用在CNN中，则可以理解为：36个切片中的32个单元，与#filters中的每个卷积核进行了全连接，输出维度为$6 \times 6 \times n_c^{[l+1]}$，其中<script type="math/tex">n_c^{[l+1]}= \# filters</script>。</li>
+<li>此方法称为$1\times 1$卷积或Network in NetWork。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/network%20in%20network2.JPG" width="90%" height="90%"> $1\times 1$卷积可以用来缩小通道数量：</p>
+<ul>
+<li>输入维度是$28 \times 28 \times 192$，通过32个$1\times 1$卷积核(准确地说，维度为$1\times 1\times 192$)，输出为$28 \times 28 \times 32$，缩小了通道数。</li>
+</ul>
+<p>总结：</p>
+<ul>
+<li>$1\times 1$卷积<strong>给网络增加了非线性，可以让网络学习更复杂的函数</strong>。</li>
+<li>通过$1\times 1$卷积，<strong>可减少或保持或增加通道数</strong>。</li>
+</ul>
+<h3 id="Inception-Network动机"><a href="#Inception-Network动机" class="headerlink" title="Inception Network动机"></a>Inception Network动机</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Inception%E5%8A%A8%E6%9C%BA1.JPG" width="90%" height="90%"> Inception网络的基本思想是：代替人为选择卷积核尺寸以及是否使用池化层，而是将它们都添加进网络，然后将输出串联起来，然后让网络去学习参数，去决定采用哪些组合：</p>
+<ul>
+<li>输入维度为$29\times 28 \times 192$</li>
+<li>通过$1\times 1$的same卷积，使得输出为$28 \times 28 \times 64$</li>
+<li>通过$3\times 3$的same卷积，使得输出为$28 \times 28 \times 128$</li>
+<li>通过$5\times 5$的same卷积，使得输出为$28 \times 28 \times 32$</li>
+<li>通过最大池化层，$s=1$，使用填充，使成为same-pool，使得输出为$28 \times 28 \times 32$</li>
+<li>将所有输出串联起来，维度为$28 \times 28 \times 256$。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Inception%E5%8A%A8%E6%9C%BA2.JPG" width="90%" height="90%"> 上图中描述的Inception模块中有一个问题，就是计算成本的问题：</p>
+<ul>
+<li>集中讨论上图中的$5 \times 5$的卷积核</li>
+<li>进行该卷积计算，需要进行的乘法次数为：<ul>
+<li>输出个数为：$28\times 28\times 32$</li>
+<li>每个输出需进行的乘法次数为：$5\times 5\times 192$</li>
+<li>故需进行的乘法次数为：$(28\times 28\times 32)\times (5\times 5\times 192)\approx 120m$</li>
+</ul>
+</li>
+<li>即使用现代计算机，计算1.2亿次计算，也是相当昂贵的操作。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Inception%E5%8A%A8%E6%9C%BA3.JPG" width="90%" height="90%"> 通过$1\times 1$卷积层，降低计算成本：</p>
+<ul>
+<li>结构如图，先通过$1\times 1$卷积，再进行$5\times 5$卷积，最终输出和上图相同。</li>
+<li>加入$1\times 1$卷积后，进行两次卷积计算，需要进行的乘法次数为：<ul>
+<li>$1\times 1$卷积需要的乘法次数：$(28\times 28\times 16)\times (1\times 1\times 192)$</li>
+<li>$5\times 5$卷积需要的乘法次数：$(28\times 28\times 32)\times (5\times 5\times 16)$</li>
+<li>进行两次卷积计算，需要进行的乘法次数为：$(28\times 28\times 16)\times (1\times 1\times 192)+(28\times 28\times 32)\times (5\times 5\times 16)\approx 12.4m$</li>
+</ul>
+</li>
+<li>通常我们把该$1\times 1$卷积层称为“瓶颈层”(bottleneck layer)，因为它是网络中最小的那个部分。<strong>先通过“瓶颈层”缩小网络，然后再扩大网络，显著降低了计算成本</strong>，乘法计算次数从120m减少为12.4m。</li>
+</ul>
+<h3 id="Inception-Network"><a href="#Inception-Network" class="headerlink" title="Inception Network"></a>Inception Network</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/InceptionNetwork1.JPG" width="90%" height="90%"> 正式介绍Inception模块：</p>
+<ul>
+<li>输入为前一层的激活函数。</li>
+<li>单独的$1\times 1$卷积层，输出维度为$28 \times 28 \times 64$。</li>
+<li>先是$1\times 1$卷积层，再接$3\times 3$卷积层(降低计算成本)，输出维度为$28 \times 28 \times 128$。</li>
+<li>先是$1\times 1$卷积层，再接$5\times 5$卷积层(降低计算成本)，输出维度为$28 \times 28 \times 32$。</li>
+<li>先是$f=3$，$s=1$的same最大池化层，再接$1\times 1$卷积层(为了降低通道数)，输出维度为$28 \times 28 \times 32$。</li>
+<li>串联(concatenate)所有输出，输出维度为$28 \times 28 \times 256$。(Caffe中的concat层，实现此串联操作。)</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/InceptionNetworkk2.JPG" width="100%" height="100%"> 正式介绍Inception Network，如图：</p>
+<ul>
+<li>Inception Network由很多Inception模块构成。</li>
+<li>Inception Network中的另一个细节是：在中间层设置了两个辅助softmax分类器，它们保证了即便是中间层的隐藏神经元计算的特征，在预测图像类别时，表现也不太差。它们在Inception Network起着正则化的效果，帮助防止过拟合。</li>
+<li>Inception Network也称为GoogleNet。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/InceptionNetwork3.JPG" width="90%" height="90%"> </p>
+<ul>
+<li>Inception Network中“Inception”取自莱昂纳多的电影《Inception》。</li>
+</ul>
+<h2 id="2-2-使用卷积网络的实用建议"><a href="#2-2-使用卷积网络的实用建议" class="headerlink" title="2.2 使用卷积网络的实用建议"></a>2.2 使用卷积网络的实用建议</h2><h3 id="使用开源实现"><a href="#使用开源实现" class="headerlink" title="使用开源实现"></a>使用开源实现</h3><ul>
+<li>对于许多经典的神经网络，因为许多细节问题（如超参数的调节，学习率衰减或其它）而很难实现复现。因此，仅靠论文去从零实现，是很困难的。</li>
+<li>建议从其他研究者贡献出的开源代码开始研究或使用，如在Github中搜索并获取开源代码。</li>
+</ul>
+<h3 id="迁移学习"><a href="#迁移学习" class="headerlink" title="迁移学习"></a>迁移学习</h3><p>你如果要做一个计算机视觉应用，相比于从头(随机初始化权重)开始训练权重，如果你下载别人已经训练好的权重，然后把它当做预训练，然后迁移到你感兴趣的任务中，通常能够取得更快的进展。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0.JPG" width="100%" height="100%"> 假设你训练猫分类器，能够分类Tigger，Misty和Neither。</p>
+<ul>
+<li>如图第一行，若你没有关于Tigger，Misty大量图片，即训练集很小：<ul>
+<li>下载经典网络的代码以及权重，删去最后的Softmax层，创建你自己的Softmax层(Tigger/Misty/Neither)。</li>
+<li>将你下载的网络，看作是冻结的，冻结该网络的所有参数。将别人训练好的权重，作为初始权重，只训练和你自己的Softmax层有关的参数。</li>
+<li>这样，即使你只有一个小的训练集，也能取得好的性能。</li>
+<li>加速训练的技巧：由于前面的层都冻结了，即相当于一个不需要改变的固定函数(相当于取输入$X$，然后映射到选用的最后一层的激活函数)。预先计算这个固定函数的得到的特征或是说激活值，然后将它们存到硬盘中（对于每一周期(epoch)，不用重复遍历数据集计算激活值）。然后将它们作为输入，相当于训练一个浅层的softmax模型。</li>
+</ul>
+</li>
+<li>如图第二行，若有一个更大的训练集：<ul>
+<li>可以冻结更少的层，如图。然后训练后面的所有层（构建自己的Softmax层后）。</li>
+<li>也可将未冻结的后面几层全部删去，构建自己的几个隐藏层和Softmax层，然后只训练后面几层。</li>
+<li>模式就是：如果有更多的数据，那么你需要冻结的层数就更少，你需要训练的末端的层数就更多。</li>
+</ul>
+</li>
+<li>如图第三行，如果你有足够多的大量的训练集：<ul>
+<li>将下载的权重作为初始权重(代替随机初始化)，重新训练网络的所有层。</li>
+</ul>
+</li>
+<li>在所有深度学习的应用中，计算机视觉领域是一个经常用到迁移学习的领域。除非你有极其大的数据集和非常大的计算预算，能让你能够自己从头训练所有东西，那么迁移学习总是值得你考虑的方案。</li>
+</ul>
+<h3 id="数据增强"><a href="#数据增强" class="headerlink" title="数据增强"></a>数据增强</h3><p>数据增强是经常用来提升计算机视觉系统性能的技巧。计算机视觉任务是一项相当复杂的工作，你需要输入图像中的像素值，然后弄清楚图片中有什么，似乎你需要学习一个相当复杂的函数。对于几乎所有的计算机视觉任务，通常的问题是数据远远不够。因此，对于计算机视觉任务，数据增强通常都会有帮助。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA1.JPG" width="100%" height="100%"> 介绍了常用的数据增强方法：</p>
+<ul>
+<li>镜像(mirroring)：以垂直轴为基准，进行镜像。</li>
+<li>随机裁剪(random cropping)：裁剪出原图像中的一部分。</li>
+<li>理论上，还有一些方法，如旋转(rotation)，剪切(shearing)，local warping(局部弯曲)等。但因为过于复杂，实践中很少使用。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA2.JPG" width="50%" height="50%"> 第二种经常使用的数据增强方法：</p>
+<ul>
+<li>色彩转换(color shifting)/色彩失真(color distortion)：分别对图片的RGB通道中的像素值进行增加或者减少，改变图片色彩。<ul>
+<li>解释：进行色彩转换，希望能让算法对图片的色彩的改变更具鲁棒性。</li>
+<li>AlexNet论文中采用了“PCA color augmentation”：减少主要色调成分(如R和B通道)的像素值多一点，减少G通道的像素值少点，使得整体的色调保持一致。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA3.JPG" width="90%" height="90%"></p>
+<ul>
+<li>可通过CPU/GPU的不同进程，并行地进行数据增强和训练。</li>
+</ul>
+<h3 id="计算机视觉的现状"><a href="#计算机视觉的现状" class="headerlink" title="计算机视觉的现状"></a>计算机视觉的现状</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%8E%B0%E7%8A%B61.JPG" width="90%" height="90%"> </p>
+<ul>
+<li>对于图像识别(image recognition)任务，尽管今天我们有很大的数据集，但仍想要更多的数据。</li>
+<li>对于目标检测(object detection)任务，我们有着更少的数据，因为标注边框这一步的成本太高。</li>
+</ul>
+<p><strong>学习算法有两个主要的知识来源：一是带标签的数据；二是手工设计的特征或网络结构或其他组件</strong>：</p>
+<ul>
+<li>当有大量数据时，人们倾向于使用更简单的算法和更少的手工工程。</li>
+<li>而当有较少量的数据时，人们倾向于使用更多的手工工程<ul>
+<li>解释：但当没有大量数据时，手工设计的组件或特征，是把人类知识直接注入算法的好的途径。</li>
+<li>举例：计算机视觉是在试图学习一个非常复杂的函数，因此我们总感觉没有足够的数据来满足我们的需求。在计算机视觉的初期，拥有的数据量很小，所以依赖手工设计的特征。近几年，数据量剧增，但对于计算机视觉还是不够，因此人们设计复杂的网络结构(包含很多超参数)。对于目标检测任务，拥有的数据量比图像识别任务更少，因此人们手工设计了许多组件。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%8E%B0%E7%8A%B62.JPG" width="100%" height="100%"> 在基准数据集或竞赛中取得好成绩的技巧：</p>
+<ul>
+<li>集成(ensembling):<ul>
+<li>独立训练多个(3~15)网络，然后平均它们的输出。</li>
+</ul>
+</li>
+<li>在测试阶段进行多裁剪(multi-crop)：<ul>
+<li>在测试阶段，对于一张测试图片，通过镜像(mirroring)以及随机裁剪(random cropping)的方式，获得该图像的多个版本。然后平均它们的测试结果。</li>
+</ul>
+</li>
+<li>集成(ensembling)方式占用过多内存且运行速度慢；在测试阶段进行多裁剪(multi-crop)，运行速度慢。因此它们在实际应用中没有意义。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%8E%B0%E7%8A%B63.JPG" width="90%" height="90%"> 若你要建立一个实际系统，采用以下步骤，能让你的应用进行的更快：</p>
+<ul>
+<li>从使用文献中的网络结构开始。</li>
+<li>使用开源的代码实现。<ul>
+<li>因为开源代码已经解决了所有的繁琐细节，如学习率衰减或其他超参数。</li>
+</ul>
+</li>
+<li>使用预训练的模型然后用你的数据集微调。<ul>
+<li>因为其他人可能已经在多个GPU上花了几个星期对超过一百万张图片进行训练后，得到这个模型。</li>
+</ul>
+</li>
+</ul>
+<h1 id="3-目标检测"><a href="#3-目标检测" class="headerlink" title="3.目标检测"></a>3.目标检测</h1><h2 id="3-1-检测算法"><a href="#3-1-检测算法" class="headerlink" title="3.1 检测算法"></a>3.1 检测算法</h2><h3 id="目标定位"><a href="#目标定位" class="headerlink" title="目标定位"></a>目标定位</h3><p>目标定位(object localization)<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E5%AE%9A%E4%BD%8D1.JPG" width="90%" height="90%"> 图像分类任务与目标检测任务的区别：</p>
+<ul>
+<li>图像分类(Image classification)：对于给定图像，预测出类别（通常只有一个较大物体在图片中央）。</li>
+<li>分类且定位(Classification with Localization)：对于给定图像，预测类别，且给出物体在图片中的位置，即标出包围框(bounding box)（通常只有一个较大物体在图片中央）。</li>
+<li>检测(Detection)问题：图片中可存在多个属于不同类别的物体，对每个物体分类且定位。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E5%AE%9A%E4%BD%8D2.JPG" width="100%" height="100%"> 分类且定位的实现方法：</p>
+<ul>
+<li>图像分类的方式就是构建CNN，然后通过softmax分类层进行分类。<ul>
+<li>softmax层有四个神经元，分别对应行人(pedestrain)，车辆(car)，摩托车(motorcycle)和背景(background)四类。</li>
+</ul>
+</li>
+<li>要实现定位，修改输出层，通过增加神经元，来输出表示包围框的四个数字：<script type="math/tex">b_x</script>，<script type="math/tex">b_y</script>，<script type="math/tex">b_h</script>，<script type="math/tex">b_w</script>。<ul>
+<li><script type="math/tex">b_x</script>，<script type="math/tex">b_y</script>对应包围框的中点，<script type="math/tex">b_h</script>，<script type="math/tex">b_w</script>分别对应包围框的高和宽。</li>
+<li>本课程约定，以图像的左上角为$(0,0)$点，右下角为$(1,1)$点，横向为$x$方向，纵向为$y$方向。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E5%AE%9A%E4%BD%8D3.JPG" width="90%" height="90%"> 为了用监督学习算法解决分类且定位任务，需要定义训练集$(x,y)$，其中标签$y$该这样定义：</p>
+<ul>
+<li><script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]</script>。其中，<script type="math/tex">Pc</script>表示是否检测到目标，<script type="math/tex">Pc=1</script>代表图片中检测到目标。<script type="math/tex">Pc=0</script>代表图片中未检测到目标。</li>
+<li>如上图中的左图，检测到目标，$Pc=1$。训练集中应标注标签：<script type="math/tex">\left [ \begin{matrix} 1 \\ bx \\ by \\ bh \\ bw \\ 0 \\ 1 \\ 0 \end{matrix} \right ]</script></li>
+<li>如上图中的右图，未检测到目标，$Pc=0$，则$Pc$后面参数都没有意义，都可以忽略。训练集中应标注标签：<script type="math/tex">\left [ \begin{matrix} 0 \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \end{matrix} \right ]</script></li>
+</ul>
+<p>最后，对于神经网络的损失函数，若全部使用平方误差形式，有两种情况：</p>
+<ul>
+<li>若$y_1=1$,即$Pc=1$，那么：<script type="math/tex">L(\hat y,y)=(\hat y_1-y_1)^2+(\hat y_2-y_2)^2+\cdots+(\hat y_8-y_8)^2</script></li>
+<li>若$y_1=0$,即$Pc=0$，那么：<script type="math/tex">L(\hat y,y)=(\hat y_1-y_1)^2</script></li>
+<li>这里用平方误差简化了描述过程，在实际应用中，可以对$Pc$使用逻辑回归损失，对<script type="math/tex">b_x</script>，<script type="math/tex">b_y</script>，<script type="math/tex">b_h</script>，<script type="math/tex">b_w</script>使用平方误差损失，对于$c_1$，$c_2$，$c_3$使用softmax损失。</li>
+</ul>
+<h3 id="特征点检测"><a href="#特征点检测" class="headerlink" title="特征点检测"></a>特征点检测</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%89%B9%E5%BE%81%E7%82%B9%E6%A3%80%E6%B5%8B.JPG" width="100%" height="100%"> </p>
+<ul>
+<li>上节中，通过让网络输出四个实数(<script type="math/tex">b_x</script>，<script type="math/tex">b_y</script>，<script type="math/tex">b_h</script>，<script type="math/tex">b_w</script>)的方式，指定了想要定位的物体的包围边框。</li>
+<li>在更一般的情况下，可以通过神经网络输出图像中关键特征点的$(x,y)$坐标（这些点称作landmarks），来实现对这些关键特征点的检测。</li>
+</ul>
+<p>上图中举了两例：</p>
+<ul>
+<li>例1：人脸关键特征点检测。<ul>
+<li>在进行分类的CNN的输出层中添加一些神经元，每个神经元对应于一个你想要检测的人脸特征点的坐标。</li>
+<li>如图，在输出层中，第一个神经元代表是否属于人脸，第二个神经原代表特征点1的$x$坐标，第三个神经元代表特征点1的$y$坐标，等等。</li>
+</ul>
+</li>
+<li>例2：人体姿态检测。<ul>
+<li>在进行分类的CNN的输出层中添加一些神经元，每个神经元对应于一个你想要检测的人体关键特征点的坐标。</li>
+</ul>
+</li>
+<li>想要训练这样的网络，需要一个带标签的训练集$(X,Y)$。<ul>
+<li>其中在人工标注关键特征点时，对于每一个样本，每一特征点代表的含义顺序，必须一致。如对于人脸特征点检测，特征点1代表左眼角，特征点2代表右眼角等等。对于人体姿态检测，特征点1代表左肩，特征点2代表胸部中点，特征点3代表右肩等等。</li>
+</ul>
+</li>
+</ul>
+<h3 id="目标检测"><a href="#目标检测" class="headerlink" title="目标检测"></a>目标检测</h3><p>本节以车辆检测为例，介绍基于滑动窗口的目标检测算法。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B1.JPG" width="100%" height="100%"> 第一步，构建CNN以进行车辆分类：</p>
+<ul>
+<li>对于训练集$(x,y)$，$x$是适当剪切的图片。如上图，$x$为剪切后的汽车图片样本，即剪去其他部分，只有车辆在图片中央并占据了整个图片。</li>
+<li>然后即可训练CNN。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B2.JPG" width="100%" height="100%"> 第二步，滑动窗口检测(sliding window detection)：</p>
+<ul>
+<li>选择固定大小的矩形窗口，按某个步长，滑动遍历整个图片。滑动窗口每到达一个位置，就将该窗口内的图片送入CNN进行分类。CNN输出1(是汽车)或者0(背景，不是汽车)。</li>
+<li>然后选择一个更大的窗口，继续滑动窗口检测操作。</li>
+<li>然后再选择一个更大的窗口，继续滑动窗口检测操作。</li>
+</ul>
+<p>基于滑动窗口检测目标检测算法的缺点：</p>
+<ul>
+<li>计算成本高。滑动窗口到达的每一个位置的图片，都需要用CNN进行处理。</li>
+<li>如果选用大步长，窗口数会减少，但会影响性能。</li>
+<li>如果选用小步长，窗口数会剧增，计算成本过高。</li>
+</ul>
+<h3 id="滑动窗口的卷积实现"><a href="#滑动窗口的卷积实现" class="headerlink" title="滑动窗口的卷积实现"></a>滑动窗口的卷积实现</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%9A%84%E5%8D%B7%E7%A7%AF%E5%AE%9E%E7%8E%B01.JPG" width="100%" height="100%"> <strong>用卷积层替换全连接层</strong>：</p>
+<ul>
+<li>上图中第一行是用来进行分类的CNN结构：输入为尺寸为$14\times 14 \times 3$的图片，卷积层，池化层，全连接层，全连接层，然后是softmax分类层（含四个结点，每个结点对应一个类别的概率）。</li>
+<li>上图中的第二行是将全连接层转换为卷积层后的CNN结构：<ul>
+<li>首先通过400个$5\times 5$的卷积核(每个卷积核的尺寸为$5\times 5\times 16$)，将输出尺寸变为$1\times 1\times 400$。(将此处输出的$1\times 1\times 400$的体，视为原本全连接层的400个结点。)</li>
+<li>然后通过400个$1\times 1$的卷积核(每个卷积核的尺寸为$1\times 1\times 400$)，将输出尺寸变为$1\times 1\times 400$。(**将此处输出的$1\times 1\times 400$的体，视为原本全连接层的400个结点。)</li>
+<li>然后通过4个$1\times 1$的卷积核(每个卷积核的尺寸为$1\times 1\times 400$)，输出层的输出尺寸为$1\times 1\times 4$，然后进行softmax激活函数，作为最终的输出结果。(将此处输出的$1\times 1\times 4$的体，视为原softmax输出层的4个结点。)</li>
+</ul>
+</li>
+<li>用卷积层替换全连接层的目的是为了使得能够输入任意尺寸的图片，而如果存在全连接层，则输入和输出的维度必须是固定的。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%9A%84%E5%8D%B7%E7%A7%AF%E5%AE%9E%E7%8E%B02.JPG" width="100%" height="100%"> 基于滑动窗口的目标检测算法的卷积实现：</p>
+<ul>
+<li>上图中第一行的输入为一个滑动窗口内的图像，即尺寸为$14\times 14 \times 3$的体，输入上节中CNN(用卷积层替换了全连接层)的效果，输出为$1\times 1\times 4$的体，相当于softmax输出层的4个输出结点。</li>
+<li>上图中第二行的输入为一张$16\times 16 \times 3$的图像，输入上节中CNN(用卷积层替换了全连接层)的效果，输出为$2\times 2\times 4$的体，其中每一个$1\times 1\times 4$的体都相当于一个滑动窗口内的图像的输出结果。4个$1\times 1\times 4$的体即对应4个滑动窗口的输出结果。</li>
+<li>上图中第三行的输入为一张$28\times 28 \times 3$的图像，输入上节中CNN(用卷积层替换了全连接层)的效果，输出为$8\times 8\times 4$的体，其中每一个$1\times 1\times 4$的体都相当于一个滑动窗口内的图像的输出结果。64个$1\times 1\times 4$的体即对应64个滑动窗口的输出结果。</li>
+<li>该模型源于OverFeat。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%9A%84%E5%8D%B7%E7%A7%AF%E5%AE%9E%E7%8E%B03.JPG" width="100%" height="100%"> 总结：</p>
+<ul>
+<li>原始的基于滑动窗口的目标检测算法，会分别将每一个滑动窗口内的图像，单独给CNN处理。并且这样会使得很多CNN的处理过程是重复的。</li>
+<li>而基于滑动窗口的目标检测算法的卷积实现，直接对整张图片进行卷积，一次性地同时得到所有预测值。并且使得所有的窗口图像共享了许多计算。</li>
+<li>基于滑动窗口的目标检测算法的卷积实现，极大地提高了效率。但存在一个缺点：不能输出最准确的包围边框。下节解决这个问题。</li>
+</ul>
+<h3 id="包围边框预测"><a href="#包围边框预测" class="headerlink" title="包围边框预测"></a>包围边框预测</h3><p>上节中基于滑动窗口的目标检测算法的卷积实现，其计算效率很高，但存在不能输出非常准确的包围边框的问题。本节介绍YOLO(You Only Look Once)算法，它可以得到准确的包围边框。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%85%E5%9B%B4%E8%BE%B9%E6%A1%86%E9%A2%84%E6%B5%8B1JPG.JPG" width="80%" height="80%"> </p>
+<ul>
+<li>基于滑动窗口的目标检测算法，很有可能没有一个合适的滑动窗口，能够完美匹配图中的汽车的位置，即红色包围边框。最接近的，可能只是图中的蓝色窗口。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%85%E5%9B%B4%E8%BE%B9%E6%A1%86%E9%A2%84%E6%B5%8B2.JPG" width="100%" height="100%"> 介绍YOLO算法：</p>
+<ul>
+<li>YOLO算法首先将原始图片分割成$n\times n$网格，每个网格代表一块区域。为简化说明，将图片分成$3 \times 3$网格。<ul>
+<li>实际应用中采用更精细的网格，如$19\times 19$。更精细的网格也可以使得多个物体分配到同一格子的概率减小。</li>
+</ul>
+</li>
+<li>然后，采用本周第一个视频讲述过的图像分类且定位算法(image classification and localization algorithm)，应用在9个格子的每一个格子上。</li>
+<li>训练集$(x,y)$的构建：<ul>
+<li>$x$即为输入图像矩阵，例如尺寸为$100 \times 100 \times 3$</li>
+<li>标签$y$的维度为$3 \times 3 \times 8$，即共9个$1 \times 1 \times 8$，其中每一个$1 \times 1 \times 8$代表着一个格子的标签。</li>
+<li>每个格子对应的$1 \times 1 \times 8$的标签，同本周第一个视频讲述过的一样。<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]</script></li>
+<li>需强调：将物体分配给哪个格子是由物体的中点$(b_x,b_y)$属于哪个格子决定的。</li>
+<li>对于一个格子可能存在多个物体的情况，稍后讨论。</li>
+</ul>
+</li>
+<li>构建CNN，通过选择卷积层及池化层的参数，使得输入$x$后，输出的尺寸为$3 \times 3 \times 8$。同样本标签$y$的维度相等，因此可以用反向传播算法有监督的进行训练。</li>
+</ul>
+<p>总结：</p>
+<ul>
+<li>该算法和图像分类且定位算法很相似，它显示的输出包围边框的坐标，它能让神经网络输出任意长宽比的坐标，而不收到滑动窗口的步长的限制。因此，该算法能够输出精确的包围边框。</li>
+<li>此外，该算法也是卷积实现，直接对整张图片进行卷积，一次性地同时得到所有预测值。并且使得所有的网格共享了许多计算。正因为它是卷积实现，因此该算法的效率非常高，运行得非常快，能达到实时目标检测。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%85%E5%9B%B4%E8%BE%B9%E6%A1%86%E9%A2%84%E6%B5%8B3.JPG" width="100%" height="100%"> 如何定义包围边框，即如何编码(encode)<script type="math/tex">b_x</script>，<script type="math/tex">b_y</script>，<script type="math/tex">b_h</script>，<script type="math/tex">b_w</script>：</p>
+<ul>
+<li>如图，以每个网格的左上角为$(0,0)$点，以右下角为$(1,1)$点。</li>
+<li>中心点<script type="math/tex">b_x</script>，<script type="math/tex">b_y</script>为距离$(0,0)$点的水平距离和垂直距离相对网格边长的比值。因此，<script type="math/tex">b_x</script>和<script type="math/tex">b_y</script>在0~1之间。</li>
+<li>高度<script type="math/tex">b_h</script>和宽度<script type="math/tex">b_w</script>，为包围边框的高和宽与网格边长的比值。因此，<script type="math/tex">b_h</script>和<script type="math/tex">b_w</script>可能大于1。</li>
+<li>如图，图中样本$x$对应的标签应该为<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]= \left [ \begin{matrix} 1 \\ 0.4 \\ 0.3 \\ 0.9 \\ 0.5 \\ 0 \\ 1 \\ 0 \end{matrix} \right ]</script></li>
+<li>当然编码包围框的方式很多，YOLO论文中也交待了其他更复杂的参数化方式。但本课程给出了此种方法是合理且可使用的一种方式。</li>
+</ul>
+<h3 id="交并比"><a href="#交并比" class="headerlink" title="交并比"></a>交并比</h3><p>交并比(Intersection over Union, IoU)是评价目标定位算法准确性的指标。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BA%A4%E5%B9%B6%E6%AF%94.JPG" width="100%" height="100%"> 交并比讲解：</p>
+<ul>
+<li>如图，紫色边框为预测边框，红色边框为真实边框。</li>
+<li>黄色阴影部分为两边框区域的交集(Intersection)，绿色阴影部分为两边框区域的并集(Union)。</li>
+<li>交并比(Intersection over Union, IoU)即为：<script type="math/tex">IoU=\frac{Intersection}{Union}</script><ul>
+<li>一般人为规定当$IoU \geq 0.5$时，预测的包围边框是正确的。</li>
+</ul>
+</li>
+<li>更一般的说，IoU衡量了两个包围边框的重叠程度。</li>
+</ul>
+<h3 id="非极大值抑制"><a href="#非极大值抑制" class="headerlink" title="非极大值抑制"></a>非极大值抑制</h3><p>目标检测算法可能会检测同一个目标多次。非极大值抑制(Non-max Suppression, NMS)可以确保对每个对象只检测一次。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%9D%9E%E6%9E%81%E5%A4%A7%E5%80%BC%E6%8A%91%E5%88%B61.JPG" width="80%" height="80%"> 如图，以YOLO算法检测汽车为例，对于该图片，会有多个网格对同一汽车做出检测。</p>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%9D%9E%E6%9E%81%E5%A4%A7%E5%80%BC%E6%8A%91%E5%88%B62.JPG" width="100%" height="100%"> 极大值抑制的效果：</p>
+<ul>
+<li>如图，当运行目标检测算法时，最终出现了对同一个对象进行多次检测的情况。</li>
+<li>通过非极大值抑制，清理了这些检测结果。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%9D%9E%E6%9E%81%E5%A4%A7%E5%80%BC%E6%8A%91%E5%88%B63.JPG" width="100%" height="100%"> 非极大值抑制的实现细节：</p>
+<ul>
+<li>假设只检测车辆，用YOLO算法检测这张图片后的输出的维度为$19\times 19 \times 5$。共$19\times 19 = 361$个格子，每一个格子的输出为<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw  \end{matrix} \right ]</script>。其中，$p_c$为存在对象的概率，在此处即是车辆的概率。</li>
+<li>第一步，丢弃所有$p_c \leq 0.6$的包围框。<ul>
+<li>在编程作业中，这一步作为单独的步骤，不在NMS之内。先算得分($p_c$与$c_1$或$c_2$或$c_3$相乘)再取阈值。</li>
+</ul>
+</li>
+<li>第二步，只要有剩余包围框，则一直循环：<ul>
+<li>选择$p_c$最大的包围框为一个预测包围框。</li>
+<li>舍弃所有与上一步中的预测包围框的$IoU\geq 0.5$的剩余的包围框。</li>
+</ul>
+</li>
+<li>另外，该节只是介绍了只检测车辆这一类目标的情况，如果想要检测三类目标(如行人，车辆，摩托车)，那么每个格子的输出向量就会有额外三个分量($c_1$，$c_2$，$c_3$)。正确的做法是，对每个类别都独立进行一次非极大值抑制，即进行三次非极大值抑制。</li>
+</ul>
+<h3 id="Anchor-Boxes"><a href="#Anchor-Boxes" class="headerlink" title="Anchor Boxes"></a>Anchor Boxes</h3><p>到目前位置，我们介绍的是每个网格只能包含一个物体，若一个网格包含两个或以上物体，则无法处理。使用anchor boxes可以解决这个问题。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/anchorboxes1.JPG" width="100%" height="100%"></p>
+<ul>
+<li>如图，对图片采用$3\times 3$的网格划分。汽车和行人的中点，几乎重叠，都落在一个格子中。<ul>
+<li>此前每个格子的输出定义为<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]</script>，无法描述该情况，只能舍去一个物体，只描述一个物体。</li>
+</ul>
+</li>
+<li>预先定义两个不同形状的anchor box：Anchor box1和Anchor box2。<ul>
+<li>通常使用更多的anchor box，如5个或更多。这里为了方便讲解，只定义两个。</li>
+</ul>
+</li>
+<li>则上图对应的输出标签应为<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \\ Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]</script>。其中，前8个分量为与Anchor box1相关的输出，后8个分量为与Anchor box2相关的输出。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/anchorboxes2.JPG" width="80%" height="80%"> Anchor box算法：</p>
+<ul>
+<li>在之前(不采用Anchor box时)：我们将每个训练图像中的物体分配给其中点所处的那个网格。输出$y$的维度为$3\times 3\times 8$。</li>
+<li>采用两个Anchor box后：我们将将每个训练图像中的物体分配给其中点所处的那个网格，以及分配给与该物体包围框的IoU最大的那个Anchor box。输出$y$的维度为$3\times 3\times 16$，即$3\times 3\times (8\times 2)$。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/anchorboxes3.JPG" width="90%" height="90%"> 示例：</p>
+<ul>
+<li>图中一个格子中包含两个物体，其中行人的包围框应该分配给Anchor box1，车辆包围框应该分配给Anchor box2，因此，该图像的输出应为：<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \\ Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]= \left [ \begin{matrix} 1 \\ bx \\ by \\ bh \\ bw \\ 1 \\ 0 \\ 0 \\ 1 \\ bx \\ by \\ bh \\ bw \\ 0 \\ 1 \\ 0 \end{matrix} \right ]</script>。</li>
+<li>若某格子，只含一个车辆物体，则其输出应该为：<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \\ Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]= \left [ \begin{matrix} 0 \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \\ 1 \\ bx \\ by \\ bh \\ bw \\ 0 \\ 1 \\ 0 \end{matrix} \right ]</script>。</li>
+<li>当遇到一个格子包含三个或更多物体时，该算法无法处理。当遇到两个物体被分配给同一Anchor box时，该算法也无法处理。</li>
+<li>另外，人们通常人工指定Anchor box的形状，可以选择5~10个形状，覆盖你想要检测的对象的各种形状。后期的YOLO论文中介绍了通过$k$均值来自动选择Anchor box的高级方法。</li>
+</ul>
+<h3 id="YOLO算法"><a href="#YOLO算法" class="headerlink" title="YOLO算法"></a>YOLO算法</h3><p>将所有学过的组件组合在一起，构成YOLO目标检测算法。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/yolo%E7%AE%97%E6%B3%951.JPG" width="100%" height="100%"> 训练阶段：</p>
+<ul>
+<li>假设检测三类物体：行人，车辆和摩托车。采用的是$3 \times 3$的网格划分。采用两个anchor box。</li>
+<li>对于训练集$(x,y)$：<ul>
+<li>$x$为输入图像，维度为$100 \times 100 \times 3$</li>
+<li>标签$y$的维度为$3 \times 3 \times 16$，即$3 \times 3 \times (2\times 8)$。每个$1 \times 1 \times 16$对应一个网格的目标标签，共9个网格。</li>
+<li>例如对于不含物体的网格，其标签$y$（$1 \times 1 \times 16$）应该为：<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \\ Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]= \left [ \begin{matrix} 0 \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \\ 0 \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \end{matrix} \right ]</script>。对于含有车辆（分配给Anchor box2）的网格，其标签$y$（$1 \times 1 \times 16$）应该为：<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \\ Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]= \left [ \begin{matrix} 0 \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \\ ? \\ 1 \\ bx \\ by \\ bh \\ bw \\ 0 \\ 1 \\ 0 \end{matrix} \right ]</script></li>
+</ul>
+</li>
+<li>构建CNN，通过选择卷积层及池化层的参数，使得输入$x$后，输出的尺寸为$3 \times 3 \times 16$。同样本标签$y$的维度相等，因此可以用反向传播算法有监督的对网络进行训练。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/yolo%E7%AE%97%E6%B3%952.JPG" width="100%" height="100%"> 预测阶段：</p>
+<ul>
+<li>将图片$x$输入网络，输出维度为$3 \times 3 \times 16$。其中，对于不包含物体的网格，其输出向量应为：<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \\ Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]= \left [ \begin{matrix} 0 \\ .. \\ .. \\ .. \\ .. \\ .. \\ .. \\ .. \\ 0 \\ .. \\ .. \\ .. \\ .. \\ .. \\ .. \\ .. \end{matrix} \right ]</script>。对于包含车辆的网格，其输出向量应为：<script type="math/tex">y=\left [ \begin{matrix} Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \\ Pc \\ bx \\ by \\ bh \\ bw \\ c1 \\ c2 \\ c3 \end{matrix} \right ]= \left [ \begin{matrix} 0 \\ .. \\ .. \\ .. \\ .. \\ .. \\ .. \\ .. \\ 1 \\ bx \\ by \\ bh \\ bw \\ 0 \\ 1 \\ 0 \end{matrix} \right ]</script>。”..”代表网络输出的一些无意义的数字（网络不会输出问号）。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/yolo%E7%AE%97%E6%B3%95%E6%B3%953.JPG" width="100%" height="100%"> 进行极大值抑制：</p>
+<ul>
+<li>对每一类，分别独立的进行一次非极大值抑制。即分别对行人，车辆及摩托车分别进行一次极大值抑制。</li>
+<li>最后的结果，作为算法的输出结果。</li>
+</ul>
+<h3 id="区域建议"><a href="#区域建议" class="headerlink" title="区域建议"></a>区域建议</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%BA%E5%9F%9F%E5%BB%BA%E8%AE%AE1.JPG" width="100%" height="100%"> R-CNN：</p>
+<ul>
+<li>基于滑动窗口的目标检测算法(无论是原始的，还是卷积实现)，对于整张图片中的每一个滑动窗口，都会通过CNN去检测。对于其中很多的明显没有任务物体的窗口，通过CNN去处理它们是浪费时间的。</li>
+<li>R-CNN(基于区域的CNN)的做法是尝试选出一些区域，然后通过CNN进行检测。<ul>
+<li>R-CNN给出区域建议(region proposals)的做法是运行图像分割算法(结果如图)，其中一些色块(如2000个)的矩形包围边框，即是给出的区域建议。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%8C%BA%E5%9F%9F%E5%BB%BA%E8%AE%AE2.JPG" width="80%" height="80%"></p>
+<ul>
+<li>R-CNN：给出建议区域(通过图像分割算法)；每次对一个区域进行分类；输出类别标签+包围边框。<ul>
+<li>R-CNN并不是以色块的包围边框为最后的预测包围边框，而是会输出包围边框($b_x,b_y,b_h,b_w$)，因此可以得到精确的包围边框。</li>
+<li>缺点：太慢。</li>
+</ul>
+</li>
+<li>Fast R-CNN：给出建议区域；通过滑动窗口的卷积实现去分类所有的建议区域（R-CNN一次只对一个建议区域做分类）。<ul>
+<li>缺点：给出建议区域的步骤仍然过慢。</li>
+</ul>
+</li>
+<li>Faster R-CNN：用CNN进行区域建议(RPN网络)。<ul>
+<li>缺点：比Fast R-CNN快，但仍比YOLO慢很多，达不到实时。</li>
+</ul>
+</li>
+</ul>
+<p>吴恩达的观点：</p>
+<ul>
+<li>区域建议(region proposals)的思想，在计算机视觉领域有着相当大的影响，值得去了解这些算法。</li>
+<li>但这类方法需要分成两个步骤：先是得到建议区域，然后再进行分类。相比较之下，从长远的角度看，一步到位的YOLO这类算法，才是有发展前景的方向。</li>
+</ul>
+<h1 id="4-特殊应用：人脸识别和风格迁移"><a href="#4-特殊应用：人脸识别和风格迁移" class="headerlink" title="4.特殊应用：人脸识别和风格迁移"></a>4.特殊应用：人脸识别和风格迁移</h1><h2 id="4-1-人脸识别"><a href="#4-1-人脸识别" class="headerlink" title="4.1 人脸识别"></a>4.1 人脸识别</h2><h3 id="什么是人脸识别"><a href="#什么是人脸识别" class="headerlink" title="什么是人脸识别"></a>什么是人脸识别</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB.JPG" width="80%" height="80%"> 人脸验证和人脸识别的区别：</p>
+<ul>
+<li>人脸验证(face verification)：<ul>
+<li>输入：一张人脸图片以及姓名/ID</li>
+<li>输出：图片中是否为声称的那个人</li>
+</ul>
+</li>
+<li>人脸识别(face recognition)：<ul>
+<li>有$K$个人的数据集</li>
+<li>输入：人脸图片</li>
+<li>输出：如果输入图片中是$K$个人中的一个，则输出姓名/ID</li>
+</ul>
+</li>
+<li>人脸验证是一对一问题，人脸识别是1对多问题，人脸识别比人脸验证更难。假设人脸验证系统的错误率是1%，那么在人脸识别中，则相应的错误率就会增加，约$K$%。因此要构建人脸识别，需要使得人脸验证模块达到很高的准确率如(99%)，才能将人脸验证模块用于人脸识别系统中，使得人脸识别系统有高准确率。</li>
+</ul>
+<h3 id="One-shot-learning"><a href="#One-shot-learning" class="headerlink" title="One-shot learning"></a>One-shot learning</h3><p>对于人类识别任务，挑战之一是要解决One-shot learning问题。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/one-shot%20learning1.JPG" width="80%" height="80%"> </p>
+<ul>
+<li>One-shot learning：仅从一个样本中学习，然后再次识别出这个人。</li>
+<li>如图，左侧为拥有的数据库，有四个员工的各一个样本。</li>
+<li>对于该人脸识别任务，不好的解决方法：将四个样本，通过CNN进行训练，输出层为softmax层。<ul>
+<li>缺点一：如此小的训练集，不足以训练一个鲁棒的CNN。</li>
+<li>缺点二：若有新员工加入，需要修改CNN的softmax层，且需要重新训练。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/one-shot%20learning2.JPG" width="80%" height="80%"> 对于该人脸识别任务，正确的解决方法：</p>
+<ul>
+<li>首先， 通过训练神经网络，去学习一个相似度函数(similarity function)：<ul>
+<li>$d(img1,img2)=degree\ of\ difference\ between\ images$</li>
+<li>$d(img1,img2)≤\tau$: 则判断为同一个人</li>
+<li>$d(img1,img2)&gt;\tau$: 则判断为不是同一个人</li>
+<li>这样，通过相似度函数，解决了<strong>人脸验证(face verification)</strong>问题。</li>
+</ul>
+</li>
+<li>然后用于人脸识别任务中，将测试图像与数据库中的每一图像进行相似度计算，找出匹配的那个人。</li>
+<li>若有新员工加入，只需将他的人脸图像加入数据库，系统依然能照常工作。</li>
+</ul>
+<h3 id="Siamese-network"><a href="#Siamese-network" class="headerlink" title="Siamese network"></a>Siamese network</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Siamese%E7%BD%91%E7%BB%9C1.JPG" width="80%" height="80%"> 通过Siamese network来学习相似度函数$d(img1,img2)$：</p>
+<ul>
+<li>如图，输入为图像$x^{(1)}$。</li>
+<li>通过典型的CNN结构(卷积层-&gt;池化层-&gt;全连接层)，最终得到全连接层输出的特征向量，其维度为$(128,1)$。</li>
+<li>该全连接层输出的特征向量可以看成是对图片$x^{(1)}$的编码(encoding)，记为$f(x^{(1)})$。</li>
+<li>要比较两张图片$x^{(1)}$和$x^{(2)}$的相似度：<ul>
+<li>将$x^{(2)}$喂给上述网络，得到图片$x^{(2)}$的编码(encoding)，即$f(x^{(2)})$</li>
+<li>计算相似度函数$d(x^{(1)},x^{(2)})$，$d(x^{(1)},x^{(2)})$的定义为$f(x^{(1)})$与$f(x^{(2)})$之差的L2范数，即$d(x^{(1)},x^{(2)})=||f(x^{(1)})-f(x^{(2)})||_2^2$</li>
+</ul>
+</li>
+<li>该网络源自论文DeepFace。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/Siamese%E7%BD%91%E7%BB%9C2.JPG" width="80%" height="80%"> Siamese network学习的目标：</p>
+<ul>
+<li>Siamese network的参数决定了$f(x^{(i)})$</li>
+<li>因此相通过学习Siamese network的参数，达到如下目的：<ul>
+<li>若$x^{(i)}$，$x^{(j)}$是同一个人，则$||f(x^{(1)})-f(x^{(2)})||^2$较小</li>
+<li>若$x^{(i)}$，$x^{(j)}$不是同一个人，则$||f(x^{(1)})-f(x^{(2)})||^2$较大</li>
+</ul>
+</li>
+<li>对于如何定义代价函数，下节介绍triplet损失函数。</li>
+</ul>
+<h3 id="Triplet-loss-function"><a href="#Triplet-loss-function" class="headerlink" title="Triplet loss function"></a>Triplet loss function</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/tripletloss1.JPG" width="80%" height="80%"> </p>
+<ul>
+<li>Triplet Loss需要每个样本包含三张图片：Anchor、Positive、Negative，这就是triplet名称的由来。</li>
+<li>将三张图片(Anchor,Positive,Negative)的编码简写为$f(A),f(P),f(N)$，由上一节内容可知，我们希望$f(A)$和$f(P)$的距离较小，即$||f(A)-f(P)||^2$较小，而$f(A)$和$f(N)$的距离较大，即$||f(A)-f(N)||^2$较大：<ul>
+<li>$||f(A)-f(P)||^2\leq ||f(A)-F(N)||^2$</li>
+<li>$||f(A)-f(P)||^2-||f(A)-F(N)||^2\leq 0$</li>
+</ul>
+</li>
+<li>对于上面的不等式，若$f(x^{(i)})$恒为0，会使得$f(A)=0$,$f(P)=0$,$f(N)=0$，那么上述不等式也满足。因此，对上述不等式做出如下修改，通过添加一个超参数 $\alpha(\alpha&gt;0)$，以避免$f(x^{(i)})$恒为0的情况：<ul>
+<li>$||f(A)-f(P)||^2-||f(A)-F(N)||^2\leq -\alpha$</li>
+<li>$||f(A)-f(P)||^2-||f(A)-F(N)||^2+\alpha \leq 0$</li>
+<li>其中，$\alpha$也被称为间隔(margin)，类似支持向量机中的间隔(margin)。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/tripletloss2.JPG" width="80%" height="80%"> </p>
+<ul>
+<li>定义triplet loss function：给定3张图片(Anchor、Positive、Negative)，$L(A,P,N)=max(||f(A)-f(P)||^2-||f(A)-F(N)||^2+\alpha,\ 0)$<ul>
+<li>解释：若$||f(A)-f(P)||^2-||f(A)-F(N)||^2+\alpha\leq 0$，则$L(A,P,N)=0$，没有惩罚。</li>
+<li>若$||f(A)-f(P)||^2-||f(A)-F(N)||^2+\alpha &gt;  0$，则$L(A,P,N)=||f(A)-f(P)||^2-||f(A)-F(N)||^2+\alpha$，较大惩罚。</li>
+</ul>
+</li>
+<li>cost function：$J=\sum_{i=1}^mL(A^{(i)},P^{(i)},N^{(i)})$</li>
+<li>假如训练集为1k个人的10k张图片，组成不同的三元组(Anchor、Positive、Negative)，然后进行训练网络，使用梯度下降法，最小化代价函数$J$。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/tripletloss3.JPG" width="80%" height="80%"> 训练样本中三元组(Anchor、Positive、Negative)选择：</p>
+<ul>
+<li>若三元组(Anchor、Positive、Negative)是随意选择的，意为只要求Anchor和Positive是一个人，Negative是另一个人。那么，$d(A,P)+\alpha\leq d(A,N)$这个条件很容易满足。在训练网络的过程中，学习不到有用的东西。</li>
+<li>应该选择较难的三元组(Anchor、Positive、Negative)，来用于网络的训练。<ul>
+<li>想要满足$d(A,P)+\alpha\leq d(A,N)$，则较难的三元组(Anchor、Positive、Negative)，意味着$d(A,P)\approx d(A,N)$。这样算法会尽力使得$d(A,N)$变大，使得$d(A,P)$变小。在训练网络的过程中，才能学习到有用的东西。</li>
+</ul>
+</li>
+<li>更多细节在论文FaceNet中。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/tripletloss4.JPG" width="80%" height="80%"> </p>
+<ul>
+<li>一些(Anchor、Positive、Negative)的例子。</li>
+</ul>
+<p>最后，现在许多商业公司构建的大型人脸识别模型都需要百万级别甚至上亿的训练样本。如此之大的训练样本我们一般很难获取。但是一些公司将他们训练的人脸识别模型发布在了网上，我们可以下载这些预训练的模型进行使用，而不是一切从头开始。</p>
+<h3 id="人脸验证和二元分类"><a href="#人脸验证和二元分类" class="headerlink" title="人脸验证和二元分类"></a>人脸验证和二元分类</h3><p>Triplet loss 是学习人脸识别CNN的参数的好方法，还有其他的参数学习方法，即将人脸识别问题看成二元分类问题。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BA%BA%E8%84%B8%E9%AA%8C%E8%AF%81%E5%92%8C%E4%BA%8C%E5%85%83%E5%88%86%E7%B1%BB1.JPG" width="80%" height="80%">  </p>
+<ul>
+<li>如图，选取Siamese network，将两个全连接层的输出给一个逻辑回归单元，然后进行预测。</li>
+<li>若是同一个人，则输出1；若是不同的人，则输出0。这样就将人脸识别问题看成二元分类问题。</li>
+<li>对于最后的逻辑单元，输出$\hat y$表达式为：<ul>
+<li>$\hat y=\sigma(\sum_{k=1}^Kw_k|f(x^{(i)})_k-f(x^{(j)})_k|+b)$</li>
+<li>$\hat y=\sigma(\sum_{k=1}^Kw_k\frac{(f(x^{(i)})_k-f(x^{(j)})_k)^2}{f(x^{(i)})_k+f(x^{(j)})_k}+b)$，上式被称为$\chi$ 方公式，也叫$\chi$方相似度。</li>
+<li>具体见DeepFace论文。</li>
+</ul>
+</li>
+<li>该节可再回顾下视频。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BA%BA%E8%84%B8%E9%AA%8C%E8%AF%81%E5%92%8C%E4%BA%8C%E5%85%83%E5%88%86%E7%B1%BB2.JPG" width="80%" height="80%"> </p>
+<ul>
+<li>如图，对于此方法，$x$为一对人脸图片，输出标签为1或0。然后去训练Siamese network。</li>
+</ul>
+<h2 id="4-2-风格迁移"><a href="#4-2-风格迁移" class="headerlink" title="4.2 风格迁移"></a>4.2 风格迁移</h2><h3 id="什么是风格迁移"><a href="#什么是风格迁移" class="headerlink" title="什么是风格迁移"></a>什么是风格迁移</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%80%E4%B9%88%E6%98%AF%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB.JPG" width="80%" height="80%"> </p>
+<ul>
+<li>如图，列出几个神经风格迁移的例子。神经风格迁移是CNN模型一个非常有趣的应用，它可以实现将一张图片的风格“迁移”到另外一张图片中，生成具有其特色的图片。</li>
+<li>一般用C表示内容(Content)图片，S表示风格(Style)图片，G表示生成的(Generated)图片。</li>
+</ul>
+<h3 id="深度卷积神经网络学习到的是什么？"><a href="#深度卷积神经网络学习到的是什么？" class="headerlink" title="深度卷积神经网络学习到的是什么？"></a>深度卷积神经网络学习到的是什么？</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B7%B1%E5%BA%A6%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E5%88%B0%E7%9A%84%E6%98%AF%E4%BB%80%E4%B9%881.JPG" width="80%" height="80%"> 可视化深度卷积神经网络的每一层学习到了什么：</p>
+<ul>
+<li>可视化方法：选择第一个隐藏层的一个神经元，找出使得该神经元激活值最大化的9个图像块。</li>
+<li>如图右侧，每一个$3\times 3$的小区域，即为使得一个神经元激活值最大的9个图像块。</li>
+<li>源自论文Visualizing and understand convolutional networks。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E6%B7%B1%E5%BA%A6%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E5%88%B0%E7%9A%84%E6%98%AF%E4%BB%80%E4%B9%882.JPG" width="80%" height="80%"><br>可视化的结果可以理解为：</p>
+<ul>
+<li>第一层的隐藏神经元通常会寻找相对简单的特征，比如边缘(edge)、颜色阴影(shade of color)。</li>
+<li>第二层的隐藏神经元检测到的是纹理(texture)。越深层的神经元检测到越复杂的物体。</li>
+<li>浅层网络的感受野(receptive field)较小，深层网络的感受野较大（网络越深，感受野越大）。</li>
+</ul>
+<h3 id="代价函数"><a href="#代价函数" class="headerlink" title="代价函数"></a>代价函数</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B01.JPG" width="80%" height="80%"></p>
+<ul>
+<li>对于内容图片C，风格图片S，生成图片G：为了实现风格迁移，定义一个关于$G$的代价函数$J(G)$，用来评价生成图像的好坏。</li>
+<li>用梯度下降法最小化$J(G)$，可以生成想要的任何图片。</li>
+<li>定义生成图片G的代价函数：<script type="math/tex">J(G)=\alpha \cdot J_{content}(C,G)+\beta \cdot J_{style}(S,G)</script><ul>
+<li>其中，$J_{content}(C,G)$为内容代价函数，它用来衡量C的内容与G的内容有多相似。</li>
+<li>$J_{style}(S,G)$是风格代价函数，它用来衡量S的内容与G的内容有多相似。</li>
+<li><script type="math/tex">\alpha</script>,<script type="math/tex">\beta</script>是超参数，用来调整<script type="math/tex">J_{content}(C,G)</script>与<script type="math/tex">J_{style}(S,G)</script>的权重。</li>
+<li>用<script type="math/tex">\alpha</script>,<script type="math/tex">\beta</script>这两个超参数来控制权重，似乎有些冗余。但原论文中就是这样，故保持一致。</li>
+</ul>
+</li>
+<li>源自论文A neual algorithm of artistic style。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B02.JPG" width="80%" height="80%"> 在定义了$J(G)$后，为了生成新的图像：</p>
+<ul>
+<li>随机初始化生成图像$G$，比如G的尺寸为$100\times 10 \times 3$</li>
+<li>用梯度下降法去最小化$J(G)$<ul>
+<li>$G=G-\frac{\partial}{\partial G}J(G)$</li>
+<li>不断更新G的像素值，使得$J(G)$不断减小，从而使G逐渐有C的内容和G的风格。</li>
+</ul>
+</li>
+<li>如图右侧从随机初始化生成图像$G$，到不断更新G后G的结果。</li>
+</ul>
+<h3 id="内容代价函数"><a href="#内容代价函数" class="headerlink" title="内容代价函数"></a>内容代价函数</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E5%86%85%E5%AE%B9%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B0.JPG" width="80%" height="80%"><br>对于$J(G)$的第一部分$J_{content}(C,G)$，它表示内容图片C与生成图片G之间的相似度。</p>
+<ul>
+<li>使用一个预训练好的CNN模型，例如VGG网络。C，S，G共用相同模型和参数。</li>
+<li>首先，需要选择合适的层数$l$来计算$J_{content}(C,G)$。根据上一小节的内容，CNN的每个隐藏层分别提取原始图片的不同深度特征，由简单到复杂。如果$l$太小，则G与C在像素上会非常接近，没有迁移效果；如果$l$太深，则G上某个区域将直接会出现C中的物体。因此，$l$既不能太浅也不能太深，一般选择网络中间层。</li>
+<li>然后计算C和G在$l$层的激活函数输出<script type="math/tex">a^{[l](C)}</script>与<script type="math/tex">a^{[l](G)}</script>。</li>
+<li>$J_{content}(C,G)$的定义为：<ul>
+<li><script type="math/tex; mode=display">J_{content}(C,G)=\frac12||a^{[l](C)}-a^{[l](G)}||^2</script></li>
+</ul>
+</li>
+<li>使用梯度下降算法，使$J_{content}(C,G)$不断减小。即可使得<script type="math/tex">a^{[l](C)}</script>与<script type="math/tex">a^{[l](G)}</script>越相似，即C和G越相似。</li>
+</ul>
+<h3 id="风格代价函数"><a href="#风格代价函数" class="headerlink" title="风格代价函数"></a>风格代价函数</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%A3%8E%E6%A0%BC%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B01.JPG" width="80%" height="80%"></p>
+<ul>
+<li>什么是图片的风格？利用CNN网络模型，图片的风格可以定义成第$l$层隐藏层不同通道间激活函数的乘积（相关性）。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%A3%8E%E6%A0%BC%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B02.JPG" width="80%" height="80%"></p>
+<ul>
+<li>例如我们选取第$l$层隐藏层，其各通道使用不同颜色标注，如下图所示。因为每个通道提取图片的特征不同，比如1通道（红色）提取的是图片的垂直纹理特征，2通道（黄色）提取的是图片的橙色背景特征。那么计算这两个通道的相关性大小，相关性越大，表示原始图片及既包含了垂直纹理也包含了该橙色背景；相关性越小，表示原始图片并没有同时包含这两个特征。也就是说，计算不同通道的相关性，反映了原始图片特征间的相互关系，从某种程度上刻画了图片的“风格”。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%A3%8E%E6%A0%BC%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B03.JPG" width="80%" height="80%"></p>
+<ul>
+<li>接下来我们就可以定义图片的风格矩阵（style matrix）为：<ul>
+<li><script type="math/tex; mode=display">G_{kk'}^{[l]}=\sum_{i=1}^{n_H^{[l]}}\sum_{j=1}^{n_W^{[l]}}a_{ijk}^{[l]}a_{ijk'}^{[l]}</script></li>
+<li>其中，$[l]$表示第$l$层隐藏层，$k$，$k’$分别表示不同通道，总共通道数为<script type="math/tex">n_C^{[l]}</script>。$i$，$j$分别表示该隐藏层的高度和宽度。风格矩阵<script type="math/tex">G_{kk'}^{[l]}</script>计算第$l$层隐藏层不同通道对应的所有激活函数输出和。<script type="math/tex">G_{kk'}^{[l]}</script>的维度为 <script type="math/tex">n_c^{[l]}\times n_c^{[l]}</script>。若两个通道之间相似性高，则对应的<script type="math/tex">G_{kk'}^{[l]}</script>较大；若两个通道之间相似性低，则对应的<script type="math/tex">G_{kk'}^{[l]}</script>较小。</li>
+</ul>
+</li>
+<li>风格矩阵<script type="math/tex">G_{kk'}^{[l](S)}</script>表征了风格图片S第$l$层隐藏层的“风格”。相应地，生成图片G也有<script type="math/tex">G_{kk'}^{[l](G)}</script>。那么，<script type="math/tex">G_{kk'}^{[l][S]}</script>与<script type="math/tex">G_{kk'}^{[l][G]}</script>越相近，则表示G的风格越接近S。</li>
+<li>这样，我们就可以定义出<script type="math/tex">J^{[l]}_{style}(S,G)</script>的表达式：<ul>
+<li><script type="math/tex; mode=display">J^{[l]}_{style}(S,G)=\frac{1}{(2n_H^{[l]}n_W^{[l]}n_C^{[l]})}\sum_{k=1}^{n_H^{[l]}}\sum_{k'=1}^{n_W^{[l]}}||G_{kk'}^{[l][S]}-G_{kk'}^{[l][G]}||^2</script></li>
+</ul>
+</li>
+<li>定义完<script type="math/tex">J^{[l]}_{style}(S,G)</script>之后，我们的目标就是使用梯度下降算法，不断迭代修正G的像素值，使<script type="math/tex">J^{[l]}_{style}(S,G)</script>不断减小。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E9%A3%8E%E6%A0%BC%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B04.JPG" width="80%" height="80%"></p>
+<ul>
+<li>以上我们只比较计算了一层隐藏层$l$。为了提取的“风格”更多，也可以使用多层隐藏层，然后相加，表达式为：<ul>
+<li><script type="math/tex; mode=display">J_{style}(S,G)=\sum_l\lambda^{[l]}\cdot J^{[l]}_{style}(S,G)</script></li>
+<li>其中，<script type="math/tex">\lambda^{[l]}</script>表示累加过程中各层<script type="math/tex">J^{[l]}_{style}(S,G)</script>的权重系数，为超参数。</li>
+</ul>
+</li>
+<li>根据以上两小节的推导，最终的代价函数为：<ul>
+<li><script type="math/tex; mode=display">J(G)=\alpha \cdot J_{content}(C,G)+\beta \cdot J_{style}(S,G)</script></li>
+<li>使用梯度下降算法进行迭代优化即可。</li>
+</ul>
+</li>
+</ul>
+<h3 id="从1维卷积到3维卷积"><a href="#从1维卷积到3维卷积" class="headerlink" title="从1维卷积到3维卷积"></a>从1维卷积到3维卷积</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%8E1%E7%BB%B4%E5%8D%B7%E7%A7%AF%E5%88%B03%E7%BB%B4%E5%8D%B7%E7%A7%AF1.JPG" width="80%" height="80%"></p>
+<ul>
+<li>之前介绍的CNN网络处理的都是2D图片，2D卷积的规则：<ul>
+<li>输入图片维度：14 x 14 x 3</li>
+<li>滤波器尺寸：5 x 5 x 3，滤波器个数：16</li>
+<li>输出图片维度：10 x 10 x 16</li>
+</ul>
+</li>
+<li>将2D卷积推广到1D卷积，1D卷积的规则：<ul>
+<li>输入时间序列维度：14 x 1</li>
+<li>滤波器尺寸：5 x 1，滤波器个数：16</li>
+<li>输出时间序列维度：10 x 16</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B4/%E4%BB%8E1%E7%BB%B4%E5%8D%B7%E7%A7%AF%E5%88%B03%E7%BB%B4%E5%8D%B7%E7%A7%AF2.JPG" width="80%" height="80%"></p>
+<ul>
+<li>对于3D卷积，其规则：<ul>
+<li>输入3D图片维度：14 x 14 x 14 x 1</li>
+<li>滤波器尺寸：5 x 5 x 5 x 1，滤波器个数：16</li>
+<li>输出3D图片维度：10 x 10 x 10 x 16</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/08/深度学习课程(三)构建机器学习项目/" rel="next" title="深度学习课程(三)构建机器学习项目">
+                <i class="fa fa-chevron-left"></i> 深度学习课程(三)构建机器学习项目
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/02/EM算法/" rel="prev" title="EM算法">
+                EM算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">弥补快速遗忘的记忆</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lm.zhang@aliyun.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-卷积神经网络基础"><span class="nav-text">1.卷积神经网络基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-卷积神经网络"><span class="nav-text">1.1 卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#计算机视觉"><span class="nav-text">计算机视觉</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#边缘检测示例"><span class="nav-text">边缘检测示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更多边缘检测内容"><span class="nav-text">更多边缘检测内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#填充"><span class="nav-text">填充</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#步长"><span class="nav-text">步长</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对体进行卷积操作"><span class="nav-text">对体进行卷积操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单层卷积网络"><span class="nav-text">单层卷积网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的卷积网络示例"><span class="nav-text">简单的卷积网络示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#池化层"><span class="nav-text">池化层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#卷积神经网络示例"><span class="nav-text">卷积神经网络示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么使用卷积层？"><span class="nav-text">为什么使用卷积层？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-深度卷积模型：案例学习"><span class="nav-text">2.深度卷积模型：案例学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-案例学习"><span class="nav-text">2.1 案例学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么进行案例学习"><span class="nav-text">为什么进行案例学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#经典卷积网络"><span class="nav-text">经典卷积网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ResNets"><span class="nav-text">ResNets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RestNets为何有效"><span class="nav-text">RestNets为何有效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Network-in-NetWork以及1x1卷积"><span class="nav-text">Network in NetWork以及1x1卷积</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Inception-Network动机"><span class="nav-text">Inception Network动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Inception-Network"><span class="nav-text">Inception Network</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-使用卷积网络的实用建议"><span class="nav-text">2.2 使用卷积网络的实用建议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用开源实现"><span class="nav-text">使用开源实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#迁移学习"><span class="nav-text">迁移学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据增强"><span class="nav-text">数据增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算机视觉的现状"><span class="nav-text">计算机视觉的现状</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-目标检测"><span class="nav-text">3.目标检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-检测算法"><span class="nav-text">3.1 检测算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标定位"><span class="nav-text">目标定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特征点检测"><span class="nav-text">特征点检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标检测"><span class="nav-text">目标检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#滑动窗口的卷积实现"><span class="nav-text">滑动窗口的卷积实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#包围边框预测"><span class="nav-text">包围边框预测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交并比"><span class="nav-text">交并比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非极大值抑制"><span class="nav-text">非极大值抑制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Anchor-Boxes"><span class="nav-text">Anchor Boxes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YOLO算法"><span class="nav-text">YOLO算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区域建议"><span class="nav-text">区域建议</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-特殊应用：人脸识别和风格迁移"><span class="nav-text">4.特殊应用：人脸识别和风格迁移</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-人脸识别"><span class="nav-text">4.1 人脸识别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是人脸识别"><span class="nav-text">什么是人脸识别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#One-shot-learning"><span class="nav-text">One-shot learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Siamese-network"><span class="nav-text">Siamese network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Triplet-loss-function"><span class="nav-text">Triplet loss function</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#人脸验证和二元分类"><span class="nav-text">人脸验证和二元分类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-风格迁移"><span class="nav-text">4.2 风格迁移</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是风格迁移"><span class="nav-text">什么是风格迁移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深度卷积神经网络学习到的是什么？"><span class="nav-text">深度卷积神经网络学习到的是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代价函数"><span class="nav-text">代价函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内容代价函数"><span class="nav-text">内容代价函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#风格代价函数"><span class="nav-text">风格代价函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从1维卷积到3维卷积"><span class="nav-text">从1维卷积到3维卷积</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

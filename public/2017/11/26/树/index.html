@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="栈,队列," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.树的基本概念1.1 树的定义树是$n(n≥0)$个结点的有限集：  $n=0$时称为空树； 对于任意一颗非空树($n&amp;gt;0$)，它具备以下性质： 有且仅有一个特定的称为根（Root）的结点，根结点唯一；  当$n＞1$时，其余结点可分为$m(m&amp;gt;0)$个互不相交的有限集 $T_1$、$T_2$、… 、$T_m$，其中每一个集合本身又是一棵树，并且称为根的子树（SubTree）。子树的">
+<meta name="keywords" content="栈,队列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树">
+<meta property="og:url" content="http://yoursite.com/2017/11/26/树/index.html">
+<meta property="og:site_name" content="Limin&#39;s Notes">
+<meta property="og:description" content="1.树的基本概念1.1 树的定义树是$n(n≥0)$个结点的有限集：  $n=0$时称为空树； 对于任意一颗非空树($n&amp;gt;0$)，它具备以下性质： 有且仅有一个特定的称为根（Root）的结点，根结点唯一；  当$n＞1$时，其余结点可分为$m(m&amp;gt;0)$个互不相交的有限集 $T_1$、$T_2$、… 、$T_m$，其中每一个集合本身又是一棵树，并且称为根的子树（SubTree）。子树的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E7%BB%93%E7%82%B9%E5%88%86%E7%B1%BB%E5%8F%8A%E5%85%B3%E7%B3%BB%E7%A4%BA%E4%BE%8B%E5%9B%BE.jpeg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E7%BB%93%E7%82%B9%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%92%8C%E9%AB%98%E5%BA%A6.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E7%BB%93%E7%82%B9%E7%9A%84%E5%B1%82%E6%AC%A1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E6%A0%91%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%92%8C%E6%A0%91%E7%9A%84%E9%AB%98%E5%BA%A6.png">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E7%89%B9%E6%AE%8A%E4%BA%8C%E5%8F%89%E6%A0%91.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91_%E9%A1%BA%E5%BA%8F%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84.JPG">
+<meta property="og:image" content="
+http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%A1%BA%E5%BA%8F%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E7%A4%BA%E4%BE%8B2.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91_%E9%93%BE%E8%A1%A8%E5%AD%98%E5%82%A8.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E5%8E%86.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E5%8E%86.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%90%8E%E5%BA%8F%E9%81%8D%E5%8E%86.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86.jpg">
+<meta property="og:image" content="
+http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E7%A4%BA%E4%BE%8B.png">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E7%A4%BA%E4%BE%8B.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E5%A0%86%E7%A4%BA%E4%BE%8B.JPG">
+<meta property="og:updated_time" content="2018-01-26T06:40:16.140Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="树">
+<meta name="twitter:description" content="1.树的基本概念1.1 树的定义树是$n(n≥0)$个结点的有限集：  $n=0$时称为空树； 对于任意一颗非空树($n&amp;gt;0$)，它具备以下性质： 有且仅有一个特定的称为根（Root）的结点，根结点唯一；  当$n＞1$时，其余结点可分为$m(m&amp;gt;0)$个互不相交的有限集 $T_1$、$T_2$、… 、$T_m$，其中每一个集合本身又是一棵树，并且称为根的子树（SubTree）。子树的">
+<meta name="twitter:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E7%BB%93%E7%82%B9%E5%88%86%E7%B1%BB%E5%8F%8A%E5%85%B3%E7%B3%BB%E7%A4%BA%E4%BE%8B%E5%9B%BE.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/26/树/"/>
+
+
+
+
+
+  <title>树 | Limin's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Limin's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/26/树/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Limin's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">树</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-26T21:12:00+08:00">
+                2017-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-树的基本概念"><a href="#1-树的基本概念" class="headerlink" title="1.树的基本概念"></a>1.树的基本概念</h1><h2 id="1-1-树的定义"><a href="#1-1-树的定义" class="headerlink" title="1.1 树的定义"></a>1.1 树的定义</h2><p>树是$n(n≥0)$个结点的有限集：</p>
+<ul>
+<li>$n=0$时称为空树；</li>
+<li>对于任意一颗非空树($n&gt;0$)，它具备以下性质：<ul>
+<li>有且仅有一个特定的称为根（Root）的结点，根结点唯一； </li>
+<li>当$n＞1$时，其余结点可分为$m(m&gt;0)$个互不相交的有限集 $T_1$、$T_2$、… 、$T_m$，其中每一个集合本身又是一棵树，并且称为根的子树（SubTree）。子树的个数没有限制，但它们一定互不相交。</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a> 
+<h2 id="1-2-相关概念"><a href="#1-2-相关概念" class="headerlink" title="1.2 相关概念"></a>1.2 相关概念</h2><ul>
+<li>结点分类：根节点、内部结点、叶结点或终端结点。</li>
+<li>结点的关系：<ul>
+<li>父节点：若一个节点含有子节点，则这个节点称为其子节点的父节点。</li>
+<li>孩子节点：一个节点含有的子树的根节点称为该节点的子节点。</li>
+<li>兄弟节点：具有相同父节点的节点互称为兄弟节点。</li>
+</ul>
+</li>
+<li>结点的度：结点拥有的子树数。度为0的结点称为叶结点或终端结点；度不为0的结点称为非终端结点或分支结点；除根结点之外，分支结点也称为内部结点。</li>
+<li>树的度：树的度是树内各结点的度的最大值。</li>
+<li>结点的深度（Depth）：结点$n$的深度为从根结点到$n$的唯一路径长，根结点的深度为0（或1，两种表示方法都有）；</li>
+<li>结点的层次（Level）：从根开始定义起，根为第0层（或1，两种表示方法都有），根的子节点为第1层，以此类推。同结点的深度；</li>
+<li>树的深度：深度最大的叶结点的深度就是树的深度。</li>
+<li>结点的高度（Height）：对于任意节点$n$，$n$的高度为任一叶结点到$n$的最长路径长，所有叶结点的高度为0（或1，两种表示方法都有）；<ul>
+<li>对于高度，类比于想知道一栋楼房的高度，从下往上数看有几层。</li>
+</ul>
+</li>
+<li>树的高度：根结点的高度就是树的高度。</li>
+<li>总结：树的高度和深度是相等的。但对于树中相同深度的每个结点来说，它们的高度不一定相同，反之亦然。</li>
+</ul>
+<p>示例：</p>
+<ul>
+<li>结点分类及关系示例图：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E7%BB%93%E7%82%B9%E5%88%86%E7%B1%BB%E5%8F%8A%E5%85%B3%E7%B3%BB%E7%A4%BA%E4%BE%8B%E5%9B%BE.jpeg" width="50%" height="50%"></li>
+<li>结点的深度与高度示例图：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E7%BB%93%E7%82%B9%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%92%8C%E9%AB%98%E5%BA%A6.JPG" width="50%" height="50%"></li>
+<li>结点的层次示例图（同结点的深度）：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E7%BB%93%E7%82%B9%E7%9A%84%E5%B1%82%E6%AC%A1.JPG" width="50%" height="50%"></li>
+<li>树的深度和高度示例图（树的深度等于树的高度）:<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E6%A0%91%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%92%8C%E6%A0%91%E7%9A%84%E9%AB%98%E5%BA%A6.png" width="50%" height="50%"></li>
+</ul>
+<h1 id="2-二叉树"><a href="#2-二叉树" class="headerlink" title="2.二叉树"></a>2.二叉树</h1><h2 id="2-1-二叉树的定义"><a href="#2-1-二叉树的定义" class="headerlink" title="2.1 二叉树的定义"></a>2.1 二叉树的定义</h2><p>二叉树：二叉树是$n$个结点的有限集合，该集合或者为空集（空二叉树），或者由一个根结点和两棵互不相交的，分别称为根结点的左子树和右子树的二叉树组成。</p>
+<p>二叉树的特点：</p>
+<ul>
+<li>每个结点最多有两棵子树，所以二叉树中不存在度大于2的结点；</li>
+<li>左子树和右子树是有顺序的，次序不能任意颠倒；</li>
+<li>即使树中某结点只有一棵子树，也要区分它是左子树还是右子树。</li>
+</ul>
+<p>特殊二叉树：</p>
+<ul>
+<li>斜二叉树：所有的结点都只有左子树的二叉树叫左斜树，所有结点都是只有右子树的二叉树叫右斜树。这两者统称为斜树。斜树有很明显的特点，就是每一层都只有一个结点，结点的个数与二叉树的深度相同。</li>
+<li>满二叉树/完美二叉树：在一棵二叉树中，如果所有分支节点都存在左子树跟右子树，并且所有叶子都在同一层上，这样的二叉树称为满二叉树或完美二叉树。</li>
+<li>完全二叉树：对一棵具有$n$个结点的二叉树按层序编号，如果编号为$i$（$1≤i≤n$） 的结点与同样深度的满二叉树中编号为$i$的结点在二叉树中位置完全相同，则称为完全二叉树。</li>
+<li>示例：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E7%89%B9%E6%AE%8A%E4%BA%8C%E5%8F%89%E6%A0%91.jpg" width="100%" height="100%"></li>
+</ul>
+<h2 id="2-2-二叉树的性质（待）"><a href="#2-2-二叉树的性质（待）" class="headerlink" title="2.2 二叉树的性质（待）"></a>2.2 二叉树的性质（待）</h2><ul>
+<li>性质1： 在二叉树的第$i$层上至多有$2^i-1$个结点（$i≥1$）。</li>
+<li>性质2： 深度为$k$的二叉树至多有$2^k-1$个结点（$k≥1$）。</li>
+<li>性质3： 对任何一棵二叉树T，如果其叶结点数为 $n_0$，度为2的非叶结点个数为 $n_2$，则$n_0=n_2+1$。</li>
+<li>性质4： 具有$n$个结点的完全二叉树的深度为$|log_2n+1|$（$|x|$表示不大于$x$的最大整数）。</li>
+<li>性质5： 如果对一棵有$n$个结点的完全二叉树，其结点按层序编号（从第1层到第层，每层从左到右），对任一结点$i$（$1≤i≤n$）有：<ul>
+<li>如果$i=1$，则结点$i$是二叉树的根，无双亲；如果$i&gt;1$，则其是双亲结点。</li>
+<li>如果$2i&gt;n$，则结点$i$无左孩子（结点$i$为叶子结点）；否则其左孩子是结点$2i$。</li>
+<li>如果$2i+1&gt;n$，则结点$i$无右孩子；否则其右孩子是结点$2i+1$。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-3-二叉树的存储结构"><a href="#2-3-二叉树的存储结构" class="headerlink" title="2.3 二叉树的存储结构"></a>2.3 二叉树的存储结构</h2><h3 id="2-3-1-顺序存储结构"><a href="#2-3-1-顺序存储结构" class="headerlink" title="2.3.1 顺序存储结构"></a>2.3.1 顺序存储结构</h3><p>二叉树的顺序存储结构就是用一维数组存储二叉树中的结点，并且结点的存储位置，也就是数组的下标要能体现结点之间的逻辑关系，比如双亲与孩子的关系，左右兄弟的关系等。<br><strong>顺序存储结构一般只用于完全二叉树</strong>。完全二叉树的顺序存储示例：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91_%E9%A1%BA%E5%BA%8F%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84.JPG" width="70%" height="50%"><br>对于一般的二叉树，尽管层序编号不能反映逻辑关系，但是可以将其按完全二叉树编号，只不过将不存在的结点设置为<code>NULL</code>。示例：<br><img src="
+http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%A1%BA%E5%BA%8F%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E7%A4%BA%E4%BE%8B2.jpg" width="70%" height="50%"><br>假设对于一棵深度为$k$的右斜树，它只有$k$个结点，却需要分配$2^k-1$个存储单元空间，这显然会造成空间浪费。所以，顺序存储结构一般只用于完全二叉树。</p>
+<h3 id="2-3-2-链表存储"><a href="#2-3-2-链表存储" class="headerlink" title="2.3.2 链表存储"></a>2.3.2 链表存储</h3><p>二叉树每个结点最多有两个孩子，设计一个数据域和两个指针域来储存，这样的链表叫做二叉链表。<br>二叉链表的结点结构定义代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 二叉树的二叉链表结点结构定义 */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BiTNode</span>                  </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    ElemType data; <span class="comment">/* 结点数据 */</span>                    </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BiTNode</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span> <span class="comment">/* 左右孩子指针 */</span></span><br><span class="line">&#125; BiTNode, *BiTree;</span><br></pre></td></tr></table></figure></p>
+<p>二叉树的链表存储示例：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91_%E9%93%BE%E8%A1%A8%E5%AD%98%E5%82%A8.jpg" width="60%" height="70%"></p>
+<h2 id="2-4-二叉树的遍历"><a href="#2-4-二叉树的遍历" class="headerlink" title="2.4 二叉树的遍历"></a>2.4 二叉树的遍历</h2><p>二叉树的遍历是指从根结点出发，按照某种次序依次“访问”二叉树中所有结点。“访问”是指对节点的进行某种操作，例如输出节点的值。<br>二叉树的遍历方式主要分为：</p>
+<ul>
+<li>宽度优先(Breadth-first)：层序遍历(Level-order Traversal)</li>
+<li>深度优先(Depth-first)：前序遍历(Preorder Traversal)、中序遍历(Inorder Traversal)、后序遍历(Postorder Traversal)</li>
+</ul>
+<h3 id="2-4-1-前序遍历"><a href="#2-4-1-前序遍历" class="headerlink" title="2.4.1 前序遍历"></a>2.4.1 前序遍历</h3><p>先访问根结点，然后前序遍历左子树，再前序遍历右子树（根左右）。<br>如图所示，遍历的顺序为：ABDGHCEIF。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E5%8E%86.jpg" width="40%" height="40%"><br>代码：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1.递归前序遍历</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node* left;</span><br><span class="line">    Node* right;</span><br><span class="line">    Node(<span class="keyword">int</span> x):data(x),left(<span class="literal">nullptr</span>),right(<span class="literal">nullptr</span>)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preOrder</span><span class="params">(Node* root)</span> <span class="comment">//递归前序遍历</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; root-&gt;data&lt;&lt;<span class="string">' '</span>;</span><br><span class="line">    preOrder(root-&gt;left);</span><br><span class="line">    preOrder(root-&gt;right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node* <span class="title">Insert</span><span class="params">(Node* root, <span class="keyword">int</span> data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node(data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (data &lt;= root-&gt;data) root-&gt;left = Insert(root-&gt;left, data);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;right = Insert(root -&gt; right, data);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*创建树：</span></span><br><span class="line"><span class="comment">                5</span></span><br><span class="line"><span class="comment">              /   \</span></span><br><span class="line"><span class="comment">             3    10</span></span><br><span class="line"><span class="comment">            / \   / \</span></span><br><span class="line"><span class="comment">           2   4 9  20</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">    Node* root = <span class="literal">nullptr</span>;</span><br><span class="line">    root = Insert(root, <span class="number">5</span>); root = Insert(root, <span class="number">10</span>);</span><br><span class="line">    root = Insert(root, <span class="number">3</span>); root = Insert(root, <span class="number">2</span>);</span><br><span class="line">    root = Insert(root, <span class="number">4</span>); root = Insert(root, <span class="number">9</span>);</span><br><span class="line">    root = Insert(root, <span class="number">20</span>);</span><br><span class="line">    preOrder(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5 3 2 4 10 9 20</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//2.非递归前序遍历</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node* left;</span><br><span class="line">    Node* right;</span><br><span class="line">    Node(<span class="keyword">int</span> x) :data(x), left(<span class="literal">nullptr</span>), right(<span class="literal">nullptr</span>)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preOrder</span><span class="params">(Node* root)</span>       <span class="comment">//非递归前序遍历</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">stack</span>&lt;Node*&gt; s;</span><br><span class="line">    Node* p = root;</span><br><span class="line">    <span class="keyword">while</span> (p || !s.empty())     <span class="comment">//直到p空且栈空</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//代码段(i)一直遍历到左子树最下边，边遍历边保存根节点到栈中  </span></span><br><span class="line">        <span class="keyword">while</span> (p)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; p-&gt;data &lt;&lt;<span class="string">' '</span>;</span><br><span class="line">            s.push(p);</span><br><span class="line">            p = p-&gt;left;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//代码段(ii)当p为空时，说明已经到达左子树最下边，这时需要出栈了  </span></span><br><span class="line">        <span class="keyword">if</span> (!s.empty())</span><br><span class="line">        &#123;</span><br><span class="line">            p = s.top();</span><br><span class="line">            s.pop();</span><br><span class="line">            <span class="comment">//进入右子树，开始新的一轮左子树遍历(这是递归的自我实现)  </span></span><br><span class="line">            p = p-&gt;right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node* <span class="title">Insert</span><span class="params">(Node* root, <span class="keyword">int</span> data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node(data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (data &lt;= root-&gt;data) root-&gt;left = Insert(root-&gt;left, data);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;right = Insert(root-&gt;right, data);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*创建树：</span></span><br><span class="line"><span class="comment">               5</span></span><br><span class="line"><span class="comment">             /   \</span></span><br><span class="line"><span class="comment">            3    10</span></span><br><span class="line"><span class="comment">           / \   / \</span></span><br><span class="line"><span class="comment">          2   4 9  20</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    Node* root = <span class="literal">nullptr</span>;</span><br><span class="line">    root = Insert(root, <span class="number">5</span>); root = Insert(root, <span class="number">10</span>);</span><br><span class="line">    root = Insert(root, <span class="number">3</span>); root = Insert(root, <span class="number">2</span>);</span><br><span class="line">    root = Insert(root, <span class="number">4</span>); root = Insert(root, <span class="number">9</span>);</span><br><span class="line">    root = Insert(root, <span class="number">20</span>);</span><br><span class="line">    preOrder(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5 3 2 4 10 9 20</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-4-2-中序遍历"><a href="#2-4-2-中序遍历" class="headerlink" title="2.4.2 中序遍历"></a>2.4.2 中序遍历</h3><p>中序遍历根结点的左子树，然后访问根结点，最后中序遍历右子树（左根右）。<br>如图所示，遍历的顺序为：GDHBAEICF。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E5%8E%86.jpg" width="40%" height="40%"><br>代码：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1.递归中序遍历</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node* left;</span><br><span class="line">    Node* right;</span><br><span class="line">    Node(<span class="keyword">int</span> x) :data(x), left(<span class="literal">nullptr</span>), right(<span class="literal">nullptr</span>)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inOrder</span><span class="params">(Node* root)</span> <span class="comment">//递归中序遍历</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    inOrder(root-&gt;left);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; root-&gt;data &lt;&lt; <span class="string">' '</span>;</span><br><span class="line">    inOrder(root-&gt;right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node* <span class="title">Insert</span><span class="params">(Node* root, <span class="keyword">int</span> data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node(data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (data &lt;= root-&gt;data) root-&gt;left = Insert(root-&gt;left, data);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;right = Insert(root-&gt;right, data);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*创建树：</span></span><br><span class="line"><span class="comment">        5</span></span><br><span class="line"><span class="comment">      /   \</span></span><br><span class="line"><span class="comment">     3    10</span></span><br><span class="line"><span class="comment">    / \   / \</span></span><br><span class="line"><span class="comment">    2   4 9  20</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    Node* root = <span class="literal">nullptr</span>;</span><br><span class="line">    root = Insert(root, <span class="number">5</span>); root = Insert(root, <span class="number">10</span>);</span><br><span class="line">    root = Insert(root, <span class="number">3</span>); root = Insert(root, <span class="number">2</span>);</span><br><span class="line">    root = Insert(root, <span class="number">4</span>); root = Insert(root, <span class="number">9</span>);</span><br><span class="line">    root = Insert(root, <span class="number">20</span>);</span><br><span class="line">    inOrder(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2 3 4 5 9 10 20</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//2.非递归中序遍历</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node* left;</span><br><span class="line">    Node* right;</span><br><span class="line">    Node(<span class="keyword">int</span> x) :data(x), left(<span class="literal">nullptr</span>), right(<span class="literal">nullptr</span>)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inOrder</span><span class="params">(Node* root)</span>                  <span class="comment">//非递归中序遍历</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">stack</span>&lt;Node*&gt; s;</span><br><span class="line">    Node* p = root;</span><br><span class="line">    <span class="keyword">while</span> (p || !s.empty())               <span class="comment">//直到p空且栈空</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//代码段(i)一直遍历到左子树最下边，边遍历边保存根节点到栈中  </span></span><br><span class="line">        <span class="keyword">while</span> (p)</span><br><span class="line">        &#123;</span><br><span class="line">            s.push(p);</span><br><span class="line">            p = p-&gt;left;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//代码段(ii)当p为空时，说明已经到达左子树最下边，这时需要出栈了  </span></span><br><span class="line">        <span class="keyword">if</span> (!s.empty())</span><br><span class="line">        &#123;</span><br><span class="line">            p = s.top();</span><br><span class="line">            s.pop();</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; p-&gt;data &lt;&lt; <span class="string">' '</span>;       <span class="comment">//与非递归前序遍历的唯一区别</span></span><br><span class="line">            <span class="comment">//进入右子树，开始新的一轮左子树遍历(这是递归的自我实现)  </span></span><br><span class="line">            p = p-&gt;right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node* <span class="title">Insert</span><span class="params">(Node* root, <span class="keyword">int</span> data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node(data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (data &lt;= root-&gt;data) root-&gt;left = Insert(root-&gt;left, data);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;right = Insert(root-&gt;right, data);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*创建树：</span></span><br><span class="line"><span class="comment">         5</span></span><br><span class="line"><span class="comment">       /   \</span></span><br><span class="line"><span class="comment">      3    10</span></span><br><span class="line"><span class="comment">     / \   / \</span></span><br><span class="line"><span class="comment">    2   4 9  20</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    Node* root = <span class="literal">nullptr</span>;</span><br><span class="line">    root = Insert(root, <span class="number">5</span>); root = Insert(root, <span class="number">10</span>);</span><br><span class="line">    root = Insert(root, <span class="number">3</span>); root = Insert(root, <span class="number">2</span>);</span><br><span class="line">    root = Insert(root, <span class="number">4</span>); root = Insert(root, <span class="number">9</span>);</span><br><span class="line">    root = Insert(root, <span class="number">20</span>);</span><br><span class="line">    inOrder(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2 3 4 5 9 10 20</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-4-3-后序遍历"><a href="#2-4-3-后序遍历" class="headerlink" title="2.4.3 后序遍历"></a>2.4.3 后序遍历</h3><p>后序遍历根结点的左子树，然后后序遍历根结点的右子树，最后访问根结点（左右根）。<br>如图所示，遍历的顺序为：GHDBIEFCA。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%90%8E%E5%BA%8F%E9%81%8D%E5%8E%86.jpg" width="40%" height="40%"><br>代码:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1.递归后序遍历</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node* left;</span><br><span class="line">    Node* right;</span><br><span class="line">    Node(<span class="keyword">int</span> x) :data(x), left(<span class="literal">nullptr</span>), right(<span class="literal">nullptr</span>)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">postOrder</span><span class="params">(Node* root)</span> <span class="comment">//递归后序遍历</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    postOrder(root-&gt;left);</span><br><span class="line">    postOrder(root-&gt;right);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; root-&gt;data &lt;&lt; <span class="string">' '</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node* <span class="title">Insert</span><span class="params">(Node* root, <span class="keyword">int</span> data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node(data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (data &lt;= root-&gt;data) root-&gt;left = Insert(root-&gt;left, data);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;right = Insert(root-&gt;right, data);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*创建树：</span></span><br><span class="line"><span class="comment">         5</span></span><br><span class="line"><span class="comment">       /   \</span></span><br><span class="line"><span class="comment">      3    10</span></span><br><span class="line"><span class="comment">     / \   / \</span></span><br><span class="line"><span class="comment">    2   4 9  20</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    Node* root = <span class="literal">nullptr</span>;</span><br><span class="line">    root = Insert(root, <span class="number">5</span>); root = Insert(root, <span class="number">10</span>);</span><br><span class="line">    root = Insert(root, <span class="number">3</span>); root = Insert(root, <span class="number">2</span>);</span><br><span class="line">    root = Insert(root, <span class="number">4</span>); root = Insert(root, <span class="number">9</span>);</span><br><span class="line">    root = Insert(root, <span class="number">20</span>);</span><br><span class="line">    postOrder(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2 4 3 9 20 10 5</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//2.非递归后序遍历</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node* left;</span><br><span class="line">    Node* right;</span><br><span class="line">    Node(<span class="keyword">int</span> x) :data(x), left(<span class="literal">nullptr</span>), right(<span class="literal">nullptr</span>)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">postOrder</span><span class="params">(Node* root)</span>       <span class="comment">//非递归后序遍历</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">stack</span>&lt;Node*&gt; s;</span><br><span class="line">    <span class="comment">//pCur:当前访问节点，pLastVisit:上次访问节点  </span></span><br><span class="line">    Node* pCur = root;</span><br><span class="line">    Node* pLastVisit = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">//先把pCur移动到左子树最下边  </span></span><br><span class="line">    <span class="keyword">while</span> (pCur)</span><br><span class="line">    &#123;</span><br><span class="line">        s.push(pCur);</span><br><span class="line">        pCur = pCur-&gt;left;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (!s.empty())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//走到这里，pCur都是空，并已经遍历到左子树底端(看成扩充二叉树，则空，亦是某棵树的左孩子)  </span></span><br><span class="line">        pCur = s.top();</span><br><span class="line">        s.pop();</span><br><span class="line">        <span class="comment">//一个根节点被访问的前提是：无右子树或右子树已被访问过  </span></span><br><span class="line">        <span class="keyword">if</span> (pCur-&gt;right == <span class="literal">nullptr</span> || pCur-&gt;right == pLastVisit)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; pCur-&gt;data &lt;&lt; <span class="string">' '</span>;</span><br><span class="line">            <span class="comment">//修改最近被访问的节点  </span></span><br><span class="line">            pLastVisit = pCur;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//根节点再次入栈  </span></span><br><span class="line">            s.push(pCur);</span><br><span class="line">            <span class="comment">//进入右子树，且可肯定右子树一定不为空  </span></span><br><span class="line">            pCur = pCur-&gt;right;</span><br><span class="line">            <span class="keyword">while</span> (pCur)</span><br><span class="line">            &#123;</span><br><span class="line">                s.push(pCur);</span><br><span class="line">                pCur = pCur-&gt;left;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node* <span class="title">Insert</span><span class="params">(Node* root, <span class="keyword">int</span> data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node(data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (data &lt;= root-&gt;data) root-&gt;left = Insert(root-&gt;left, data);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;right = Insert(root-&gt;right, data);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*创建树：</span></span><br><span class="line"><span class="comment">          5</span></span><br><span class="line"><span class="comment">        /   \</span></span><br><span class="line"><span class="comment">       3    10</span></span><br><span class="line"><span class="comment">      / \   / \</span></span><br><span class="line"><span class="comment">     2   4 9  20</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    Node* root = <span class="literal">nullptr</span>;</span><br><span class="line">    root = Insert(root, <span class="number">5</span>); root = Insert(root, <span class="number">10</span>);</span><br><span class="line">    root = Insert(root, <span class="number">3</span>); root = Insert(root, <span class="number">2</span>);</span><br><span class="line">    root = Insert(root, <span class="number">4</span>); root = Insert(root, <span class="number">9</span>);</span><br><span class="line">    root = Insert(root, <span class="number">20</span>);</span><br><span class="line">    postOrder(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2 4 3 9 20 10 5</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-4-4-层序遍历"><a href="#2-4-4-层序遍历" class="headerlink" title="2.4.4 层序遍历"></a>2.4.4 层序遍历</h3><p>从根结点开始访问，从上而下逐层遍历，在同一层中，按从左到右的顺序对结点逐个访问。如图所示，遍历的顺序为：ABCDEFGHI。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86.jpg" width="40%" height="40%"><br>代码:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//层序遍历</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node* left;</span><br><span class="line">    Node* right;</span><br><span class="line">    Node(<span class="keyword">int</span> x):data(x),left(<span class="literal">nullptr</span>),right(<span class="literal">nullptr</span>)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">levelOrder</span><span class="params">(Node* root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">queue</span>&lt;Node*&gt; q;              <span class="comment">//借助队列，实现二叉树的层序遍历</span></span><br><span class="line">    q.push(root);</span><br><span class="line">    <span class="keyword">while</span> (!q.empty())</span><br><span class="line">    &#123;</span><br><span class="line">        Node* temp = q.front();</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; temp-&gt;data &lt;&lt; <span class="string">' '</span>;</span><br><span class="line">        q.pop();</span><br><span class="line">        <span class="keyword">if</span> (temp-&gt;left != <span class="literal">nullptr</span>)</span><br><span class="line">            q.push(temp-&gt;left);</span><br><span class="line">        <span class="keyword">if</span> (temp-&gt;right != <span class="literal">nullptr</span>)</span><br><span class="line">            q.push(temp-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node* <span class="title">Insert</span><span class="params">(Node* root, <span class="keyword">int</span> data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node(data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (data &lt;= root-&gt;data) root-&gt;left = Insert(root-&gt;left, data);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;right = Insert(root-&gt;right, data);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*创建树：</span></span><br><span class="line"><span class="comment">         5</span></span><br><span class="line"><span class="comment">       /   \</span></span><br><span class="line"><span class="comment">      3    10</span></span><br><span class="line"><span class="comment">     / \   / \</span></span><br><span class="line"><span class="comment">    2   4 9  20</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    Node* root = <span class="literal">nullptr</span>;</span><br><span class="line">    root = Insert(root, <span class="number">5</span>); root = Insert(root, <span class="number">10</span>);</span><br><span class="line">    root = Insert(root, <span class="number">3</span>); root = Insert(root, <span class="number">2</span>);</span><br><span class="line">    root = Insert(root, <span class="number">4</span>); root = Insert(root, <span class="number">9</span>);</span><br><span class="line">    root = Insert(root, <span class="number">20</span>);</span><br><span class="line">    levelOrder(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5 3 10 2 4 9 20</span><br></pre></td></tr></table></figure></p>
+<h1 id="3-二叉搜索树"><a href="#3-二叉搜索树" class="headerlink" title="3.二叉搜索树"></a>3.二叉搜索树</h1><p>二叉搜索树(Binary Search Tree)，是指一棵空树或者具有下列性质的二叉树：</p>
+<ul>
+<li>若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值；</li>
+<li>若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值；</li>
+<li>任意节点的左、右子树也分别为二叉查找树；</li>
+<li>没有键值相等的节点。</li>
+</ul>
+<p>示例：<br><img src="
+http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E7%A4%BA%E4%BE%8B.png" width="30%" height="30%"><br>（补充二叉搜索树的插入操作和删除操作的代码。以及各操作的时间复杂度分析。）</p>
+<h1 id="4-平衡二叉树"><a href="#4-平衡二叉树" class="headerlink" title="4.平衡二叉树"></a>4.平衡二叉树</h1><p>平衡因子(Balance Factor)：$BF(T)=h_L-h_R$。其中，$h_L$和$h_R$分别为$T$的左、右子树的高度。<br>平衡二叉树(Balance Binary Tree)：在二叉搜索树的基础上，任一结点的左、右子树的高度差的绝对值（平衡因子）不超过1，即$BF(T)\leq1$。<br>示例：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E7%A4%BA%E4%BE%8B.JPG" width="80%" height="80%"><br>（补充平衡二叉树的调整方式及代码。以及各操作的时间复杂度分析。）</p>
+<h1 id="5-堆"><a href="#5-堆" class="headerlink" title="5.堆"></a>5.堆</h1><p>堆(heap)的两个特性：</p>
+<ul>
+<li>用数组表示的完全二叉树。</li>
+<li>任一结点的值都大于（或小于）其左右孩子结点的值。</li>
+</ul>
+<p>将根节点最大的堆叫做最大堆或大根堆，根节点最小的堆叫做最小堆或小根堆。<br>示例：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91/%E5%A0%86%E7%A4%BA%E4%BE%8B.JPG" width="70%" height="70%"><br>（补充堆的基本操作代码。以及各操作的时间复杂度分析。<a href="http://zhanglimin.com/2017/11/29/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" target="_blank" rel="noopener">排序算法</a>中堆排序一节已有。）</p>
+<h1 id="6-哈夫曼树"><a href="#6-哈夫曼树" class="headerlink" title="6.哈夫曼树"></a>6.哈夫曼树</h1><p>给定$n$个权值作为$n$个叶子结点，构造一棵二叉树，若带权路径长度达到最小，称这样的二叉树为最优二叉树，也称为哈夫曼树(Huffman Tree)。<br>（补充哈夫曼树的构造、哈夫曼编码）</p>
+<h1 id="7-参考资料"><a href="#7-参考资料" class="headerlink" title="7.参考资料"></a>7.参考资料</h1><ul>
+<li><a href="https://www.youtube.com/playlist?list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P" target="_blank" rel="noopener">Data Structures, mycodeschool</a></li>
+<li><a href="http://www.icourse163.org/course/ZJU-93001" target="_blank" rel="noopener">数据结构，浙江大学</a></li>
+<li><a href="https://www.coursera.org/specializations/biancheng-suanfa" target="_blank" rel="noopener">程序设计与算法专项课程，北京大学</a></li>
+<li><a href="https://medium.com/basecs/how-to-not-be-stumped-by-trees-5f36208f68a7" target="_blank" rel="noopener">How To Not Be Stumped By Trees, Vaidehi Joshi</a></li>
+<li><a href="http://blog.csdn.net/zhangxiangdavaid/article/details/37115355" target="_blank" rel="noopener">二叉树前序、中序、后序遍历非递归写法的透彻解析，苏叔叔</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/栈/" rel="tag"># 栈</a>
+          
+            <a href="/tags/队列/" rel="tag"># 队列</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/22/栈与队列/" rel="next" title="栈与队列">
+                <i class="fa fa-chevron-left"></i> 栈与队列
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/26/C++内存管理/" rel="prev" title="C/C++内存管理">
+                C/C++内存管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">弥补快速遗忘的记忆</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lm.zhang@aliyun.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-树的基本概念"><span class="nav-text">1.树的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-树的定义"><span class="nav-text">1.1 树的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-相关概念"><span class="nav-text">1.2 相关概念</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-二叉树"><span class="nav-text">2.二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-二叉树的定义"><span class="nav-text">2.1 二叉树的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-二叉树的性质（待）"><span class="nav-text">2.2 二叉树的性质（待）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-二叉树的存储结构"><span class="nav-text">2.3 二叉树的存储结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-顺序存储结构"><span class="nav-text">2.3.1 顺序存储结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-链表存储"><span class="nav-text">2.3.2 链表存储</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-二叉树的遍历"><span class="nav-text">2.4 二叉树的遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-前序遍历"><span class="nav-text">2.4.1 前序遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-中序遍历"><span class="nav-text">2.4.2 中序遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-3-后序遍历"><span class="nav-text">2.4.3 后序遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-4-层序遍历"><span class="nav-text">2.4.4 层序遍历</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-二叉搜索树"><span class="nav-text">3.二叉搜索树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-平衡二叉树"><span class="nav-text">4.平衡二叉树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-堆"><span class="nav-text">5.堆</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-哈夫曼树"><span class="nav-text">6.哈夫曼树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-参考资料"><span class="nav-text">7.参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
