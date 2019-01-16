@@ -77,6 +77,6 @@ tags:
 
 - [论文：SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 - [官方代码：alexgkendall/caffe-segnet](https://github.com/alexgkendall/caffe-segnet)
-- [代码及注释：xx](xx)
+- [代码及注释：meetshah1995/pytorch-semseg](https://github.com/liminn/pytorch-semseg/blob/master/ptsemseg/models/segnet.py)
 
 
