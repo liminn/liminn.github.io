@@ -82,7 +82,8 @@ tags:
 
 - [论文：Fully Convolutional Networks for Semantic Segmentation,2015](https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf)
 - [视频：How FCN Fully Convolutional Networks Works for Semantic Segmentation](https://www.youtube.com/watch?v=UdZnhZrM2vQ)
-- [代码及注释：dhkim0225/keras-image-segmentation](https://github.com/liminn/keras-image-segmentation/blob/master/model/fcn.py)
+- [代码及注释_1](dhkim0225/keras-image-segmentation](https://github.com/liminn/keras-image-segmentation/blob/master/model/fcn.py)
+- [代码及注释_2](https://github.com/liminn/pytorch-semseg/blob/master/ptsemseg/models/fcn.py)
 - [官方Caffe代码：shelhamer/fcn.berkeleyvision.org](https://github.com/shelhamer/fcn.berkeleyvision.org)
 
 
