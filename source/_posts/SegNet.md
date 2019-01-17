@@ -73,7 +73,7 @@ tags:
 - FCN、UNet及SegNet本质上还是为了更好的效果，SegNet的效果确实是当时最优；在效率/性能方面，它们都不行。
 - 在效果方面：`SegNet` >= `DeconvNet` > `DeepLabV1` > `FCN`
 
-### 参考文献
+# 参考文献
 
 - [论文：SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 - [官方代码：alexgkendall/caffe-segnet](https://github.com/alexgkendall/caffe-segnet)
