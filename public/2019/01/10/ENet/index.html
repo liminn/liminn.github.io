@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/ENet/1.png">
 <meta property="og:image" content="http://yoursite.com/images/ENet/2.png">
-<meta property="og:updated_time" content="2019-01-29T09:56:21.792Z">
+<meta property="og:updated_time" content="2019-01-30T14:55:01.450Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ENet">
 <meta name="twitter:description" content="摘要 为了实现实时的语义分割，提出ENet(efficient neural network) 相比于当时最优的SegNet，ENet比它快约18倍，FLOPs少约75倍，参数量少约79倍；并且，ENet有着和SegNet相似或更好的准确率。 针对Cityscapes/CamVid/SUN数据集，在NVIDIA Jetson TX1 Embedded Systems Module和NVIDIA T">
@@ -449,7 +449,44 @@
 </ul>
 </li>
 </ul>
-<h2 id="网络结构中各设计细节的原因"><a href="#网络结构中各设计细节的原因" class="headerlink" title="网络结构中各设计细节的原因"></a>网络结构中各设计细节的原因</h2><h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><p>待补，class balancing等</p>
+<h2 id="网络结构中各设计细节的原因"><a href="#网络结构中各设计细节的原因" class="headerlink" title="网络结构中各设计细节的原因"></a>网络结构中各设计细节的原因</h2><h3 id="特征图分辨率-Feature-map-resolution"><a href="#特征图分辨率-Feature-map-resolution" class="headerlink" title="特征图分辨率(Feature map resolution)"></a>特征图分辨率(Feature map resolution)</h3><ul>
+<li>思考1：下采样操作在语义分割任务中有两个主要缺点：<ul>
+<li>第一，下采样减小了特征图的分辨率，意味着损失了如边缘形状等空间信息</li>
+<li>第二，语义分割任务需要恢复出与输入同等的分辨率。施加越多的下采样，即意味着需要施加同等强度的上采样，这会增加模型大小以及计算代价。</li>
+</ul>
+</li>
+<li><p>ENet措施1：对于上采样，ENet沿用SegNet中的unpooling操作</p>
+<ul>
+<li>相比于FCN中将编码器的特征图直接加给末端的方式，unpooling操作可以减少所需内存</li>
+</ul>
+</li>
+<li><p>思考2：下采样操作有一个主要优点：</p>
+<ul>
+<li>经下采样的特征图，有这更大的感受野，可以聚集更多上下文信息，即利于分类</li>
+</ul>
+</li>
+<li>ENet措施2：ENet中使用了空洞卷积</li>
+</ul>
+<h3 id="较早地下采样-Early-downsampling"><a href="#较早地下采样-Early-downsampling" class="headerlink" title="较早地下采样(Early downsampling)"></a>较早地下采样(Early downsampling)</h3><ul>
+<li>思考1：对于想要实时地得到较好的表现，需要意识到：处理大的特征图是非常昂贵的。<ul>
+<li>尽管这很明显，但在很多主流模型结构中并没有意识到这点，去在网络的较早阶段进行优化</li>
+</ul>
+</li>
+<li>ENet措施1：一方面，ENet的前两个模块，较强地减少了输入尺寸；另一方面，其中的特征图只含有较少的通道数<ul>
+<li>该措施背后的思想是：视觉信息有很高的空间冗余(highly spatially redundant)，因此它可以被压缩成一个更有效的表征。因此，本文认为网络的初始层不需要直接对分类做出贡献，它们只需要预处理输入来供网络后续的部分使用。</li>
+<li>实验证明：将初始模块中的通道数从16增加到32，对精度没有任何改善</li>
+</ul>
+</li>
+</ul>
+<h3 id="解码器尺寸-Decoder-size"><a href="#解码器尺寸-Decoder-size" class="headerlink" title="解码器尺寸(Decoder size)"></a>解码器尺寸(Decoder size)</h3><ul>
+<li>思考1：SegNet是一个非常对称的结构，解码器严格镜像了编码器。但本文认为:<ul>
+<li>编码器应该同原始的分类结构类似，编码特征，提供分类能力</li>
+<li>解码器的角色只是去上采样编码器的输出，只需要微调细节信息(fine-tuning the details)</li>
+</ul>
+</li>
+<li>ENet措施1：ENet采用大的编码器，小的解码器。</li>
+</ul>
+<h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><p>待补，class balancing等</p>
 <h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1511.00561.pdf" target="_blank" rel="noopener">论文：SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation</a></li>
 <li><a href="https://github.com/alexgkendall/caffe-segnet" target="_blank" rel="noopener">官方代码：alexgkendall/caffe-segnet</a></li>
@@ -636,7 +673,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始模块-initial-block-以及瓶颈模块-bottleneck-module"><span class="nav-text">初始模块(initial block)以及瓶颈模块(bottleneck module)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构"><span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构中各设计细节的原因"><span class="nav-text">网络结构中各设计细节的原因</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始模块-initial-block-以及瓶颈模块-bottleneck-module"><span class="nav-text">初始模块(initial block)以及瓶颈模块(bottleneck module)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构"><span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构中各设计细节的原因"><span class="nav-text">网络结构中各设计细节的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征图分辨率-Feature-map-resolution"><span class="nav-text">特征图分辨率(Feature map resolution)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#较早地下采样-Early-downsampling"><span class="nav-text">较早地下采样(Early downsampling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解码器尺寸-Decoder-size"><span class="nav-text">解码器尺寸(Decoder size)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
