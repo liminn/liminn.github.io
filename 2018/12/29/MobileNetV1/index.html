@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要 针对移动端及嵌入式视觉应用，利用深度可分离卷积(depthwise separable convolutions)，构建轻量级的深度神经网络，即MobileNet。 其中引进了两个简单的超参数(宽度乘子(Width Multiplier)和分辨率乘子(Resolution Multiplier))来有效地权衡延迟(latency)和精度。 本质：只是用深度可分离卷积来替换常规CNN中的常规卷">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MobileNetV1">
+<meta property="og:url" content="http://yoursite.com/2018/12/29/MobileNetV1/index.html">
+<meta property="og:site_name" content="Limin&#39;s Notes">
+<meta property="og:description" content="摘要 针对移动端及嵌入式视觉应用，利用深度可分离卷积(depthwise separable convolutions)，构建轻量级的深度神经网络，即MobileNet。 其中引进了两个简单的超参数(宽度乘子(Width Multiplier)和分辨率乘子(Resolution Multiplier))来有效地权衡延迟(latency)和精度。 本质：只是用深度可分离卷积来替换常规CNN中的常规卷">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV1/1.png">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV1/2.png">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV1/3.png">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV1/4.png">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV1/5.png">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV1/6.png">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV1/7.png">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV1/8.png">
+<meta property="og:updated_time" content="2019-02-01T03:32:48.176Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MobileNetV1">
+<meta name="twitter:description" content="摘要 针对移动端及嵌入式视觉应用，利用深度可分离卷积(depthwise separable convolutions)，构建轻量级的深度神经网络，即MobileNet。 其中引进了两个简单的超参数(宽度乘子(Width Multiplier)和分辨率乘子(Resolution Multiplier))来有效地权衡延迟(latency)和精度。 本质：只是用深度可分离卷积来替换常规CNN中的常规卷">
+<meta name="twitter:image" content="http://yoursite.com/images/MobileNetV1/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/29/MobileNetV1/"/>
+
+
+
+
+
+  <title>MobileNetV1 | Limin's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Limin's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/29/MobileNetV1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Limin's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MobileNetV1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-29T22:21:50+08:00">
+                2018-12-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/轻量型CNN/" itemprop="url" rel="index">
+                    <span itemprop="name">轻量型CNN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
+<li>针对移动端及嵌入式视觉应用，利用深度可分离卷积(depthwise separable convolutions)，构建轻量级的深度神经网络，即MobileNet。</li>
+<li>其中引进了两个简单的超参数(宽度乘子(Width Multiplier)和分辨率乘子(Resolution Multiplier))来有效地权衡延迟(latency)和精度。</li>
+<li>本质：只是用深度可分离卷积来替换常规CNN中的常规卷积<a id="more"></a>
+</li>
+</ul>
+<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><p><img src="/images/MobileNetV1/1.png" width="400"><br><img src="/images/MobileNetV1/2.png" width="350"><br><img src="/images/MobileNetV1/3.png" width="350"></p>
+<ul>
+<li>MobileNetV1结构如Table1所示：<ul>
+<li><strong>MobileNet基于深度可分离卷积构建，除了第一层为常规卷积以外</strong>。</li>
+<li><strong>如Fig3所示，所有层之后，均伴随BN和ReLU非线性操作</strong>；除了最后的全连接层没有ReLU非线性，被喂给softmax层来进行分类。</li>
+<li><strong>下采样操作通过depthwise卷积和第一层常规卷积中的带步长的卷积实现（注意这一点）</strong>。</li>
+<li>最后的平均池化层使得空间分辨率在全连接层之前减小到1。</li>
+<li>若将depthwise卷积和pointwise卷积计为分离的层，那么MobileNet有28层。</li>
+</ul>
+</li>
+<li>如Table2所示，MobileNet花费95%的计算时间在$1\times 1$卷积上，并且$1\times 1$卷积占据了75%的参数。所有的其它参数，几乎都集中在全连接层上。</li>
+</ul>
+<h2 id="宽度乘子-Width-Multiplier-——更瘦的模型"><a href="#宽度乘子-Width-Multiplier-——更瘦的模型" class="headerlink" title="宽度乘子(Width Multiplier)——更瘦的模型"></a>宽度乘子(Width Multiplier)——更瘦的模型</h2><ul>
+<li>第一个超参数宽度乘子$\alpha$,其作用是统一地使网络的每一层变瘦：<ul>
+<li>对于一个给定层，在宽度乘子$\alpha$的作用下，输入的通道数由$M$变为$\alpha M$，输出的通道数由$N$变成$\alpha N$。</li>
+</ul>
+</li>
+<li>在宽度乘子$\alpha$的作用下：<ul>
+<li>深度可分离卷积的计算量变为：$\alpha M \times {D_G}^2 \times  {D_K}^2 + \alpha M \times \alpha N \times {D_G}^2 $。</li>
+<li>$\alpha \in (0,1]$ ，$\alpha$的典型设置为1，0.75，0.5和0.25。$\alpha=1$ 即是基准的MobileNet，$\alpha&lt;1$即是简化的MobileNet。</li>
+<li>宽度乘子$\alpha$能够平方级地减少计算量和参数量，即约$\alpha ^2$。</li>
+</ul>
+</li>
+</ul>
+<h2 id="分辨率乘子-Resolution-Multiplier-——减少表征"><a href="#分辨率乘子-Resolution-Multiplier-——减少表征" class="headerlink" title="分辨率乘子(Resolution Multiplier)——减少表征**"></a>分辨率乘子(Resolution Multiplier)——减少表征**</h2><ul>
+<li>第二个超参数分辨率乘子$\rho$，其作用是减少网络的计算量：<ul>
+<li>对输入图片施加分辨率乘子$\rho$，那么网络每一层的中间表征都将随之减小相同的乘子。</li>
+<li>在实际操作中，通过设置输入分辨率，来隐式地设置$\rho$。</li>
+</ul>
+</li>
+<li>在宽度乘子$\alpha$和分辨率乘子$\rho$的作用下：<ul>
+<li>深度可分离卷积的计算量变为：$\alpha M \times \rho^2{D_G}^2 \times  {D_K}^2 + \alpha M \times \alpha N \times \rho^2{D_G}^2 $。</li>
+<li>$\rho \in (0,1]$ ，$\rho$通常隐式地设置，故网络的输入分辨率典型设置为224，192，160或128。$\rho=1$ 即是基准的MobileNet。</li>
+<li>分辨率乘子$\rho$能够平方级地减少计算量，即约$\rho ^2$。</li>
+</ul>
+</li>
+</ul>
+<h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><ul>
+<li>MobileNet在TF上实现，通过和Inception V3相似的带有异步梯度下降的RMSprop实现。</li>
+<li>用更少的正则化和更少的数据增强技术，因为小的网络不易过拟合。</li>
+<li>用非常小或不使用权重衰减(L2正则)在depthwise卷积上很重要，因为它们只有过少的参数。</li>
+</ul>
+<h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><p><img src="/images/MobileNetV1/4.png" width="400"></p>
+<ul>
+<li>如Table4所示，比较了MobileNet与其全卷积实现形式：在ImageNet上，只损失了1%的精度，但节约了大量的计算量和参数。</li>
+</ul>
+<p><img src="/images/MobileNetV1/5.png" width="400"></p>
+<ul>
+<li>如Table6所示，展示了通过不同的宽度乘子$\alpha$来收缩MobileNet时，精度、计算量和参数量之间的权衡。精度平滑的下降，直到模型结构过小，即$\alpha=0.25$时。</li>
+<li>注：在ImageNet基准上，无论模型尺寸的大小，所有模型均用相同的训练参数进行训练。</li>
+</ul>
+<p><img src="/images/MobileNetV1/6.png" width="400"></p>
+<ul>
+<li>如Table7所示，展示了通过施加不同的分辨率乘子$\rho$，即用减小的输入分辨率来训练MobileNet时，精度、计算量和参数量之间的权衡。准确率依据分辨率平滑下降。</li>
+</ul>
+<p><img src="/images/MobileNetV1/7.png" width="400"></p>
+<ul>
+<li><strong>如Table8所示，展示了完整MobileNet和GoogleNetV1、VGG16之间的比较</strong>：<ul>
+<li>MobileNet精度接近于VGG16，同时参数量只是其$1/32$，计算量为其$1/27$。</li>
+<li>MobileNet精度高于GoogleNetV1，同时参数量更少，计算量为其$1/2.7$。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/MobileNetV1/8.png" width="400"></p>
+<ul>
+<li>如Table9所示，展示了通过$\alpha=0.5$且分辨率为$160\times 160$简化的MobileNet与AlexNet和Squeezenet之间的比较：<ul>
+<li>简化版MobileNet比AlexNet的精度高3%，同时参数量只是其$1/45$，计算量为其$1/9.4$。</li>
+<li>简化版MobileNet比Squeezenet的精度高3%，同时参数量相同，计算量为其$1/22$。</li>
+</ul>
+</li>
+</ul>
+<p>此外，文中还展示了通过MobileNet，在细粒度分类(Fine Grained Recognition)、Large Scale Geolocalizaton、Face Attributes、目标检测(Object Detection)及Face Embeddings任务上的应用结果。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="https://arxiv.org/pdf/1704.04861.pdf" target="_blank" rel="noopener">论文：MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications</a></li>
+<li><a href="https://www.youtube.com/watch?v=T7o3xvJLuHk&amp;t=0s&amp;list=LLPZqbzAbJOX-hE-IRAxB7sg&amp;index=2" target="_blank" rel="noopener">视频：Depthwise Separable Convolution - A FASTER CONVOLUTION!</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/29/Xception/" rel="next" title="Xception">
+                <i class="fa fa-chevron-left"></i> Xception
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/29/MobileNetV2/" rel="prev" title="MobileNetV2">
+                MobileNetV2 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">弥补快速遗忘的记忆</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lm.zhang@aliyun.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构"><span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#宽度乘子-Width-Multiplier-——更瘦的模型"><span class="nav-text">宽度乘子(Width Multiplier)——更瘦的模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分辨率乘子-Resolution-Multiplier-——减少表征"><span class="nav-text">分辨率乘子(Resolution Multiplier)——减少表征**</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

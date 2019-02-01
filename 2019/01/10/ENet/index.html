@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要 为了实现实时的语义分割，提出ENet(efficient neural network) 相比于当时最优的SegNet，ENet比它快约18倍，FLOPs少约75倍，参数量少约79倍；并且，ENet有着和SegNet相似或更好的准确率。 针对Cityscapes/CamVid/SUN数据集，在NVIDIA Jetson TX1 Embedded Systems Module和NVIDIA T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ENet">
+<meta property="og:url" content="http://yoursite.com/2019/01/10/ENet/index.html">
+<meta property="og:site_name" content="Limin&#39;s Notes">
+<meta property="og:description" content="摘要 为了实现实时的语义分割，提出ENet(efficient neural network) 相比于当时最优的SegNet，ENet比它快约18倍，FLOPs少约75倍，参数量少约79倍；并且，ENet有着和SegNet相似或更好的准确率。 针对Cityscapes/CamVid/SUN数据集，在NVIDIA Jetson TX1 Embedded Systems Module和NVIDIA T">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/ENet/1.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/2.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/3.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/4.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/5.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/6.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/7.png">
+<meta property="og:updated_time" content="2019-02-01T08:09:53.768Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ENet">
+<meta name="twitter:description" content="摘要 为了实现实时的语义分割，提出ENet(efficient neural network) 相比于当时最优的SegNet，ENet比它快约18倍，FLOPs少约75倍，参数量少约79倍；并且，ENet有着和SegNet相似或更好的准确率。 针对Cityscapes/CamVid/SUN数据集，在NVIDIA Jetson TX1 Embedded Systems Module和NVIDIA T">
+<meta name="twitter:image" content="http://yoursite.com/images/ENet/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/10/ENet/"/>
+
+
+
+
+
+  <title>ENet | Limin's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Limin's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/ENet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Limin's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ENet</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T22:26:50+08:00">
+                2019-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/语义分割/" itemprop="url" rel="index">
+                    <span itemprop="name">语义分割</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
+<li>为了实现实时的语义分割，提出ENet(efficient neural network)</li>
+<li>相比于当时最优的SegNet，ENet比它快约18倍，FLOPs少约75倍，参数量少约79倍；并且，ENet有着和SegNet相似或更好的准确率。<ul>
+<li>针对Cityscapes/CamVid/SUN数据集，在NVIDIA Jetson TX1 Embedded Systems Module和NVIDIA Titan X GPU上，进行了实验验证</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="初始模块-initial-block-以及瓶颈模块-bottleneck-module"><a href="#初始模块-initial-block-以及瓶颈模块-bottleneck-module" class="headerlink" title="初始模块(initial block)以及瓶颈模块(bottleneck module)"></a>初始模块(initial block)以及瓶颈模块(bottleneck module)</h2><p><img src="/images/ENet/1.png" width="900" height="200"></p>
+<p>如图Fig2所示，Fig2(a)为ENet的初始模块，Fig2(b)为ENet的瓶颈模块(非下采样/下采样)。<br>对于初始模块，<strong>由InceptionV3启发</strong>，如Fig2(a)所示：</p>
+<ul>
+<li>MaxPooling操作以不重叠的$2 \times 2$窗口执行</li>
+<li>卷积操作以核为$3 \times 3$，步长为2的方式执行,卷积核个数为13</li>
+<li>经串联后，特征图的通道数为16</li>
+</ul>
+<p>对于瓶颈模块(非下采样)，<strong>由ResNet启发，类似于残差模块</strong>，如Fig2(b)所示：</p>
+<ul>
+<li>主干为输出特征图</li>
+<li>分支由3个卷积层构成：一个$1\times 1 $的卷积来降维，一个主要的卷积操作，一个$1\times 1 $的卷积来升维<ul>
+<li>其中，在每两个卷积层之间，放置了<code>BN</code>和<code>PReLU</code></li>
+<li>其中，卷积操作或是核为$3 \times 3$的常规卷积/膨胀卷积/反卷积，或是核为$5 \times 5$的常规卷积分解出来的两个$1 \times 5$和$5 \times 1$的不对称卷积</li>
+<li>其中，对于$1\times1$卷积，不使用偏置项(bias terms)。原因：减少计算；结果：不会对精度产生任何影响。</li>
+</ul>
+</li>
+<li>对分支进行正则化，采用Spatial Dropout<ul>
+<li>在<code>bottleneck2.0</code>之前，采用$p=0.01$；之后，采用$p=0.1$     &lt;- 疑问</li>
+</ul>
+</li>
+<li>最后，主干和分支进行元素级相加(element-wise addition)，后施加<code>PReLU</code>(待确认)</li>
+</ul>
+<p>对于瓶颈模块(下采样)，如Fig2(b)所示：</p>
+<ul>
+<li>主干中增加max pooling层，并进行零填充，来使得特征图的通道数和分支的输出特征图的通道数相等(待确认)，使得支持元素级相加</li>
+<li>分支中的第一个$1\times1$卷积用核为$2\times 2$且步长为2的卷积替代</li>
+</ul>
+<p>对于瓶颈模块(上采样)：</p>
+<ul>
+<li>主干中的max pooling操作用max unpooling操作替代(同SegNet)，零填充操作用不含偏置项的空间卷积替代 &lt;- 疑问：啥意思</li>
+<li>分支中做出什么改变？论文中没说，服了</li>
+</ul>
+<h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><p><img src="/images/ENet/2.png" width="400" height="200"></p>
+<p>如Table1所示，为ENet的总体网络结构。其中，以$512 \times 512 \times 3 $的输入尺寸为例：</p>
+<ul>
+<li>初始阶段(initial stage)包含一个单独的模块，即Fig2(a)所示的初始化模块。输出尺寸为：$256\times 256 \times 16$</li>
+<li>阶段1、阶段2以及阶段3属于编码器：<ul>
+<li>阶段1(stage 1)包含5个瓶颈模块。输出尺寸为：$128\times 128 \times 64$</li>
+<li>阶段2(stage 2)包含9个瓶颈模块。输出尺寸为：$64\times 64 \times 128$</li>
+<li>阶段3(stage 3)是阶段2的重复，除了阶段3移除了阶段2中的第0个下采样的瓶颈模块以外，即阶段3一开始不进行下采样。输出尺寸为：$64\times 64 \times 128$</li>
+</ul>
+</li>
+<li>阶段4和阶段5属于解码器：<ul>
+<li>阶段4(stage 4)包含3个瓶颈模块，其中<code>bottleneck4.0</code>的unpooling操作，通过采用阶段2中<code>bottleneck2.0</code>的max-pooling索引来实现。输出尺寸为：$128\times 128 \times 64$</li>
+<li>阶段5(stage 4)包含2个瓶颈模块，其中<code>bottleneck5.0</code>的unpooling操作，通过采用阶段2中<code>bottleneck1.0</code>的max-pooling索引来实现。输出尺寸为：$256\times 256 \times 16$</li>
+</ul>
+</li>
+<li>在最后的上采样模块中：<ul>
+<li>没有采用unpooling操作。因为与其相对应的初始阶段(initial stage)，是对$513 \times 512 \times 3$的输入尺寸上进行上采样，其通道数仅仅是3，而最终的输出需要$C$个特征图(即目标类别的个数)。通道数不匹配，故无法进行unpooling操作</li>
+<li>采用反卷积来进行上采样。这也是ENet中唯一的一个反卷积，这也占用了编码器中的很大一部分处理时间。</li>
+</ul>
+</li>
+</ul>
+<h2 id="网络结构中各设计细节的原因"><a href="#网络结构中各设计细节的原因" class="headerlink" title="网络结构中各设计细节的原因"></a>网络结构中各设计细节的原因</h2><h3 id="特征图分辨率-Feature-map-resolution"><a href="#特征图分辨率-Feature-map-resolution" class="headerlink" title="特征图分辨率(Feature map resolution)"></a>特征图分辨率(Feature map resolution)</h3><ul>
+<li>思考1：下采样操作在语义分割任务中有两个主要缺点：<ul>
+<li>第一，下采样减小了特征图的分辨率，意味着损失了如边缘形状等空间信息</li>
+<li>第二，语义分割任务需要恢复出与输入同等的分辨率。施加越多的下采样，即意味着需要施加同等强度的上采样，这会增加模型大小以及计算代价。</li>
+</ul>
+</li>
+<li><p>ENet措施1：对于上采样，ENet沿用SegNet中的unpooling操作</p>
+<ul>
+<li>相比于FCN中将编码器的特征图直接加给末端的方式，unpooling操作可以减少所需内存</li>
+</ul>
+</li>
+<li><p>思考2：下采样操作有一个主要优点：</p>
+<ul>
+<li>经下采样的特征图，有这更大的感受野，可以聚集更多上下文信息，即利于分类</li>
+</ul>
+</li>
+<li>ENet措施2：ENet中使用了空洞卷积</li>
+</ul>
+<h3 id="较早地下采样-Early-downsampling"><a href="#较早地下采样-Early-downsampling" class="headerlink" title="较早地下采样(Early downsampling)"></a>较早地下采样(Early downsampling)</h3><ul>
+<li>思考1：对于想要实时地得到较好的表现，需要意识到：处理大的特征图是非常昂贵的。<ul>
+<li>尽管这很明显，但在很多主流模型结构中并没有意识到这点，去在网络的较早阶段进行优化</li>
+</ul>
+</li>
+<li>ENet措施1：一方面，ENet的前两个模块，较强地减少了输入尺寸；另一方面，其中的特征图只含有较少的通道数<ul>
+<li>该措施背后的思想是：视觉信息有很高的空间冗余(highly spatially redundant)，因此它可以被压缩成一个更有效的表征。因此，本文认为网络的初始层不需要直接对分类做出贡献，它们只需要预处理输入来供网络后续的部分使用。</li>
+<li>实验证明：将初始模块中的通道数从16增加到32，对精度没有任何改善</li>
+</ul>
+</li>
+</ul>
+<h3 id="解码器尺寸-Decoder-size"><a href="#解码器尺寸-Decoder-size" class="headerlink" title="解码器尺寸(Decoder size)"></a>解码器尺寸(Decoder size)</h3><ul>
+<li>思考1：SegNet是一个非常对称的结构，解码器严格镜像了编码器。但本文认为:<ul>
+<li>编码器应该同原始的分类结构类似，编码特征，提供分类能力</li>
+<li>解码器的角色只是去上采样编码器的输出，只需要微调细节信息(fine-tuning the details)</li>
+</ul>
+</li>
+<li>ENet措施1：ENet采用大的编码器，小的解码器。</li>
+</ul>
+<h3 id="非线性激活函数-Nonlinear-operations"><a href="#非线性激活函数-Nonlinear-operations" class="headerlink" title="非线性激活函数(Nonlinear operations)"></a>非线性激活函数(Nonlinear operations)</h3><p>看了几遍没看懂</p>
+<h3 id="Information-preserving-dimensionality-changes"><a href="#Information-preserving-dimensionality-changes" class="headerlink" title="Information-preserving dimensionality changes"></a>Information-preserving dimensionality changes</h3><ul>
+<li>思考1：如上所述，较早地对输入进行下采样是很有必要的。但是，过度的维度减少会阻碍信息流动。<ul>
+<li>如在VGG中：在maxpooling之后，跟随一个扩张通道数的卷积。这样的做法虽然相对较便宜，一方面引入了表达瓶颈，另一方面强迫使用更多的通道数，使得计算更昂贵。</li>
+</ul>
+</li>
+<li><p>ENet措施1：沿用InveptionV3中处理该问题的方法，即将pooling操作和步长为2的卷积操作并行执行，然后串联起结果特征图。该技术使得ENet中初始模块(initial block)的推理时间加速了10倍。</p>
+</li>
+<li><p>思考2：文中发现原始的ResNet结构的一项问题：在下采样时，ResNet的残差模块的第一个1x1卷积的步长为2，忽略了75%的输入。</p>
+</li>
+<li>ENet措施2：将该1x1卷积的卷积核扩大到2x2，使得全部的输入被考虑进来，因此改善信息流动和最终的精度。<ul>
+<li>当然，会使得这些层的计算代价贵4倍，但在ENet中，用于下采样的这些层很少，因此这些开销的增加并不明显。</li>
+</ul>
+</li>
+</ul>
+<h3 id="分解卷积核-Factorizing-filters"><a href="#分解卷积核-Factorizing-filters" class="headerlink" title="分解卷积核(Factorizing filters)"></a>分解卷积核(Factorizing filters)</h3><ul>
+<li>思考：同InceptionV3中指出的，卷积权重有很大程度地冗余，每一个nxn卷积可以被分解成为两个更小的卷积：nx1和1xn。沿用InceptionV3中对于此种卷积的命名-不对称卷积(asymmetric convolutions)</li>
+<li>ENet措施：采用n=5的不对称卷积，即5x1和1x5，相当于一个单独的3x3卷积。这鞥家了模块学习到的函数的多样性，并且增加了感受野。</li>
+</ul>
+<h3 id="空洞卷积-Dilated-convolutions"><a href="#空洞卷积-Dilated-convolutions" class="headerlink" title="空洞卷积(Dilated convolutions)"></a>空洞卷积(Dilated convolutions)</h3><ul>
+<li>思考：如上所述，拥有大的感受野对于网络来说很重要，通过采用更大的感受野，可以提升模型的分类性能。但本文想避免过度的下采样特征图，所以决定采用空洞卷积来改善模型。</li>
+<li>ENet措施：在几个瓶颈模块中采用空洞卷积。具体地，是在其他瓶颈模块(常规卷积/非对称卷积)中插入空洞卷积的瓶颈模块，而不是序列化的施加空洞卷积的瓶颈模块(<code>Multi-scale context aggregation by dilated convolutions</code>指出)，这样的做法可以得到最好的准确率。<ul>
+<li>该做法提高了Citycaps数据集上的IoU约4个百分点，并且没有任何其他额外的代价。</li>
+</ul>
+</li>
+</ul>
+<h3 id="正则化-Regularization"><a href="#正则化-Regularization" class="headerlink" title="正则化(Regularization)"></a>正则化(Regularization)</h3><ul>
+<li>思考：大多数语义分割任务的数据集相对较小(10^3张图片)。因此，强大的神经网络快速地开始过拟合。</li>
+<li>ENet做法：<ul>
+<li>采用L2权重衰减只小有成果</li>
+<li>最终采用Spatial Dropout，在卷积分支的末端采用Spatial Dropout，在相加之前。</li>
+</ul>
+</li>
+</ul>
+<h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><p>整体训练策略：</p>
+<ul>
+<li>首先，只训练编码器，来分类输入图片的下采样的区域</li>
+<li>然后，添加解码器，训练整个网络，来执行上采样和像素级分类</li>
+</ul>
+<p>最优超参数：</p>
+<ul>
+<li>输入尺寸：480x360</li>
+<li>优化器：Adam</li>
+<li>初始学习率：5e-4</li>
+<li>L2权重衰减：2e-4</li>
+<li>批量大小：10</li>
+<li>自定义的类别权重方案：$W_{class} = \frac{1}{ln(c+p_{class})}$<ul>
+<li>$c$设为1.02</li>
+</ul>
+</li>
+<li>训练耗时：在4个Titan X GPUs上，训练耗时约3-6个小时。</li>
+</ul>
+<h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><ul>
+<li>为了验证ENet在实际应用中的实时性和表现，在三个数据集上进行了实验：道路场景的CamVid和Cityscapes，室内场景的SUN RGB-D。</li>
+<li>在NVIDIA Titan X GPU和NVIDIA TX1 embedded system module上进行实验</li>
+<li>ENet是为了在640x360的尺度下，在NVIDIA TX1上，获得10fps而设计的；这样的fps对于实际的道路场景解析应用中是足够的。</li>
+<li>在推理阶段，融合BN和dropout层进入卷积核之中，加速了整个网络。</li>
+</ul>
+<p><img src="/images/ENet/3.png" width="900" height="200"><br>如Table2所示，为SegNet和ENet的性能比较：</p>
+<ul>
+<li>ENet显著地快于SegNet，提供了可用于实时语义分割的高帧率。</li>
+</ul>
+<p><img src="/images/ENet/4.png" width="900" height="200"><br>如Table3所示，为SegNet和ENet的硬件需求比较。</p>
+<p><img src="/images/ENet/5.png" width="700" height="200"><br><img src="/images/ENet/6.png" width="700" height="200"><br><img src="/images/ENet/7.png" width="700" height="200"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="https://arxiv.org/pdf/1511.00561.pdf" target="_blank" rel="noopener">论文：SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation</a></li>
+<li><a href="https://github.com/alexgkendall/caffe-segnet" target="_blank" rel="noopener">官方代码：alexgkendall/caffe-segnet</a></li>
+<li><a href="https://github.com/liminn/pytorch-semseg/blob/master/ptsemseg/models/segnet.py" target="_blank" rel="noopener">代码及注释：meetshah1995/pytorch-semseg</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/09/SegNet/" rel="next" title="SegNet">
+                <i class="fa fa-chevron-left"></i> SegNet
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">弥补快速遗忘的记忆</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lm.zhang@aliyun.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始模块-initial-block-以及瓶颈模块-bottleneck-module"><span class="nav-text">初始模块(initial block)以及瓶颈模块(bottleneck module)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构"><span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构中各设计细节的原因"><span class="nav-text">网络结构中各设计细节的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征图分辨率-Feature-map-resolution"><span class="nav-text">特征图分辨率(Feature map resolution)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#较早地下采样-Early-downsampling"><span class="nav-text">较早地下采样(Early downsampling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解码器尺寸-Decoder-size"><span class="nav-text">解码器尺寸(Decoder size)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非线性激活函数-Nonlinear-operations"><span class="nav-text">非线性激活函数(Nonlinear operations)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Information-preserving-dimensionality-changes"><span class="nav-text">Information-preserving dimensionality changes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分解卷积核-Factorizing-filters"><span class="nav-text">分解卷积核(Factorizing filters)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空洞卷积-Dilated-convolutions"><span class="nav-text">空洞卷积(Dilated convolutions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则化-Regularization"><span class="nav-text">正则化(Regularization)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

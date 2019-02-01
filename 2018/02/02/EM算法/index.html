@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="EM(expectation maximization)是一种迭代算法，求含有隐变量的概率模型参数的极大似然估计法。每次迭代包含两步：E步，求期望；M步，求极大化。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EM算法">
+<meta property="og:url" content="http://yoursite.com/2018/02/02/EM算法/index.html">
+<meta property="og:site_name" content="Limin&#39;s Notes">
+<meta property="og:description" content="EM(expectation maximization)是一种迭代算法，求含有隐变量的概率模型参数的极大似然估计法。每次迭代包含两步：E步，求期望；M步，求极大化。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/EM%E7%AE%97%E6%B3%95/jensen%E4%B8%8D%E7%AD%89%E5%BC%8F.JPG">
+<meta property="og:updated_time" content="2019-02-01T03:32:48.175Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="EM算法">
+<meta name="twitter:description" content="EM(expectation maximization)是一种迭代算法，求含有隐变量的概率模型参数的极大似然估计法。每次迭代包含两步：E步，求期望；M步，求极大化。">
+<meta name="twitter:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/EM%E7%AE%97%E6%B3%95/jensen%E4%B8%8D%E7%AD%89%E5%BC%8F.JPG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/02/EM算法/"/>
+
+
+
+
+
+  <title>EM算法 | Limin's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Limin's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/02/EM算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Limin's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">EM算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-02T22:08:50+08:00">
+                2018-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>　　EM(expectation maximization)是一种迭代算法，求含有隐变量的概率模型参数的极大似然估计法。每次迭代包含两步：E步，求期望；M步，求极大化。<br><a id="more"></a> </p>
+<h1 id="1-符号表示"><a href="#1-符号表示" class="headerlink" title="1.符号表示"></a>1.符号表示</h1><p>　　一般地，用$Y$表示观测随机变量的数据，$Z$表示隐随机变量的数据。$Y$和$Z$连在一起称为完全数据，观测数据$Y$又称为不完全数据。<br>　　假设给定观测数据$Y$，其概率分布是$P(Y|\theta)$，其中$\theta$是需要估计的模型参数，那么不完全数据$Y$的似然函数是$P(Y|\theta)$，对数似然函数$L(\theta)= logP(Y|\theta)$。<br>　　假设$Y$和$Z$的联合概率分布是$P(Y,Z|\theta)$，那么完全数据的对数似然函数是$logP(Y,Z|\theta)$。</p>
+<h1 id="2-Q函数"><a href="#2-Q函数" class="headerlink" title="2.Q函数"></a>2.Q函数</h1><p>　　完全数据的对数似然函数$logP(Y,Z|\theta)$关于在给定观测数据$Y$和当前参数$\theta^{(i)}$下对未观测数据$Z$的条件概率分布$P(Z|Y,\theta^{(i)})$的期望称为Q函数，即：</p>
+<script type="math/tex; mode=display">Q(θ,θ^{(i)}) = E_z[\log P(Y,Z|θ) | Y, θ^{(i)}] = \sum_Z \log P(Y,Z|θ)P(Z|Y,θ^{(i)})</script><h1 id="3-EM算法"><a href="#3-EM算法" class="headerlink" title="3.EM算法"></a>3.EM算法</h1><p>输入: 观测变量$Y$，隐变量数据$Z$，联合分布$P(Y,Z|θ)$，条件分布$P(Z|Y,θ)$；<br>输出: 模型参数$θ$<br>(1) 选择参数的初始值$θ^{(0)}$，开始迭代。<br>说明：参数的初值可以任意选择，但需注意EM算法对初值是敏感的。<br>(2) E步: 记$\theta^{(i)}$为第$i$次迭代参数$\theta$的估计值, 在第$i+1$次迭代的E步，计算</p>
+<script type="math/tex; mode=display">\begin{align}
+Q(\theta, \theta^{(i)}) &= E_Z [log  P(Y, Z | \theta) | Y, \theta^{(i)}]\\ &= \sum\limits_Z log  P(Y, Z | \theta) P(Z|Y,\theta^{(i)} ) 
+\end{align}</script><p>这里$P(Z|Y,θ^{(i)})$是在给定观测数据$Y$和当前的参数估计$θ^{(i)}$下隐变量数据$Z$的条件概率分布。<br>说明：E步求$Q(\theta, \theta^{(i)})$，Q函数式中$Z$是未观测数据，$Y$是观测数据。注意，$Q(\theta, \theta^{(i)})$的第一个变元表示要极大化的参数，第2个变元表示参数的当前估计值。每次迭代实际在求Q函数及其极大。<br>(3) M步: 求使$Q(θ,θ_i)$极大化的$\theta$,确定第$i+1$次迭代的参数的估计值$θ^{(i+1)}$</p>
+<script type="math/tex; mode=display">\theta^{(i+1)} = arg\max\limits_\theta Q(\theta, \theta^{(i)})</script><p>说明：M步求$Q(\theta, \theta^{(i)})$的极大化，得到$\theta^{(i+1)}$，完成一次迭代$\theta^{(i)}$-&gt;$\theta^{(i+1)}$。每次迭代使得似然函数增大或达到局部极值。<br>(4) 重复(2), (3)两步, 直到收敛。<br>说明：给出停止迭代条件，一般是对较小的正数$\xi_1,\xi_2$，若满足$||θ^{(i+1)}-θ^{(i)}||&lt;\xi_1$或者$||Q(θ^{(i+1)},θ^i)-Q(θ^{(i)},θ^{(i)})|| &lt; \xi_2$则停止迭代。</p>
+<h1 id="4-Jensen不等式"><a href="#4-Jensen不等式" class="headerlink" title="4.Jensen不等式"></a>4.Jensen不等式</h1><h2 id="凸函数"><a href="#凸函数" class="headerlink" title="凸函数"></a>凸函数</h2><p>函数$f(x)$是凸函数：</p>
+<ul>
+<li>当定义域为实数，即$x\in R$，对于所有$x$，$f(x)$的二阶导数$f^{‘’}(x) \geq 0$；</li>
+<li>当$x$是向量时，该函数的$hessian$矩阵$H$是半正定，即$H\geq 0$；</li>
+</ul>
+<p>函数$f(x)$是严格凸函数：</p>
+<ul>
+<li>当对于所有$x$，$f^{‘’}(x) &gt; 0 (x \in R)$或$H$正定，即$H&gt;0$（$x$为向量）。</li>
+</ul>
+<h2 id="凹函数"><a href="#凹函数" class="headerlink" title="凹函数"></a>凹函数</h2><p>函数$f(x)$是（严格）凹函数,当且仅当$-f(x)$是（严格）凸函数。</p>
+<h2 id="Jensen不等式"><a href="#Jensen不等式" class="headerlink" title="Jensen不等式"></a>Jensen不等式</h2><p>Jensen不等式：</p>
+<ul>
+<li>当$f$是凸函数，$X$是随机变量，则$E[f(X)] \ge f(EX)$<ul>
+<li>此外，当$f$是严格凸函数，$E[f(X)] = f(EX)$当且仅当$X=E(X)$的概率为1（例如$X$是一个常数）的时候成立。</li>
+</ul>
+</li>
+<li>当$f$是凹函数，不等式方向反向:$E[f(X)] \le f(EX)$</li>
+</ul>
+<p>示例（记忆方法）：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/EM%E7%AE%97%E6%B3%95/jensen%E4%B8%8D%E7%AD%89%E5%BC%8F.JPG" width="50%" height="50%">  </p>
+<ul>
+<li>上图中，$f$是一个凸函数，在图中用实线表示。另外$X$是一个随机变量，有0.5的概率取值为$a$，另外有0.5的概率取值为$b$，已在图中$x$轴上标出。这样，$X$的期望值$E(X)$也就在图中所示的$a$和$b$的中点位置。</li>
+<li>图中在$y$轴上标出了$f(a)$、$f(b)$和$f(EX)$。接下来函数的期望值$E[f(x)]$在$y$轴上就处于$f(a)$和$f(b)$之间的中点的位置。</li>
+<li>如图所示，在这个例子中由于$f$是凸函数，很明显$E[f(X)] \ge f(EX)$。</li>
+</ul>
+<h1 id="5-Q函数推导"><a href="#5-Q函数推导" class="headerlink" title="5.Q函数推导"></a>5.Q函数推导</h1><p>面对一个含有隐变量的概率模型，目标是极大化观测数据（不完全数据）$Y$关于参数$\theta$的对数似然函数，即极大化</p>
+<script type="math/tex; mode=display">\begin{align} L(\theta) &= log  P(Y | \theta) = log \sum\limits_Z P(Y, Z | \theta) \\ &= log ( \sum\limits_Z   P(Y|Z,\theta) P(Z |\theta))  \end{align}</script><p>注意到这一极大化的主要困难是式中有未观测数据并有包含和（或积分）的对数。<br>事实上，EM算法是通过迭代逐步近似极大化$L(\theta)$的。假设在第$i$次迭代后$\theta$的估计值是$\theta^{(i)}$。我们希望新估计值$\theta$能使$L(\theta)$增加，即$L(\theta)&gt;L(\theta^{(i)})$，并逐步达到极大值。为此，考虑两者的差：</p>
+<script type="math/tex; mode=display">
+L(\theta) - L(\theta^{(i)}) = log (\sum\limits_z P(Y|Z,\theta) P(Z |\theta)) - log  P(Y | \theta^{(i)})</script><p>利用Jensen不等式得到其下界：</p>
+<script type="math/tex; mode=display">\begin{split}
+L(\theta) - L(\theta^{(i)}) &= log (\sum\limits_zP(Y|Z,\theta) P(Z |\theta)) - log  P(Y | \theta^{(i)}) 
+\\ &= log(\sum\limits_Z P(Z|Y,\theta^{(i)} ) \frac {P(Y|Z,\theta) P(Z |\theta)}{P(Z|Y,\theta^{(i)})}) - log  P(Y | \theta^{(i)}) \\ &\ge \sum\limits_Z P(Z|Y,\theta^{(i)} ) log\frac {P(Y|Z,\theta) P(Z |\theta)}{P(Z|Y,\theta^{(i)})} - log  P(Y | \theta^{(i)}) \\ &= \sum\limits_Z P(Z|Y,\theta^{(i)} ) log \frac {P(Y|Z,\theta) P(Z |\theta)}{P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})}
+\end{split}</script><p>令</p>
+<script type="math/tex; mode=display">B(\theta, \theta^{(i)}) = L(\theta^{(i)}) + \sum\limits_Z P(Z|Y,\theta^{(i)} ) log \frac {P(Y|Z,\theta) P(Z |\theta)}{P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})} 
+\tag{13}</script><p>则</p>
+<script type="math/tex; mode=display">L(\theta)\geq B(\theta, \theta^{(i)})</script><p>即函数$B(\theta, \theta^{(i)})$是$L(\theta)$的一个下界，而且由式（13）可知，</p>
+<script type="math/tex; mode=display">L(\theta^{(i)})= B(\theta^{(i)}, \theta^{(i)})</script><p>因此，任何可以使$B(\theta, \theta^{(i)})$增大的$\theta$，也可以使$L(\theta)$增大。为了使$L(\theta)$有尽可能大的增长，选择$\theta^{(i+1)}$使$B(\theta, \theta^{(i)})$达到极大，即</p>
+<script type="math/tex; mode=display">\theta^{(i+1)} = arg\max\limits_\theta B(\theta, \theta^{(i)})</script><p>现在求$\theta^{(i+1)}$的表达式。省去对$\theta$极大化而言是常数的项，有</p>
+<script type="math/tex; mode=display">\begin{split}
+\theta^{(i+1)} &= arg\max\limits_\theta\ B(\theta, \theta^{(i)}) \\ 
+&= arg\max\limits_\theta \ L(\theta^{(i)}) + \sum\limits_Z P(Z|Y,\theta^{(i)} ) log \frac {P(Y|Z,\theta) P(Z |\theta)}{P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})}  \\
+&=arg\max\limits_\theta\ \sum\limits_Z P(Z|Y,\theta^{(i)} ) log(P(Y| Z, \theta)P(Z|\theta)) \\
+&= arg\max\limits_\theta\ \sum\limits_Z P(Z|Y,\theta^{(i)} ) log  P(Y, Z | \theta) \\ 
+&= arg\max\limits_\theta\ Q(\theta, \theta^{(i)})
+\end{split}</script><p>上式等价于EM算法的一次迭代，即求Q函数及其极大化。<strong>EM算法是通过不断求解下界的极大化逼近求解对数似然函数极大化的算法</strong>。</p>
+<h1 id="6-参考资料"><a href="#6-参考资料" class="headerlink" title="6.参考资料"></a>6.参考资料</h1><ul>
+<li><a href="http://open.163.com/movie/2008/1/O/T/M6SGF6VB4_M6SGKGMOT.html" target="_blank" rel="noopener">Andrew Ng, CS229</a></li>
+<li><a href="http://cs229.stanford.edu/notes/cs229-notes8.pdf" target="_blank" rel="noopener">CS229, notes8</a></li>
+<li>李航，统计学习方法</li>
+<li><a href="https://www.youtube.com/watch?v=Bq5s80ZCmC0&amp;t=4s" target="_blank" rel="noopener">Richard Xu，Expectation Maximization</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/11/深度学习课程(四)卷积神经网络/" rel="next" title="深度学习课程(四)卷积神经网络">
+                <i class="fa fa-chevron-left"></i> 深度学习课程(四)卷积神经网络
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/28/SqueezeNet/" rel="prev" title="SqueezeNet">
+                SqueezeNet <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">弥补快速遗忘的记忆</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lm.zhang@aliyun.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-符号表示"><span class="nav-text">1.符号表示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Q函数"><span class="nav-text">2.Q函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-EM算法"><span class="nav-text">3.EM算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Jensen不等式"><span class="nav-text">4.Jensen不等式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#凸函数"><span class="nav-text">凸函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#凹函数"><span class="nav-text">凹函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Jensen不等式"><span class="nav-text">Jensen不等式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Q函数推导"><span class="nav-text">5.Q函数推导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-参考资料"><span class="nav-text">6.参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
