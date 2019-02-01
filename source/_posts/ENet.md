@@ -88,11 +88,66 @@ tags:
  - 解码器的角色只是去上采样编码器的输出，只需要微调细节信息(fine-tuning the details)
 - ENet措施1：ENet采用大的编码器，小的解码器。
 
+### 非线性激活函数(Nonlinear operations)
+看了几遍没看懂
+
+### Information-preserving dimensionality changes
+- 思考1：如上所述，较早地对输入进行下采样是很有必要的。但是，过度的维度减少会阻碍信息流动。
+ - 如在VGG中：在maxpooling之后，跟随一个扩张通道数的卷积。这样的做法虽然相对较便宜，一方面引入了表达瓶颈，另一方面强迫使用更多的通道数，使得计算更昂贵。
+- ENet措施1：沿用InveptionV3中处理该问题的方法，即将pooling操作和步长为2的卷积操作并行执行，然后串联起结果特征图。该技术使得ENet中初始模块(initial block)的推理时间加速了10倍。
+
+- 思考2：文中发现原始的ResNet结构的一项问题：在下采样时，ResNet的残差模块的第一个1x1卷积的步长为2，忽略了75%的输入。
+- ENet措施2：将该1x1卷积的卷积核扩大到2x2，使得全部的输入被考虑进来，因此改善信息流动和最终的精度。
+ - 当然，会使得这些层的计算代价贵4倍，但在ENet中，用于下采样的这些层很少，因此这些开销的增加并不明显。
+
+### 分解卷积核(Factorizing filters)
+- 思考：同InceptionV3中指出的，卷积权重有很大程度地冗余，每一个nxn卷积可以被分解成为两个更小的卷积：nx1和1xn。沿用InceptionV3中对于此种卷积的命名-不对称卷积(asymmetric convolutions)
+- ENet措施：采用n=5的不对称卷积，即5x1和1x5，相当于一个单独的3x3卷积。这鞥家了模块学习到的函数的多样性，并且增加了感受野。
+
+### 空洞卷积(Dilated convolutions)
+- 思考：如上所述，拥有大的感受野对于网络来说很重要，通过采用更大的感受野，可以提升模型的分类性能。但本文想避免过度的下采样特征图，所以决定采用空洞卷积来改善模型。
+- ENet措施：在几个瓶颈模块中采用空洞卷积。具体地，是在其他瓶颈模块(常规卷积/非对称卷积)中插入空洞卷积的瓶颈模块，而不是序列化的施加空洞卷积的瓶颈模块(`Multi-scale context aggregation by dilated convolutions`指出)，这样的做法可以得到最好的准确率。
+ - 该做法提高了Citycaps数据集上的IoU约4个百分点，并且没有任何其他额外的代价。
+
+### 正则化(Regularization)
+- 思考：大多数语义分割任务的数据集相对较小(10^3张图片)。因此，强大的神经网络快速地开始过拟合。
+- ENet做法：
+ - 采用L2权重衰减只小有成果
+ - 最终采用Spatial Dropout，在卷积分支的末端采用Spatial Dropout，在相加之前。
 
 # 训练策略
-待补，class balancing等
+整体训练策略：
+
+- 首先，只训练编码器，来分类输入图片的下采样的区域
+- 然后，添加解码器，训练整个网络，来执行上采样和像素级分类
+
+最优超参数：
+ - 输入尺寸：480x360
+ - 优化器：Adam
+ - 初始学习率：5e-4
+ - L2权重衰减：2e-4
+ - 批量大小：10
+ - 自定义的类别权重方案：$W_{class} = \frac{1}{ln(c+p_{class})}$
+  - $c$设为1.02
+ - 训练耗时：在4个Titan X GPUs上，训练耗时约3-6个小时。
 
 # 模型比较
+- 为了验证ENet在实际应用中的实时性和表现，在三个数据集上进行了实验：道路场景的CamVid和Cityscapes，室内场景的SUN RGB-D。
+- 在NVIDIA Titan X GPU和NVIDIA TX1 embedded system module上进行实验
+- ENet是为了在640x360的尺度下，在NVIDIA TX1上，获得10fps而设计的；这样的fps对于实际的道路场景解析应用中是足够的。
+- 在推理阶段，融合BN和dropout层进入卷积核之中，加速了整个网络。
+
+<img src="/images/ENet/3.png"  width = "900" height = "200"/>
+如Table2所示，为SegNet和ENet的性能比较：
+
+- ENet显著地快于SegNet，提供了可用于实时语义分割的高帧率。
+
+<img src="/images/ENet/4.png"  width = "900" height = "200"/>
+如Table3所示，为SegNet和ENet的硬件需求比较。
+
+<img src="/images/ENet/5.png"  width = "700" height = "200"/>
+<img src="/images/ENet/6.png"  width = "700" height = "200"/>
+<img src="/images/ENet/7.png"  width = "700" height = "200"/>
 
 # 总结
 

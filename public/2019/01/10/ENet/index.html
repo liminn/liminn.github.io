@@ -88,7 +88,12 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/ENet/1.png">
 <meta property="og:image" content="http://yoursite.com/images/ENet/2.png">
-<meta property="og:updated_time" content="2019-01-30T14:55:01.450Z">
+<meta property="og:image" content="http://yoursite.com/images/ENet/3.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/4.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/5.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/6.png">
+<meta property="og:image" content="http://yoursite.com/images/ENet/7.png">
+<meta property="og:updated_time" content="2019-02-01T08:09:53.768Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ENet">
 <meta name="twitter:description" content="摘要 为了实现实时的语义分割，提出ENet(efficient neural network) 相比于当时最优的SegNet，ENet比它快约18倍，FLOPs少约75倍，参数量少约79倍；并且，ENet有着和SegNet相似或更好的准确率。 针对Cityscapes/CamVid/SUN数据集，在NVIDIA Jetson TX1 Embedded Systems Module和NVIDIA T">
@@ -486,8 +491,71 @@
 </li>
 <li>ENet措施1：ENet采用大的编码器，小的解码器。</li>
 </ul>
-<h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><p>待补，class balancing等</p>
-<h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<h3 id="非线性激活函数-Nonlinear-operations"><a href="#非线性激活函数-Nonlinear-operations" class="headerlink" title="非线性激活函数(Nonlinear operations)"></a>非线性激活函数(Nonlinear operations)</h3><p>看了几遍没看懂</p>
+<h3 id="Information-preserving-dimensionality-changes"><a href="#Information-preserving-dimensionality-changes" class="headerlink" title="Information-preserving dimensionality changes"></a>Information-preserving dimensionality changes</h3><ul>
+<li>思考1：如上所述，较早地对输入进行下采样是很有必要的。但是，过度的维度减少会阻碍信息流动。<ul>
+<li>如在VGG中：在maxpooling之后，跟随一个扩张通道数的卷积。这样的做法虽然相对较便宜，一方面引入了表达瓶颈，另一方面强迫使用更多的通道数，使得计算更昂贵。</li>
+</ul>
+</li>
+<li><p>ENet措施1：沿用InveptionV3中处理该问题的方法，即将pooling操作和步长为2的卷积操作并行执行，然后串联起结果特征图。该技术使得ENet中初始模块(initial block)的推理时间加速了10倍。</p>
+</li>
+<li><p>思考2：文中发现原始的ResNet结构的一项问题：在下采样时，ResNet的残差模块的第一个1x1卷积的步长为2，忽略了75%的输入。</p>
+</li>
+<li>ENet措施2：将该1x1卷积的卷积核扩大到2x2，使得全部的输入被考虑进来，因此改善信息流动和最终的精度。<ul>
+<li>当然，会使得这些层的计算代价贵4倍，但在ENet中，用于下采样的这些层很少，因此这些开销的增加并不明显。</li>
+</ul>
+</li>
+</ul>
+<h3 id="分解卷积核-Factorizing-filters"><a href="#分解卷积核-Factorizing-filters" class="headerlink" title="分解卷积核(Factorizing filters)"></a>分解卷积核(Factorizing filters)</h3><ul>
+<li>思考：同InceptionV3中指出的，卷积权重有很大程度地冗余，每一个nxn卷积可以被分解成为两个更小的卷积：nx1和1xn。沿用InceptionV3中对于此种卷积的命名-不对称卷积(asymmetric convolutions)</li>
+<li>ENet措施：采用n=5的不对称卷积，即5x1和1x5，相当于一个单独的3x3卷积。这鞥家了模块学习到的函数的多样性，并且增加了感受野。</li>
+</ul>
+<h3 id="空洞卷积-Dilated-convolutions"><a href="#空洞卷积-Dilated-convolutions" class="headerlink" title="空洞卷积(Dilated convolutions)"></a>空洞卷积(Dilated convolutions)</h3><ul>
+<li>思考：如上所述，拥有大的感受野对于网络来说很重要，通过采用更大的感受野，可以提升模型的分类性能。但本文想避免过度的下采样特征图，所以决定采用空洞卷积来改善模型。</li>
+<li>ENet措施：在几个瓶颈模块中采用空洞卷积。具体地，是在其他瓶颈模块(常规卷积/非对称卷积)中插入空洞卷积的瓶颈模块，而不是序列化的施加空洞卷积的瓶颈模块(<code>Multi-scale context aggregation by dilated convolutions</code>指出)，这样的做法可以得到最好的准确率。<ul>
+<li>该做法提高了Citycaps数据集上的IoU约4个百分点，并且没有任何其他额外的代价。</li>
+</ul>
+</li>
+</ul>
+<h3 id="正则化-Regularization"><a href="#正则化-Regularization" class="headerlink" title="正则化(Regularization)"></a>正则化(Regularization)</h3><ul>
+<li>思考：大多数语义分割任务的数据集相对较小(10^3张图片)。因此，强大的神经网络快速地开始过拟合。</li>
+<li>ENet做法：<ul>
+<li>采用L2权重衰减只小有成果</li>
+<li>最终采用Spatial Dropout，在卷积分支的末端采用Spatial Dropout，在相加之前。</li>
+</ul>
+</li>
+</ul>
+<h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><p>整体训练策略：</p>
+<ul>
+<li>首先，只训练编码器，来分类输入图片的下采样的区域</li>
+<li>然后，添加解码器，训练整个网络，来执行上采样和像素级分类</li>
+</ul>
+<p>最优超参数：</p>
+<ul>
+<li>输入尺寸：480x360</li>
+<li>优化器：Adam</li>
+<li>初始学习率：5e-4</li>
+<li>L2权重衰减：2e-4</li>
+<li>批量大小：10</li>
+<li>自定义的类别权重方案：$W_{class} = \frac{1}{ln(c+p_{class})}$<ul>
+<li>$c$设为1.02</li>
+</ul>
+</li>
+<li>训练耗时：在4个Titan X GPUs上，训练耗时约3-6个小时。</li>
+</ul>
+<h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><ul>
+<li>为了验证ENet在实际应用中的实时性和表现，在三个数据集上进行了实验：道路场景的CamVid和Cityscapes，室内场景的SUN RGB-D。</li>
+<li>在NVIDIA Titan X GPU和NVIDIA TX1 embedded system module上进行实验</li>
+<li>ENet是为了在640x360的尺度下，在NVIDIA TX1上，获得10fps而设计的；这样的fps对于实际的道路场景解析应用中是足够的。</li>
+<li>在推理阶段，融合BN和dropout层进入卷积核之中，加速了整个网络。</li>
+</ul>
+<p><img src="/images/ENet/3.png" width="900" height="200"><br>如Table2所示，为SegNet和ENet的性能比较：</p>
+<ul>
+<li>ENet显著地快于SegNet，提供了可用于实时语义分割的高帧率。</li>
+</ul>
+<p><img src="/images/ENet/4.png" width="900" height="200"><br>如Table3所示，为SegNet和ENet的硬件需求比较。</p>
+<p><img src="/images/ENet/5.png" width="700" height="200"><br><img src="/images/ENet/6.png" width="700" height="200"><br><img src="/images/ENet/7.png" width="700" height="200"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1511.00561.pdf" target="_blank" rel="noopener">论文：SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation</a></li>
 <li><a href="https://github.com/alexgkendall/caffe-segnet" target="_blank" rel="noopener">官方代码：alexgkendall/caffe-segnet</a></li>
 <li><a href="https://github.com/liminn/pytorch-semseg/blob/master/ptsemseg/models/segnet.py" target="_blank" rel="noopener">代码及注释：meetshah1995/pytorch-semseg</a></li>
@@ -673,7 +741,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始模块-initial-block-以及瓶颈模块-bottleneck-module"><span class="nav-text">初始模块(initial block)以及瓶颈模块(bottleneck module)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构"><span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构中各设计细节的原因"><span class="nav-text">网络结构中各设计细节的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征图分辨率-Feature-map-resolution"><span class="nav-text">特征图分辨率(Feature map resolution)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#较早地下采样-Early-downsampling"><span class="nav-text">较早地下采样(Early downsampling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解码器尺寸-Decoder-size"><span class="nav-text">解码器尺寸(Decoder size)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始模块-initial-block-以及瓶颈模块-bottleneck-module"><span class="nav-text">初始模块(initial block)以及瓶颈模块(bottleneck module)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构"><span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构中各设计细节的原因"><span class="nav-text">网络结构中各设计细节的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征图分辨率-Feature-map-resolution"><span class="nav-text">特征图分辨率(Feature map resolution)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#较早地下采样-Early-downsampling"><span class="nav-text">较早地下采样(Early downsampling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解码器尺寸-Decoder-size"><span class="nav-text">解码器尺寸(Decoder size)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非线性激活函数-Nonlinear-operations"><span class="nav-text">非线性激活函数(Nonlinear operations)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Information-preserving-dimensionality-changes"><span class="nav-text">Information-preserving dimensionality changes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分解卷积核-Factorizing-filters"><span class="nav-text">分解卷积核(Factorizing filters)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空洞卷积-Dilated-convolutions"><span class="nav-text">空洞卷积(Dilated convolutions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则化-Regularization"><span class="nav-text">正则化(Regularization)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
