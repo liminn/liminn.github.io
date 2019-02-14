@@ -8,31 +8,79 @@ tags:
 ---
 
 # 摘要
-
-
+- PSPNet(Pyramid Scene Parsing Network)，由施加膨胀卷积的ResNet和金字塔池化模块(pyramid pooling module)构成。
+- PSPNet为当时最优，在PASCAL VOC 2012上的mIoU为85.4%，在Cityscapes上的mIoU为80.2%，均列第一。
 
 <!-- more -->
 
 # 创新点
 
-## xxx
-<img src="/images/ENet/1.png"  width = "900" height = "200"/>
+## 施加膨胀卷积的ResNet/金字塔池化模块/PSPNet总体结构
+<img src="/images/PSPNet/1.png"  width = "900" height = "200"/>
+如Fig3所示，为**PSPNet总体结构**：
 
+- 如Fig3(a)，为输入图片，输入尺寸为：$(473,473,3)$
+- 如Fig3(b)，通过施加膨胀卷积且预训练的ResNet，输出特征图为输入原图的$1/8$大小，即输出尺寸为：$(60,60,2048)$
+- 如Fig3(c)，用**金字塔池化模块**来聚合上下文信息,金字塔层级为4:
+ - 层级1：通过核大小为$(60,60)$，步长为$(60,60)$的平均池化，输出尺寸为$(1,1,2048)$的特征图
+ - 层级2：通过核大小为$(30,30)$，步长为$(30,30)$的平均池化，输出尺寸为$(2,2,2048)$的特征图
+ - 层级3：通过核大小为$(20,20)$，步长为$(20,20)$的平均池化，输出尺寸为$(3,3,2048)$的特征图
+ - 层级4：通过核大小为$(10,10)$，步长为$(10,10)$的平均池化，输出尺寸为$(6,6,2048)$的特征图
+ - 对四个层级的特征图，分别通过$1\times1$卷积(conv/bn/ReLU)，降通道数至512
+ - 对四个层级的特征图，分别通过上采样(线性插值)，将各特征图的空间尺寸还原至金字塔池化模块的输入的空间尺寸，即各层级特征图的输出尺寸均还原为$(60,60,512)$
+ - 将四个层级的特征图以及金字塔池化模块的输入相串联，输出尺寸为$(60,60,(512 \times 4+2048)) = (60,60,4096)$
+- 如Fig4(d)，通过卷积层，得到最终经的预测特征图 :
+ - 通过$1\times1$卷积(conv/bn/ReLU)，降通道数至512，故输出尺寸为$(60,60,512)$
+ - 通过$1\times1$卷积，调整通道等于目标分类数$num_{class}$，输出尺寸为$(60,60,num_{class})$
+ - 上采样，缩放空间尺寸(线性插值)到原始输入的空间尺寸，故输出尺寸为$(473,473,num_{class})$
 
-# 训练策略
+其中，对于**施加膨胀卷积的ResNet**，其改动表述如下：
+- 对于原始的ResNet：
+ - 原始的ResNet由`conv1`,`conv2_x`,`conv3_x`,`conv4_x`,`conv5_x`构成
+ - 其中，`conv1`,`conv2_1`,`conv3_1`,`conv4_1`,`conv5_1`分别进行一次下采样，因此共下采样5次，输出特征图为输入尺寸的1/32
+- 施加膨胀卷积的ResNet，对原始的ResNet的改动如下：
+ - `conv1`,`conv2_x`,`conv3_x`保持不变
+ - 改动1：`conv4_1`中第一个1x1卷积的步长由2改为1，且`conv4_x`中的3x3卷积采用膨胀速率为2的膨胀卷积
+ - 改动2：`conv5_1`中第一个1x1卷积的步长由2改为1，且`conv5_x`中的3x3卷积采用膨胀速率为4的膨胀卷积
+ - 因此，施加膨胀卷积的ResNet的下采样次数减少2次，为3次，输出特征图为输入尺寸的1/8；同时，通过膨胀卷积，扩大了特征图的感受野。
 
+- 举例说明：若输入尺寸为$(473,473,3)$
+ - 对于原始的ResNet，进行了5次下采样，即输出特征图的空间尺寸为原图的$1/32$，则输出尺寸为$(15,15,2048)$ 
+ - 注1：此处的输出是指`conv5_x`的输出，去除后续平均池化层及全连接层
+ - 注2：`output_dim = ceil(input_dim / 32.0)` 
+ - 对于施加膨胀卷积的ResNet,进行了3次下采样，即输出特征图的空间尺寸为原图的$1/8$，则输出尺寸为$(60,60,2048)$
+
+其中，对于金字塔池化模块：
+- 其根本目的是为了通过不同的金字塔层级，得到不同尺度的特征图，然后聚合这些特征图，因此便聚合了不同尺度的上下文信息。
+- 对于金字塔模块，可以针对输入尺寸的大小，来进行自定义，示例如下：
+```Python
+### 依据不同的输入尺寸，定义各层级的平均池化操作的核大小及步长
+if input_shape == (473, 473):
+    kernel_strides_map = {1: 60, 2: 30, 3: 20, 6: 10}
+elif input_shape == (713, 713):
+    kernel_strides_map = {1: 90, 2: 45, 3: 30, 6: 15}
+# 针对(320,320)，自定义金字塔池化模块
+elif input_shape == (320,320):                                  
+    kernel_strides_map = {1: 40, 2: 20, 4: 10, 8: 5}        
+# 针对(512, 512)，自定义金字塔池化模块
+elif input_shape == (512, 512):
+    kernel_strides_map = {1: 64, 2: 32, 4: 16, 8: 8}
+```
 
 # 模型比较
 
+看下金字塔池化模块的提升点数
+<img src="/images/PSPNet/2.png"  width = "600" height = "200"/>
+
+<img src="/images/PSPNet/2.png"  width = "600" height = "200"/>
 
 # 总结
 
 
 
 # 参考文献
-
-- [论文：SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
-- [官方代码：alexgkendall/caffe-segnet](https://github.com/alexgkendall/caffe-segnet)
-- [代码及注释：meetshah1995/pytorch-semseg](https://github.com/liminn/pytorch-semseg/blob/master/ptsemseg/models/segnet.py)
+- [论文：Pyramid Scene Parsing Network](https://arxiv.org/pdf/1612.01105.pdf)
+- [官方代码：hszhao/PSPNet](https://github.com/hszhao/PSPNet)
+- [Keras代码：Vladkryvoruchko/PSPNet-Keras-tensorflow](https://github.com/Vladkryvoruchko/PSPNet-Keras-tensorflow)
 
 

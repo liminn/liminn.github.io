@@ -3,7 +3,7 @@ title: ENet
 mathjax: true
 date: 2019-01-10 22:26:50
 categories: 
-- 语义分割
+- 轻量型语义分割
 tags:
 ---
 
