@@ -69,18 +69,30 @@ elif input_shape == (512, 512):
 
 # 模型比较
 
-看下金字塔池化模块的提升点数
 <img src="/images/PSPNet/2.png"  width = "600" height = "200"/>
+如表Table1所示，为金字塔池化模块在不同设置下，PSPNet的表现：
 
-<img src="/images/PSPNet/2.png"  width = "600" height = "200"/>
+- 其中当金字塔池化模块采用`B1236`+`AVE`+`DR`的配置时，PSPNet的表现为最优
+- 注：`B1236`+`AVE`+`DR`三者合起来，称为金字塔池化模块
+- `B1236`(即金字塔模块中的4个层级尺度)对相比于`B1`的单尺度，可提升PSPNet表现
+- `AVE`(即金字塔模块中采用平均池化)相比于采用`MAX`(即金字塔模块中采用最大池化)，可提升PSPNet表现
+- `DR`(即在`AVE`后，通过1x1卷积降通道数)，可提升PSPNet表现
+
+<img src="/images/PSPNet/3.png"  width = "600" height = "200"/>
+如Table3所示，为在不同的预训练模型下，PSPNet的表现：
+- 更好的预训练模型，更好的PSPNet(`PSPNet269>PSPNet152>PSPNet101>PSPNet50`)；
+- MS(即多尺度测试)，可提升PSPNet表现
+
+<img src="/images/PSPNet/4.png"  width = "600" height = "200"/>
+如Table4所示，为PSPNet与不同模型的比较：
+- PSPNet在ResNet(基础网络)、DA(数据增强)、AL(辅助loss)、金字塔模块的加持下，效果最优。
 
 # 总结
-
-
+- PSPNet的组成很简单：dilatd ResNet + 金字塔池化模块。
+- PSPNet属于常规语义分割模型，目的是为了更好的效果，并没有考虑性能。在效果方面，PSPNet比FCN/SegNet/DeeplabV1都要好。
 
 # 参考文献
 - [论文：Pyramid Scene Parsing Network](https://arxiv.org/pdf/1612.01105.pdf)
-- [官方代码：hszhao/PSPNet](https://github.com/hszhao/PSPNet)
-- [Keras代码：Vladkryvoruchko/PSPNet-Keras-tensorflow](https://github.com/Vladkryvoruchko/PSPNet-Keras-tensorflow)
+- [代码及注释：liminn/Keras-PSPNet](https://github.com/liminn/Keras-PSPNet/blob/master/pspnet_model.py)
 
 

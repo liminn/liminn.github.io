@@ -52,10 +52,6 @@ tags:
 
 - UNet没有重用最大池化索引，而是将整个特征图（需要消耗更多的内存）传输给对应解码器，并和经过上采样(通过转置卷积)的解码器特征图进行串联。
 
-
-# 训练策略
-待补，class balancing等
-
 # 模型比较
 <img src="/images/SegNet/3.png"  width = "800" height = "200"/>
 如Table3所示，在CamVid数据集上，比较了SegNet和其他网络的表现：

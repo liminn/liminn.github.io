@@ -88,8 +88,9 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/PSPNet/1.png">
 <meta property="og:image" content="http://yoursite.com/images/PSPNet/2.png">
-<meta property="og:image" content="http://yoursite.com/images/PSPNet/2.png">
-<meta property="og:updated_time" content="2019-02-14T10:11:33.112Z">
+<meta property="og:image" content="http://yoursite.com/images/PSPNet/3.png">
+<meta property="og:image" content="http://yoursite.com/images/PSPNet/4.png">
+<meta property="og:updated_time" content="2019-02-15T06:40:16.434Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PSPNet">
 <meta name="twitter:description" content="摘要 PSPNet(Pyramid Scene Parsing Network)，由施加膨胀卷积的ResNet和金字塔池化模块(pyramid pooling module)构成。 PSPNet为当时最优，在PASCAL VOC 2012上的mIoU为85.4%，在Cityscapes上的mIoU为80.2%，均列第一。">
@@ -445,12 +446,30 @@
 <li>对于金字塔模块，可以针对输入尺寸的大小，来进行自定义，示例如下：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">### 依据不同的输入尺寸，定义各层级的平均池化操作的核大小及步长</span></span><br><span class="line"><span class="keyword">if</span> input_shape == (<span class="number">473</span>, <span class="number">473</span>):</span><br><span class="line">    kernel_strides_map = &#123;<span class="number">1</span>: <span class="number">60</span>, <span class="number">2</span>: <span class="number">30</span>, <span class="number">3</span>: <span class="number">20</span>, <span class="number">6</span>: <span class="number">10</span>&#125;</span><br><span class="line"><span class="keyword">elif</span> input_shape == (<span class="number">713</span>, <span class="number">713</span>):</span><br><span class="line">    kernel_strides_map = &#123;<span class="number">1</span>: <span class="number">90</span>, <span class="number">2</span>: <span class="number">45</span>, <span class="number">3</span>: <span class="number">30</span>, <span class="number">6</span>: <span class="number">15</span>&#125;</span><br><span class="line"><span class="comment"># 针对(320,320)，自定义金字塔池化模块</span></span><br><span class="line"><span class="keyword">elif</span> input_shape == (<span class="number">320</span>,<span class="number">320</span>):                                  </span><br><span class="line">    kernel_strides_map = &#123;<span class="number">1</span>: <span class="number">40</span>, <span class="number">2</span>: <span class="number">20</span>, <span class="number">4</span>: <span class="number">10</span>, <span class="number">8</span>: <span class="number">5</span>&#125;        </span><br><span class="line"><span class="comment"># 针对(512, 512)，自定义金字塔池化模块</span></span><br><span class="line"><span class="keyword">elif</span> input_shape == (<span class="number">512</span>, <span class="number">512</span>):</span><br><span class="line">    kernel_strides_map = &#123;<span class="number">1</span>: <span class="number">64</span>, <span class="number">2</span>: <span class="number">32</span>, <span class="number">4</span>: <span class="number">16</span>, <span class="number">8</span>: <span class="number">8</span>&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><p>看下金字塔池化模块的提升点数<br><img src="/images/PSPNet/2.png" width="600" height="200"></p>
-<p><img src="/images/PSPNet/2.png" width="600" height="200"></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><p><img src="/images/PSPNet/2.png" width="600" height="200"><br>如表Table1所示，为金字塔池化模块在不同设置下，PSPNet的表现：</p>
+<ul>
+<li>其中当金字塔池化模块采用<code>B1236</code>+<code>AVE</code>+<code>DR</code>的配置时，PSPNet的表现为最优</li>
+<li>注：<code>B1236</code>+<code>AVE</code>+<code>DR</code>三者合起来，称为金字塔池化模块</li>
+<li><code>B1236</code>(即金字塔模块中的4个层级尺度)对相比于<code>B1</code>的单尺度，可提升PSPNet表现</li>
+<li><code>AVE</code>(即金字塔模块中采用平均池化)相比于采用<code>MAX</code>(即金字塔模块中采用最大池化)，可提升PSPNet表现</li>
+<li><code>DR</code>(即在<code>AVE</code>后，通过1x1卷积降通道数)，可提升PSPNet表现</li>
+</ul>
+<p><img src="/images/PSPNet/3.png" width="600" height="200"><br>如Table3所示，为在不同的预训练模型下，PSPNet的表现：</p>
+<ul>
+<li>更好的预训练模型，更好的PSPNet(<code>PSPNet269&gt;PSPNet152&gt;PSPNet101&gt;PSPNet50</code>)；</li>
+<li>MS(即多尺度测试)，可提升PSPNet表现</li>
+</ul>
+<p><img src="/images/PSPNet/4.png" width="600" height="200"><br>如Table4所示，为PSPNet与不同模型的比较：</p>
+<ul>
+<li>PSPNet在ResNet(基础网络)、DA(数据增强)、AL(辅助loss)、金字塔模块的加持下，效果最优。</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>PSPNet的组成很简单：dilatd ResNet + 金字塔池化模块。</li>
+<li>PSPNet属于常规语义分割模型，目的是为了更好的效果，并没有考虑性能。在效果方面，PSPNet比FCN/SegNet/DeeplabV1都要好。</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1612.01105.pdf" target="_blank" rel="noopener">论文：Pyramid Scene Parsing Network</a></li>
-<li><a href="https://github.com/hszhao/PSPNet" target="_blank" rel="noopener">官方代码：hszhao/PSPNet</a></li>
-<li><a href="https://github.com/Vladkryvoruchko/PSPNet-Keras-tensorflow" target="_blank" rel="noopener">Keras代码：Vladkryvoruchko/PSPNet-Keras-tensorflow</a></li>
+<li><a href="https://github.com/liminn/Keras-PSPNet/blob/master/pspnet_model.py" target="_blank" rel="noopener">代码及注释：liminn/Keras-PSPNet</a></li>
 </ul>
 
       
