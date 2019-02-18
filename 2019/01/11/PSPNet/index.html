@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/images/PSPNet/2.png">
 <meta property="og:image" content="http://yoursite.com/images/PSPNet/3.png">
 <meta property="og:image" content="http://yoursite.com/images/PSPNet/4.png">
-<meta property="og:updated_time" content="2019-02-15T06:40:16.434Z">
+<meta property="og:updated_time" content="2019-02-18T07:05:53.954Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PSPNet">
 <meta name="twitter:description" content="摘要 PSPNet(Pyramid Scene Parsing Network)，由施加膨胀卷积的ResNet和金字塔池化模块(pyramid pooling module)构成。 PSPNet为当时最优，在PASCAL VOC 2012上的mIoU为85.4%，在Cityscapes上的mIoU为80.2%，均列第一。">
@@ -426,8 +426,8 @@
 <li><p>施加膨胀卷积的ResNet，对原始的ResNet的改动如下：</p>
 <ul>
 <li><code>conv1</code>,<code>conv2_x</code>,<code>conv3_x</code>保持不变</li>
-<li>改动1：<code>conv4_1</code>中第一个1x1卷积的步长由2改为1，且<code>conv4_x</code>中的3x3卷积采用膨胀速率为2的膨胀卷积</li>
-<li>改动2：<code>conv5_1</code>中第一个1x1卷积的步长由2改为1，且<code>conv5_x</code>中的3x3卷积采用膨胀速率为4的膨胀卷积</li>
+<li>改动1：<code>conv4_1</code>中第一个1x1卷积的步长由2改为1，且<code>conv4_x</code>中的3x3卷积采用采样率(sampling rates)为2的膨胀卷积</li>
+<li>改动2：<code>conv5_1</code>中第一个1x1卷积的步长由2改为1，且<code>conv5_x</code>中的3x3卷积采用采样率为4的膨胀卷积</li>
 <li>因此，施加膨胀卷积的ResNet的下采样次数减少2次，为3次，输出特征图为输入尺寸的1/8；同时，通过膨胀卷积，扩大了特征图的感受野。</li>
 </ul>
 </li>
@@ -504,6 +504,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/12/DeepLabV1/" rel="prev" title="DeepLabV1">
+                DeepLabV1 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -587,7 +591,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">43</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
