@@ -21,7 +21,8 @@ tags:
 <img src="/images/DeepLabV2/1.png"  width = "500" height = "200"/>
 如Fig4所示，为ASPP结构示意图：
 - ASPP由[SPP(spatial pyramid pooling)](https://arxiv.org/pdf/1406.4729.pdf)启发，是SPP的变体。
-- 通过多个平行的不同采样率的膨胀卷积层，以及在各分支上单独进行的后续处理，最后融合产生最终的结果。
+- 通过四个并行的层级：各层级含不同采样率的膨胀卷积，其中$K = 3$，采样率分别为6/12/18/24；各分支上单独进行的后续处理。
+- 最后，融合四个分支的结果，产生最终的结果。
 
 # 总结
 - DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF

@@ -87,7 +87,7 @@
 <meta property="og:description" content="摘要 DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF dilated VGG16/ResNet-101：作为密集特征提取器(Dense Feature Extraction)，用于获得输出步长(output stride)为8的特征图。其中膨胀卷积在不增加参数数量和计算量的情况下，有">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/DeepLabV2/1.png">
-<meta property="og:updated_time" content="2019-02-19T07:42:20.636Z">
+<meta property="og:updated_time" content="2019-02-19T08:39:17.692Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DeepLabV2">
 <meta name="twitter:description" content="摘要 DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF dilated VGG16/ResNet-101：作为密集特征提取器(Dense Feature Extraction)，用于获得输出步长(output stride)为8的特征图。其中膨胀卷积在不增加参数数量和计算量的情况下，有">
@@ -399,7 +399,8 @@
 <h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="ASPP-atrous-spatial-pyramid-pooling"><a href="#ASPP-atrous-spatial-pyramid-pooling" class="headerlink" title="ASPP(atrous spatial pyramid pooling)"></a>ASPP(atrous spatial pyramid pooling)</h2><p><img src="/images/DeepLabV2/1.png" width="500" height="200"><br>如Fig4所示，为ASPP结构示意图：</p>
 <ul>
 <li>ASPP由<a href="https://arxiv.org/pdf/1406.4729.pdf" target="_blank" rel="noopener">SPP(spatial pyramid pooling)</a>启发，是SPP的变体。</li>
-<li>通过多个平行的不同采样率的膨胀卷积层，以及在各分支上单独进行的后续处理，最后融合产生最终的结果。</li>
+<li>通过四个并行的层级：各层级含不同采样率的膨胀卷积，其中$K = 3$，采样率分别为6/12/18/24；各分支上单独进行的后续处理。</li>
+<li>最后，融合四个分支的结果，产生最终的结果。</li>
 </ul>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
 <li>DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF</li>
