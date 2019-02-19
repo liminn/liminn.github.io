@@ -87,7 +87,7 @@
 <meta property="og:description" content="摘要 DeepLabV1结构：dilated VGG16 + CRF(Conditional Random Field) dilated VGG16用于获得输出步长(output stride)为8的特征图，CRF用于进一步优化边缘结果。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/DeepLabV1/1.png">
-<meta property="og:updated_time" content="2019-02-18T08:03:00.441Z">
+<meta property="og:updated_time" content="2019-02-19T07:39:30.227Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DeepLabV1">
 <meta name="twitter:description" content="摘要 DeepLabV1结构：dilated VGG16 + CRF(Conditional Random Field) dilated VGG16用于获得输出步长(output stride)为8的特征图，CRF用于进一步优化边缘结果。">
@@ -399,7 +399,10 @@
 <li>dilated VGG16：去除最后两个maxpool层，因此下采样次数减少2次，为3次，输出特征图为输入尺寸的$1/8$；同时，施加膨胀卷积，扩大特征图的感受野，弥补去除的两次下采样本可以带来的扩大感受野的机会。</li>
 </ul>
 <h2 id="CRF"><a href="#CRF" class="headerlink" title="CRF"></a>CRF</h2><p><img src="/images/DeepLabV1/1.png" width="700" height="200"><br>CRF用于优化边缘，效果如上图所示。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>无</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>DeepLabV1结构：dilated VGG16 + CRF(Conditional Random Field)</li>
+<li>DeepLabV1/V2/V3都只会简述，对于DeepLabV3+再做详细阐述。</li>
+</ul>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1412.7062.pdf" target="_blank" rel="noopener">论文：Semantic Image Segmentation with Deep Convolutional Nets and Fully Connected CRFs</a></li>
 </ul>

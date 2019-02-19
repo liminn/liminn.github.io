@@ -27,7 +27,8 @@ tags:
 CRF用于优化边缘，效果如上图所示。
 
 # 总结
-无
+- DeepLabV1结构：dilated VGG16 + CRF(Conditional Random Field)
+- DeepLabV1/V2/V3都只会简述，对于DeepLabV3+再做详细阐述。
 
 # 参考文献
 - [论文：Semantic Image Segmentation with Deep Convolutional Nets and Fully Connected CRFs](https://arxiv.org/pdf/1412.7062.pdf)
