@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="摘要">
+<meta name="description" content="摘要 DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF dilated VGG16/ResNet-101：作为密集特征提取器(Dense Feature Extraction)，用于获得输出步长(output stride)为8的特征图。其中膨胀卷积在不增加参数数量和计算量的情况下，有">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DeepLabV2">
 <meta property="og:url" content="http://yoursite.com/2019/01/13/DeepLabV2/index.html">
 <meta property="og:site_name" content="Limin&#39;s Notes">
-<meta property="og:description" content="摘要">
+<meta property="og:description" content="摘要 DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF dilated VGG16/ResNet-101：作为密集特征提取器(Dense Feature Extraction)，用于获得输出步长(output stride)为8的特征图。其中膨胀卷积在不增加参数数量和计算量的情况下，有">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/PSPNet/1.png">
-<meta property="og:updated_time" content="2019-02-18T05:05:04.095Z">
+<meta property="og:image" content="http://yoursite.com/images/DeepLabV2/1.png">
+<meta property="og:updated_time" content="2019-02-19T07:42:20.636Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DeepLabV2">
-<meta name="twitter:description" content="摘要">
-<meta name="twitter:image" content="http://yoursite.com/images/PSPNet/1.png">
+<meta name="twitter:description" content="摘要 DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF dilated VGG16/ResNet-101：作为密集特征提取器(Dense Feature Extraction)，用于获得输出步长(output stride)为8的特征图。其中膨胀卷积在不增加参数数量和计算量的情况下，有">
+<meta name="twitter:image" content="http://yoursite.com/images/DeepLabV2/1.png">
 
 
 
@@ -387,11 +387,27 @@
       
 
       
-        <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><a id="more"></a>
-<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="施加膨胀卷积的ResNet-金字塔池化模块-PSPNet总体结构"><a href="#施加膨胀卷积的ResNet-金字塔池化模块-PSPNet总体结构" class="headerlink" title="施加膨胀卷积的ResNet/金字塔池化模块/PSPNet总体结构"></a>施加膨胀卷积的ResNet/金字塔池化模块/PSPNet总体结构</h2><p><img src="/images/PSPNet/1.png" width="900" height="200"></p>
-<h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
-<li><a href="https://arxiv.org/pdf/1612.01105.pdf" target="_blank" rel="noopener">论文：Pyramid Scene Parsing Network</a></li>
-<li><a href="https://github.com/liminn/Keras-PSPNet/blob/master/pspnet_model.py" target="_blank" rel="noopener">代码及注释：liminn/Keras-PSPNet</a></li>
+        <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
+<li>DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF<ul>
+<li>dilated VGG16/ResNet-101：作为密集特征提取器(Dense Feature Extraction)，用于获得输出步长(output stride)为8的特征图。其中膨胀卷积在不增加参数数量和计算量的情况下，有效增大了感受野。</li>
+<li>ASPP：提出ASPP用于分割多种尺度的目标，ASPP由并行的不同采样率的膨胀卷积构成，不同采样率的膨胀卷积代表着不同大小的感受野，因此可以捕捉不同尺度的图片上下文信息。</li>
+<li>CRF：用于进一步优化边缘结果，提升目标边缘的定位精度(localization accuracy)。</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="ASPP-atrous-spatial-pyramid-pooling"><a href="#ASPP-atrous-spatial-pyramid-pooling" class="headerlink" title="ASPP(atrous spatial pyramid pooling)"></a>ASPP(atrous spatial pyramid pooling)</h2><p><img src="/images/DeepLabV2/1.png" width="500" height="200"><br>如Fig4所示，为ASPP结构示意图：</p>
+<ul>
+<li>ASPP由<a href="https://arxiv.org/pdf/1406.4729.pdf" target="_blank" rel="noopener">SPP(spatial pyramid pooling)</a>启发，是SPP的变体。</li>
+<li>通过多个平行的不同采样率的膨胀卷积层，以及在各分支上单独进行的后续处理，最后融合产生最终的结果。</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF</li>
+<li>DeepLabV2相比于DeepLabV1的改进点为ASPP，用于分割多种尺度的目标。</li>
+<li>DeepLabV1/V2/V3都只会简述，对于DeepLabV3+再做详细阐述。</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="https://arxiv.org/pdf/1606.00915.pdf" target="_blank" rel="noopener">论文：DeepLab: Semantic Image Segmentation with Deep Convolutional Nets, Atrous Convolution, and Fully Connected CRFs</a></li>
 </ul>
 
       
@@ -578,7 +594,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#施加膨胀卷积的ResNet-金字塔池化模块-PSPNet总体结构"><span class="nav-text">施加膨胀卷积的ResNet/金字塔池化模块/PSPNet总体结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ASPP-atrous-spatial-pyramid-pooling"><span class="nav-text">ASPP(atrous spatial pyramid pooling)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>

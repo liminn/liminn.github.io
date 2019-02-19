@@ -680,7 +680,14 @@
 
       
         
-          <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1>
+          <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
+<li>DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF<ul>
+<li>dilated VGG16/ResNet-101：作为密集特征提取器(Dense Feature Extraction)，用于获得输出步长(output stride)为8的特征图。其中膨胀卷积在不增加参数数量和计算量的情况下，有效增大了感受野。</li>
+<li>ASPP：提出ASPP用于分割多种尺度的目标，ASPP由并行的不同采样率的膨胀卷积构成，不同采样率的膨胀卷积代表着不同大小的感受野，因此可以捕捉不同尺度的图片上下文信息。</li>
+<li>CRF：用于进一步优化边缘结果，提升目标边缘的定位精度(localization accuracy)。</li>
+</ul>
+</li>
+</ul>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/01/13/DeepLabV2/#more" rel="contents">
