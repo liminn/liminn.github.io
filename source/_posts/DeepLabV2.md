@@ -26,7 +26,7 @@ tags:
 
 # 总结
 - DeepLabV2结构：dilated VGG16/ResNet-101 + ASPP(atrous spatial pyramid pooling) + CRF
-- DeepLabV2相比于DeepLabV1的改进点为ASPP，用于分割多种尺度的目标。
+- DeepLabV2相比于DeepLabV1的改进点为增加了ASPP，用于分割多种尺度的目标。
 - DeepLabV1/V2/V3都只会简述，对于DeepLabV3+再做详细阐述。
 
 # 参考文献
