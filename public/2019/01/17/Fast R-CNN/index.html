@@ -79,18 +79,20 @@
 
 
 
-<meta name="description" content="摘要 Fast R-CNN基于R-CNN做出改进，联合了R-CNN中的模块2与模块3： Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI共享该特征图，这归功于RoI pooling层； 而R-CNN为图像中的每一个区域建议/ROI，通过CNN独立地提取特征； Fast R-CNN通过多任务loss(a multi-task loss)，同时训练目标分类器(object">
+<meta name="description" content="摘要 Fast R-CNN基于R-CNN做出改进，联合了R-CNN中的模块2、模块3与模块4： Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI共享该特征图，通过RoI pooling层，得到各区域建议对应的固定尺寸的输出特征图； 而R-CNN对图像中的每一个区域建议/ROI，通过CNN独立地提取特征； Fast R-CNN通过多任务loss(a multi-task">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Fast R-CNN">
 <meta property="og:url" content="http://yoursite.com/2019/01/17/Fast R-CNN/index.html">
 <meta property="og:site_name" content="Limin&#39;s Notes">
-<meta property="og:description" content="摘要 Fast R-CNN基于R-CNN做出改进，联合了R-CNN中的模块2与模块3： Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI共享该特征图，这归功于RoI pooling层； 而R-CNN为图像中的每一个区域建议/ROI，通过CNN独立地提取特征； Fast R-CNN通过多任务loss(a multi-task loss)，同时训练目标分类器(object">
+<meta property="og:description" content="摘要 Fast R-CNN基于R-CNN做出改进，联合了R-CNN中的模块2、模块3与模块4： Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI共享该特征图，通过RoI pooling层，得到各区域建议对应的固定尺寸的输出特征图； 而R-CNN对图像中的每一个区域建议/ROI，通过CNN独立地提取特征； Fast R-CNN通过多任务loss(a multi-task">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Fast%20R-CNN/1.png">
-<meta property="og:updated_time" content="2019-02-27T11:08:59.775Z">
+<meta property="og:image" content="http://yoursite.com/images/Fast%20R-CNN/2.png">
+<meta property="og:image" content="http://yoursite.com/images/Fast%20R-CNN/3.gif">
+<meta property="og:updated_time" content="2019-02-28T10:47:08.815Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Fast R-CNN">
-<meta name="twitter:description" content="摘要 Fast R-CNN基于R-CNN做出改进，联合了R-CNN中的模块2与模块3： Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI共享该特征图，这归功于RoI pooling层； 而R-CNN为图像中的每一个区域建议/ROI，通过CNN独立地提取特征； Fast R-CNN通过多任务loss(a multi-task loss)，同时训练目标分类器(object">
+<meta name="twitter:description" content="摘要 Fast R-CNN基于R-CNN做出改进，联合了R-CNN中的模块2、模块3与模块4： Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI共享该特征图，通过RoI pooling层，得到各区域建议对应的固定尺寸的输出特征图； 而R-CNN对图像中的每一个区域建议/ROI，通过CNN独立地提取特征； Fast R-CNN通过多任务loss(a multi-task">
 <meta name="twitter:image" content="http://yoursite.com/images/Fast%20R-CNN/1.png">
 
 
@@ -388,38 +390,37 @@
 
       
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>Fast R-CNN基于R-CNN做出改进，联合了<a href="http://cvnotes.cn/2019/01/16/R-CNN/" target="_blank" rel="noopener">R-CNN</a>中的模块2与模块3：<ul>
-<li>Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI共享该特征图，这归功于RoI pooling层； 而R-CNN为图像中的每一个区域建议/ROI，通过CNN独立地提取特征；</li>
+<li>Fast R-CNN基于R-CNN做出改进，联合了<a href="http://cvnotes.cn/2019/01/16/R-CNN/" target="_blank" rel="noopener">R-CNN</a>中的模块2、模块3与模块4：<ul>
+<li>Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI<strong>共享该特征图</strong>，通过RoI pooling层，得到各区域建议对应的固定尺寸的输出特征图； 而R-CNN对图像中的每一个区域建议/ROI，通过CNN独立地提取特征；</li>
 <li>Fast R-CNN通过多任务loss(a multi-task loss)，同时训练目标分类器(object classifier)和包围边框回归器(bounding-box regressor)；</li>
 </ul>
 </li>
-<li>综上，Fast R-CNN通过<code>RoI pooling layer</code>和<code>multi-task loss</code>，成功联合了R-CNN中的模块2与模块3；通过共享计算，无论训练阶段或推理阶段，均加速了R-CNN。</li>
+<li>综上，Fast R-CNN通过<code>RoI pooling layer</code>和<code>multi-task loss</code>，成功联合了R-CNN中的模块2、模块3与模块4；通过共享计算，无论训练阶段或推理阶段，均加速了R-CNN，故称为Fast R-CNN。</li>
 </ul>
 <a id="more"></a>
-<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="RoI-pooling-layer"><a href="#RoI-pooling-layer" class="headerlink" title="RoI pooling layer"></a>RoI pooling layer</h2><p>RoI pooling layer目的：对输入的任意尺寸的RoI，输出固定尺寸的特征图(如$7\times7$)<br>RoI pooling layer工作流程简述：</p>
-<h2 id="Fast-R-CNN总体结构"><a href="#Fast-R-CNN总体结构" class="headerlink" title="Fast R-CNN总体结构"></a>Fast R-CNN总体结构</h2><p><img src="/images/Fast R-CNN/1.png" width="600" height="200"><br>如上图所示，为R-CNN的总体结构示意图，R-CNN由三个模块构成：</p>
+<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="Fast-R-CNN总体结构"><a href="#Fast-R-CNN总体结构" class="headerlink" title="Fast R-CNN总体结构"></a>Fast R-CNN总体结构</h2><p><img src="/images/Fast R-CNN/1.png" width="600" height="200"><br>如上图所示，为Fast R-CNN的总体结构示意图：<br>xx</p>
+<h2 id="RoI-pooling-layer"><a href="#RoI-pooling-layer" class="headerlink" title="RoI pooling layer"></a>RoI pooling layer</h2><p>RoI pooling layer的目的：</p>
 <ul>
-<li>模块1：生成区域建议的算法<ul>
-<li>Selective Search算法，对一张图片，生成约2k个区域建议/感兴趣区域。</li>
+<li>对输入的任意尺寸($H \times W$)的RoI，输出固定尺寸的特征图($h \times w$)</li>
 </ul>
-</li>
-<li>模块2：CNN，分别为每个区域提取出固定长度的特征向量<ul>
-<li>CNN为AlexNet，因此提取出的特征向量的维度为4096维。</li>
+<p>RoI pooling layer工作流程简述：</p>
+<ul>
+<li>将RoI的坐标映射到特征图上；其中，映射规则很简单：将RoI的各坐标乘以“特征图与原图宽高尺寸的比值”，即得到了RoI映射到特征图上的坐标。</li>
+<li>依据想要的输出尺寸($h \times w$)，将RoI映射在特征图上的区域进行分块，划分为$h \times w$个池化区域块，各块内取最大值，即得到$h \times w$大小的固定尺寸的输出特征图。</li>
 </ul>
-</li>
-<li>模块3：一系列SVM<ul>
-<li>SVM为2分类器，因此每一目标类别需要一个SVM。</li>
+<p>RoI pooling layer工作流程示例：<br><img src="/images/Fast R-CNN/2.png" width="1000" height="400"></p>
+<ul>
+<li>左1为Fast R-CNN通过CNN首先得到整张输入图像的特征图，左2为RoI映射在特征图上的区域，左3为池化区域分块，左4为固定尺寸的输出特征图。<br><img src="/images/Fast R-CNN/3.gif" width="450" height="450"></li>
+<li>上图为RoI pooling layer工作流程的动图示例。</li>
 </ul>
-</li>
-</ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
-<li>了解R-CNN的结构即可。</li>
-</ul>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<h2 id="multi-task-loss"><a href="#multi-task-loss" class="headerlink" title="multi-task loss"></a>multi-task loss</h2><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="http://openaccess.thecvf.com/content_iccv_2015/papers/Girshick_Fast_R-CNN_ICCV_2015_paper.pdf" target="_blank" rel="noopener">论文：Fast R-CNN</a></li>
 <li><a href="https://arxiv.org/pdf/1311.2524v3.pdf" target="_blank" rel="noopener">论文：Rich feature hierarchies for accurate object detection and semantic segmentation</a></li>
 <li><a href="https://lilianweng.github.io/lil-log/2017/12/31/object-recognition-for-dummies-part-3.html#fast-r-cnn" target="_blank" rel="noopener">博客(极好)：Object Detection for Dummies Part 3: R-CNN Family</a></li>
 <li><a href="https://deepsense.ai/region-of-interest-pooling-explained/" target="_blank" rel="noopener">博客：Region of interest pooling explained</a></li>
 <li><a href="https://blog.csdn.net/lanran2/article/details/60143861" target="_blank" rel="noopener">博客：ROI Pooling层解析</a></li>
+<li><a href="https://blog.csdn.net/zijin0802034/article/details/77685438" target="_blank" rel="noopener">博客：边框回归(Bounding Box Regression)详解</a></li>
+<li><a href="https://blog.csdn.net/u011534057/article/details/51235964" target="_blank" rel="noopener">博客：Bounding box regression详解</a></li>
 </ul>
 
       
@@ -602,7 +603,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RoI-pooling-layer"><span class="nav-text">RoI pooling layer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fast-R-CNN总体结构"><span class="nav-text">Fast R-CNN总体结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Fast-R-CNN总体结构"><span class="nav-text">Fast R-CNN总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RoI-pooling-layer"><span class="nav-text">RoI pooling layer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multi-task-loss"><span class="nav-text">multi-task loss</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>

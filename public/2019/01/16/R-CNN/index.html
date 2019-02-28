@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="摘要 R-CNN是目标检测领域的里程碑方法，第一次提出“区域建议(region proposals)+CNN”的两阶段目标检测思路。 R-CNN由三个模块构成：区域建议生成算法+CNN+SVMs。">
+<meta name="description" content="摘要 R-CNN是目标检测领域的里程碑方法，第一次提出“区域建议(region proposals)+CNN”的两阶段目标检测思路。 R-CNN由四个模块构成：区域建议生成算法+CNN+SVMs+边框回归(bounding-box regression)。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="R-CNN">
 <meta property="og:url" content="http://yoursite.com/2019/01/16/R-CNN/index.html">
 <meta property="og:site_name" content="Limin&#39;s Notes">
-<meta property="og:description" content="摘要 R-CNN是目标检测领域的里程碑方法，第一次提出“区域建议(region proposals)+CNN”的两阶段目标检测思路。 R-CNN由三个模块构成：区域建议生成算法+CNN+SVMs。">
+<meta property="og:description" content="摘要 R-CNN是目标检测领域的里程碑方法，第一次提出“区域建议(region proposals)+CNN”的两阶段目标检测思路。 R-CNN由四个模块构成：区域建议生成算法+CNN+SVMs+边框回归(bounding-box regression)。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/R-CNN/1.png">
-<meta property="og:updated_time" content="2019-02-27T08:02:08.787Z">
+<meta property="og:updated_time" content="2019-02-28T10:43:31.623Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="R-CNN">
-<meta name="twitter:description" content="摘要 R-CNN是目标检测领域的里程碑方法，第一次提出“区域建议(region proposals)+CNN”的两阶段目标检测思路。 R-CNN由三个模块构成：区域建议生成算法+CNN+SVMs。">
+<meta name="twitter:description" content="摘要 R-CNN是目标检测领域的里程碑方法，第一次提出“区域建议(region proposals)+CNN”的两阶段目标检测思路。 R-CNN由四个模块构成：区域建议生成算法+CNN+SVMs+边框回归(bounding-box regression)。">
 <meta name="twitter:image" content="http://yoursite.com/images/R-CNN/1.png">
 
 
@@ -389,21 +389,25 @@
       
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
 <li>R-CNN是目标检测领域的里程碑方法，第一次提出“区域建议(region proposals)+CNN”的两阶段目标检测思路。</li>
-<li>R-CNN由三个模块构成：<code>区域建议生成算法</code>+<code>CNN</code>+<code>SVMs</code>。</li>
+<li>R-CNN由四个模块构成：<code>区域建议生成算法</code>+<code>CNN</code>+<code>SVMs</code>+<code>边框回归(bounding-box regression)</code>。</li>
 </ul>
 <a id="more"></a>
-<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="R-CNN总体结构"><a href="#R-CNN总体结构" class="headerlink" title="R-CNN总体结构"></a>R-CNN总体结构</h2><p><img src="/images/R-CNN/1.png" width="700" height="200"><br>如上图所示，为R-CNN的总体结构示意图，R-CNN由三个模块构成：</p>
+<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="R-CNN总体结构"><a href="#R-CNN总体结构" class="headerlink" title="R-CNN总体结构"></a>R-CNN总体结构</h2><p><img src="/images/R-CNN/1.png" width="700" height="200"><br>如上图所示，为R-CNN的总体结构示意图，R-CNN由四个模块构成：</p>
 <ul>
 <li>模块1：生成区域建议的算法<ul>
-<li>Selective Search算法，对一张图片，生成约2k个区域建议/感兴趣区域。</li>
+<li>Selective Search算法，对一张图片，生成约2k个区域建议/RoI。</li>
 </ul>
 </li>
-<li>模块2：CNN，分别为每个区域提取出固定长度的特征向量<ul>
-<li>CNN为AlexNet，因此提取出的特征向量的维度为4096维。</li>
+<li>模块2：CNN<ul>
+<li>R-CNN通过该CNN分别为每个区域建议提取出固定长度的特征向量；CNN为AlexNet，因此提取出的特征向量的维度为4096维。</li>
 </ul>
 </li>
 <li>模块3：一系列SVM<ul>
 <li>SVM为2分类器，因此每一目标类别需要一个SVM。</li>
+</ul>
+</li>
+<li>模块4：边框回归<ul>
+<li>将每一个区域建议通过CNN提取出的特征，通过特定类别(class-specific)的SVM进行分类后，再通过特定类别的边框回归器(bounding-box regressor)，预测出一个新的包围边框，改善定位表现。</li>
 </ul>
 </li>
 </ul>
@@ -413,6 +417,8 @@
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1311.2524v3.pdf" target="_blank" rel="noopener">论文：Rich feature hierarchies for accurate object detection and semantic segmentation</a></li>
 <li><a href="https://lilianweng.github.io/lil-log/2017/12/31/object-recognition-for-dummies-part-3.html#fast-r-cnn" target="_blank" rel="noopener">博客(极好)：Object Detection for Dummies Part 3: R-CNN Family</a></li>
+<li><a href="https://blog.csdn.net/zijin0802034/article/details/77685438" target="_blank" rel="noopener">博客：边框回归(Bounding Box Regression)详解</a></li>
+<li><a href="https://blog.csdn.net/u011534057/article/details/51235964" target="_blank" rel="noopener">博客：Bounding box regression详解</a></li>
 </ul>
 
       
