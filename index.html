@@ -389,12 +389,12 @@
       
         
           <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>Fast R-CNN基于R-CNN做出改进，联合了<a href="http://cvnotes.cn/2019/01/16/R-CNN/" target="_blank" rel="noopener">R-CNN</a>中的模块2与模块3：<ul>
-<li>Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI共享该特征图，这归功于RoI pooling层； 而R-CNN为图像中的每一个区域建议/ROI，通过CNN独立地提取特征；</li>
+<li>Fast R-CNN基于R-CNN做出改进，联合了<a href="http://cvnotes.cn/2019/01/16/R-CNN/" target="_blank" rel="noopener">R-CNN</a>中的模块2、模块3与模块4：<ul>
+<li>Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI<strong>共享该特征图</strong>，通过RoI pooling层，得到各区域建议对应的固定尺寸的输出特征图； 而R-CNN对图像中的每一个区域建议/ROI，通过CNN独立地提取特征；</li>
 <li>Fast R-CNN通过多任务loss(a multi-task loss)，同时训练目标分类器(object classifier)和包围边框回归器(bounding-box regressor)；</li>
 </ul>
 </li>
-<li>综上，Fast R-CNN通过<code>RoI pooling layer</code>和<code>multi-task loss</code>，成功联合了R-CNN中的模块2与模块3；通过共享计算，无论训练阶段或推理阶段，均加速了R-CNN。</li>
+<li>综上，Fast R-CNN通过<code>RoI pooling layer</code>和<code>multi-task loss</code>，成功联合了R-CNN中的模块2、模块3与模块4；通过共享计算，无论训练阶段或推理阶段，均加速了R-CNN，故称为Fast R-CNN。</li>
 </ul>
           <!--noindex-->
           <div class="post-button text-center">
@@ -543,7 +543,7 @@
         
           <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
 <li>R-CNN是目标检测领域的里程碑方法，第一次提出“区域建议(region proposals)+CNN”的两阶段目标检测思路。</li>
-<li>R-CNN由三个模块构成：<code>区域建议生成算法</code>+<code>CNN</code>+<code>SVMs</code>。</li>
+<li>R-CNN由四个模块构成：<code>区域建议生成算法</code>+<code>CNN</code>+<code>SVMs</code>+<code>边框回归(bounding-box regression)</code>。</li>
 </ul>
           <!--noindex-->
           <div class="post-button text-center">
