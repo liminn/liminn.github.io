@@ -25,7 +25,7 @@ xx
 
 ## RoI pooling layer
 RoI pooling layer的目的：
-- 对输入的任意尺寸($H \times W$)的RoI，输出固定尺寸的特征图($h \times w$)
+- 在输入图像的特征图上，对于输入的任意尺寸($H \times W$)的RoI，提取出固定尺寸的输出特征图($h \times w$)
 
 RoI pooling layer工作流程简述：
 - 将RoI的坐标映射到特征图上；其中，映射规则很简单：将RoI的各坐标乘以“特征图与原图宽高尺寸的比值”，即得到了RoI映射到特征图上的坐标。
@@ -40,6 +40,7 @@ RoI pooling layer工作流程示例：
 ## multi-task loss
 
 
+## Fast R-CNN训练流程
 
 
 # 总结
