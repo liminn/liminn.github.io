@@ -537,7 +537,8 @@
       
         
           <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>x</li>
+<li>提出RPN(Region Proposal Network)来提供区域建议。其中，RPN与检测网络共享CNN，因此RPN可以几乎无代价的提供区域建议(3~10ms)。</li>
+<li>RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，<code>Faster R-CNN</code> = <code>RPN</code> + <code>Fast R-CNN</code>。</li>
 </ul>
           <!--noindex-->
           <div class="post-button text-center">
@@ -686,7 +687,7 @@
         
           <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
 <li>Fast R-CNN基于R-CNN做出改进，联合了<a href="http://cvnotes.cn/2019/01/16/R-CNN/" target="_blank" rel="noopener">R-CNN</a>中的模块2、模块3与模块4：<ul>
-<li>Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/ROI<strong>共享该特征图</strong>，通过RoI pooling层，得到各区域建议对应的固定尺寸的输出特征图； 而R-CNN对图像中的每一个区域建议/ROI，通过CNN独立地提取特征；</li>
+<li>Fast R-CNN通过CNN首先得到整张图像的特征图，所有的区域建议/RoI<strong>共享该特征图</strong>，通过RoI pooling层，得到各区域建议对应的固定尺寸的输出特征图； 而R-CNN对图像中的每一个区域建议/ROI，通过CNN独立地提取特征；</li>
 <li>Fast R-CNN通过多任务loss(a multi-task loss)，同时训练目标分类器(object classifier)和包围边框回归器(bounding-box regressor)；</li>
 </ul>
 </li>

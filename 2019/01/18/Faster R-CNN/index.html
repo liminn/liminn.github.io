@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="摘要 x">
+<meta name="description" content="摘要 提出RPN(Region Proposal Network)来提供区域建议。其中，RPN与检测网络共享CNN，因此RPN可以几乎无代价的提供区域建议(3~10ms)。 RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，Faster R-CNN = RPN + Fast R-CNN。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Faster R-CNN">
 <meta property="og:url" content="http://yoursite.com/2019/01/18/Faster R-CNN/index.html">
 <meta property="og:site_name" content="Limin&#39;s Notes">
-<meta property="og:description" content="摘要 x">
+<meta property="og:description" content="摘要 提出RPN(Region Proposal Network)来提供区域建议。其中，RPN与检测网络共享CNN，因此RPN可以几乎无代价的提供区域建议(3~10ms)。 RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，Faster R-CNN = RPN + Fast R-CNN。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/Fast%20R-CNN/1.png">
-<meta property="og:updated_time" content="2019-03-12T06:34:40.745Z">
+<meta property="og:image" content="http://yoursite.com/images/Faster%20R-CNN/1.png">
+<meta property="og:updated_time" content="2019-03-14T10:36:08.530Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Faster R-CNN">
-<meta name="twitter:description" content="摘要 x">
-<meta name="twitter:image" content="http://yoursite.com/images/Fast%20R-CNN/1.png">
+<meta name="twitter:description" content="摘要 提出RPN(Region Proposal Network)来提供区域建议。其中，RPN与检测网络共享CNN，因此RPN可以几乎无代价的提供区域建议(3~10ms)。 RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，Faster R-CNN = RPN + Fast R-CNN。">
+<meta name="twitter:image" content="http://yoursite.com/images/Faster%20R-CNN/1.png">
 
 
 
@@ -388,13 +388,14 @@
 
       
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>x</li>
+<li>提出RPN(Region Proposal Network)来提供区域建议。其中，RPN与检测网络共享CNN，因此RPN可以几乎无代价的提供区域建议(3~10ms)。</li>
+<li>RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，<code>Faster R-CNN</code> = <code>RPN</code> + <code>Fast R-CNN</code>。</li>
 </ul>
 <a id="more"></a>
-<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="Faster-R-CNN总体结构"><a href="#Faster-R-CNN总体结构" class="headerlink" title="Faster R-CNN总体结构"></a>Faster R-CNN总体结构</h2><p><img src="/images/Fast R-CNN/1.png" width="600" height="200"><br>如上图所示，为Fast R-CNN的总体结构示意图：<br>xx</p>
+<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="Faster-R-CNN总体结构"><a href="#Faster-R-CNN总体结构" class="headerlink" title="Faster R-CNN总体结构"></a>Faster R-CNN总体结构</h2><p><img src="/images/Faster R-CNN/1.png" width="400" height="400"><br>如上图所示，为Faster R-CNN的总体结构示意图。</p>
 <h2 id="RPN"><a href="#RPN" class="headerlink" title="RPN"></a>RPN</h2><p>工作原理<br>loss function：</p>
-<h2 id="Faster-R-CNN训练流程"><a href="#Faster-R-CNN训练流程" class="headerlink" title="Faster R-CNN训练流程"></a>Faster R-CNN训练流程</h2><p>RPN如何和Fast R-CNN共享计算的<br>训练流程，推理流程</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<h2 id="训练流程"><a href="#训练流程" class="headerlink" title="训练流程"></a>训练流程</h2><p>RPN如何和Fast R-CNN共享计算的<br>训练流程，推理流程</p>
+<h1 id="R-CNN家族对比"><a href="#R-CNN家族对比" class="headerlink" title="R-CNN家族对比"></a>R-CNN家族对比</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="http://openaccess.thecvf.com/content_iccv_2015/papers/Girshick_Fast_R-CNN_ICCV_2015_paper.pdf" target="_blank" rel="noopener">论文：Faster R-CNN</a></li>
 <li><a href="https://arxiv.org/pdf/1311.2524v3.pdf" target="_blank" rel="noopener">论文：Rich feature hierarchies for accurate object detection and semantic segmentation</a></li>
 <li><a href="https://lilianweng.github.io/lil-log/2017/12/31/object-recognition-for-dummies-part-3.html#fast-r-cnn" target="_blank" rel="noopener">博客(极好)：Object Detection for Dummies Part 3: R-CNN Family</a></li>
@@ -585,7 +586,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Faster-R-CNN总体结构"><span class="nav-text">Faster R-CNN总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPN"><span class="nav-text">RPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Faster-R-CNN训练流程"><span class="nav-text">Faster R-CNN训练流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Faster-R-CNN总体结构"><span class="nav-text">Faster R-CNN总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPN"><span class="nav-text">RPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练流程"><span class="nav-text">训练流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R-CNN家族对比"><span class="nav-text">R-CNN家族对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
