@@ -29,7 +29,7 @@ tags:
  - 将每一个区域建议通过CNN提取出的特征，通过特定类别(class-specific)的SVM进行分类后，再通过特定类别的边框回归器(bounding-box regressor)，预测出一个新的包围边框，改善定位表现。
 
 # 总结
-- 了解R-CNN的结构即可。
+- 了解R-CNN的结构即可，R-CNN的所有环节都在后续被改进。
 
 # 参考文献
 - [论文：Rich feature hierarchies for accurate object detection and semantic segmentation](https://arxiv.org/pdf/1311.2524v3.pdf)

@@ -9,27 +9,27 @@ tags:
 
 # 摘要
 
-- x
+- 提出RPN(Region Proposal Network)来提供区域建议。其中，RPN与检测网络共享CNN，因此RPN可以几乎无代价的提供区域建议(3~10ms)。
+- RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，`Faster R-CNN` = `RPN` + `Fast R-CNN`。
 
 <!-- more -->
 
 # 创新点
 ## Faster R-CNN总体结构
 
-<img src="/images/Fast R-CNN/1.png"  width = "600" height = "200"/>
-如上图所示，为Fast R-CNN的总体结构示意图：
-xx
+<img src="/images/Faster R-CNN/1.png"  width = "400" height = "400"/>
+如上图所示，为Faster R-CNN的总体结构示意图。
 
 ## RPN
 
 工作原理
 loss function：
 
-## Faster R-CNN训练流程
+## 训练流程
 RPN如何和Fast R-CNN共享计算的
 训练流程，推理流程
 
-
+# R-CNN家族对比
 
 
 # 总结
