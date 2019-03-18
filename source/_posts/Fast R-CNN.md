@@ -31,7 +31,7 @@ RoI pooling layer的工作流程简述：
 - 首先，将RoI的坐标映射到特征图上，映射规则很简单：将RoI的各坐标乘以“特征图与原图宽高尺寸的比值”，即得到了RoI映射到特征图上的坐标。
 - 然后，依据想要的输出尺寸(如$7\times 7$)，将RoI映射在特征图上的区域进行分块，划分为$h \times w$个池化区域块
 - 最后，各块内取最大值，即得到$h \times w$大小的固定尺寸的输出特征图。
-- 注意：RoI pooling layer在`坐标映射`以及`区域分块`两步骤，均在一次量化(quantization)，因此存在精度损失。在Mask R-CNN中通过`RoIAlign`进行了优化，在Mask R-CNN中再具体解释。
+- 注意：RoI pooling layer在`坐标映射`以及`区域分块`两步骤，均在一次量化(quantization)，因此打破了像素到像素的对齐(breaks pixel-topixel alignment)。在Mask R-CNN中通过`RoIAlign`进行了优化，在Mask R-CNN中再具体解释。
 
 RoI pooling layer工作流程的动图示例：
 <img src="/images/Fast R-CNN/2.gif"  width = "450" height = "450"/>
@@ -45,7 +45,7 @@ RoI pooling layer工作流程的动图示例：
 
 # 参考文献
 - [论文：Fast R-CNN](http://openaccess.thecvf.com/content_iccv_2015/papers/Girshick_Fast_R-CNN_ICCV_2015_paper.pdf)
-- [博客(极好)：Object Detection for Dummies Part 3: R-CNN Family](https://lilianweng.github.io/lil-log/2017/12/31/object-recognition-for-dummies-part-3.html#fast-r-cnn)
+- [博客：Object Detection for Dummies Part 3: R-CNN Family](https://lilianweng.github.io/lil-log/2017/12/31/object-recognition-for-dummies-part-3.html#fast-r-cnn)
 - [博客：Region of interest pooling explained](https://deepsense.ai/region-of-interest-pooling-explained/)
 - [博客：ROI Pooling层解析](https://blog.csdn.net/lanran2/article/details/60143861)
 - [博客：边框回归(Bounding Box Regression)详解](https://blog.csdn.net/zijin0802034/article/details/77685438)
