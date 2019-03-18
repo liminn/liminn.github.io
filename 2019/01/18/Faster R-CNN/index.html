@@ -89,7 +89,7 @@
 <meta property="og:image" content="http://yoursite.com/images/Faster%20R-CNN/1.jpeg">
 <meta property="og:image" content="http://yoursite.com/images/Faster%20R-CNN/2.png">
 <meta property="og:image" content="http://yoursite.com/images/Faster%20R-CNN/3.png">
-<meta property="og:updated_time" content="2019-03-18T03:46:56.525Z">
+<meta property="og:updated_time" content="2019-03-18T03:49:49.105Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Faster R-CNN">
 <meta name="twitter:description" content="摘要 提出RPN(Region Proposal Network)来提供区域建议。其中，RPN与检测网络共享CNN，因此RPN可以几乎无代价的提供区域建议(3~10ms)。 RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，Faster R-CNN = RPN + Fast R-CNN。">
@@ -425,6 +425,7 @@
 <p>注意：</p>
 <ul>
 <li><strong>要注意所使用的CNNs的感受野，要确保特征图中每个位置的感受野能够cover住它所需表达的所有anchors</strong>。否则，anchors的特征向量没有足够的信息来做出预测。</li>
+<li>对于感受野，阅读参考文献中的<a href="https://medium.com/mlreview/a-guide-to-receptive-field-arithmetic-for-convolutional-neural-networks-e0f514068807" target="_blank" rel="noopener">A guide to receptive field arithmetic for Convolutional Neural Networks</a>。</li>
 </ul>
 <h3 id="RPN的损失函数"><a href="#RPN的损失函数" class="headerlink" title="RPN的损失函数"></a>RPN的损失函数</h3><p>对于RPN的损失函数，即有两部分构成：<code>分类损失</code>+<code>边框回归损失</code><br>待补。</p>
 <h2 id="Faster-R-CNN训练流程"><a href="#Faster-R-CNN训练流程" class="headerlink" title="Faster R-CNN训练流程"></a>Faster R-CNN训练流程</h2><p>RPN在和Fast R-CNN共享CNN的情况下的练流程，推理流程<br>待补。</p>
