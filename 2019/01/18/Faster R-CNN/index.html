@@ -86,12 +86,14 @@
 <meta property="og:site_name" content="Limin&#39;s Notes">
 <meta property="og:description" content="摘要 提出RPN(Region Proposal Network)来提供区域建议。其中，RPN与检测网络共享CNN，因此RPN可以几乎无代价的提供区域建议(3~10ms)。 RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，Faster R-CNN = RPN + Fast R-CNN。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/Faster%20R-CNN/1.png">
-<meta property="og:updated_time" content="2019-03-14T10:36:08.530Z">
+<meta property="og:image" content="http://yoursite.com/images/Faster%20R-CNN/1.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/Faster%20R-CNN/2.png">
+<meta property="og:image" content="http://yoursite.com/images/Faster%20R-CNN/3.png">
+<meta property="og:updated_time" content="2019-03-18T03:46:56.525Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Faster R-CNN">
 <meta name="twitter:description" content="摘要 提出RPN(Region Proposal Network)来提供区域建议。其中，RPN与检测网络共享CNN，因此RPN可以几乎无代价的提供区域建议(3~10ms)。 RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，Faster R-CNN = RPN + Fast R-CNN。">
-<meta name="twitter:image" content="http://yoursite.com/images/Faster%20R-CNN/1.png">
+<meta name="twitter:image" content="http://yoursite.com/images/Faster%20R-CNN/1.jpeg">
 
 
 
@@ -392,14 +394,51 @@
 <li>RPN网络提供区域建议，Fast R-CNN作为检测网络，因此，<code>Faster R-CNN</code> = <code>RPN</code> + <code>Fast R-CNN</code>。</li>
 </ul>
 <a id="more"></a>
-<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="Faster-R-CNN总体结构"><a href="#Faster-R-CNN总体结构" class="headerlink" title="Faster R-CNN总体结构"></a>Faster R-CNN总体结构</h2><p><img src="/images/Faster R-CNN/1.png" width="400" height="400"><br>如上图所示，为Faster R-CNN的总体结构示意图。</p>
-<h2 id="RPN"><a href="#RPN" class="headerlink" title="RPN"></a>RPN</h2><p>工作原理<br>loss function：</p>
-<h2 id="训练流程"><a href="#训练流程" class="headerlink" title="训练流程"></a>训练流程</h2><p>RPN如何和Fast R-CNN共享计算的<br>训练流程，推理流程</p>
-<h1 id="R-CNN家族对比"><a href="#R-CNN家族对比" class="headerlink" title="R-CNN家族对比"></a>R-CNN家族对比</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="Faster-R-CNN总体结构"><a href="#Faster-R-CNN总体结构" class="headerlink" title="Faster R-CNN总体结构"></a>Faster R-CNN总体结构</h2><p><img src="/images/Faster R-CNN/1.jpeg" width="400" height="400"><br>如上图所示，为Faster R-CNN的总体结构示意图。</p>
+<h2 id="RPN"><a href="#RPN" class="headerlink" title="RPN"></a>RPN</h2><p>准确的说，<strong>RPN的目的是为了预测一个anchor是前景/背景的概率，以及精修anchor的位置</strong>。<br>想要理解RPN，需要理解以下几个方面：<code>Anchors的定义</code>-&gt;<code>RPN的训练数据制作</code>-&gt;<code>anchors的特征如何表达</code>-&gt;<code>RPN的损失函数</code></p>
+<h3 id="Anchors的定义"><a href="#Anchors的定义" class="headerlink" title="Anchors的定义"></a>Anchors的定义</h3><p><img src="/images/Faster R-CNN/2.png" width="500" height="400"><br>Anchors是Faster R-CNN中一个重要的概念，一个anchor就是一个包围框。在Faster R-CNN中，对于输入图像中的某个像素位置，其默认设置9个anchors。<br>如上图所示，为尺寸为(600,800)的输入图像，在(320,320)位置处的9个anchors：</p>
+<ul>
+<li>定义三种尺度：$128 \times 128$、$256 \times 256$、$512 \times 512$；每个尺度采用三种比率：$1:1$、$1:2$、$2:1$</li>
+<li>因此，产生9个不同尺寸的anchors，分别为$128 \times 128$、$\frac{128}{\sqrt{2}} \times (128 \times \sqrt{2})$、$(128 \times \sqrt{2}) \times \frac{128}{\sqrt{2}}$，其余6个依此类推。</li>
+</ul>
+<p>因此，对于尺寸为(600,800)的输入图像，步长为16，则有$\frac{600}{16}\times \frac{800}{16} \times 9= 38 \times 50 \times 9 = 17100$个anchors。</p>
+<p>注意：</p>
+<ul>
+<li>Faster R-CNN的anchors定义方式，对于Pascal VOC以及COCO数据集可以很好的适用。</li>
+<li>但是，也可以自行定义不同种类的anchors。例如，对于行人检测，可以考虑非常窄且长的anchors。</li>
+<li>整洁的anchors设置可以提高速度及精度。</li>
+</ul>
+<h3 id="RPN的训练数据制作"><a href="#RPN的训练数据制作" class="headerlink" title="RPN的训练数据制作"></a>RPN的训练数据制作</h3><p>RPN的目的是为了预测一个anchor是前景/背景的概率，以及精修anchor的位置。因此，RPN需要训练一个前景/背景的分类器以及一个包围边框的回归器。<strong>因此，对于每一个anchor，需要标注该anchor是前景/背景（为了分类器），以及边框位置坐标（为了回归器）。</strong><br>对于一个anchor的类别标注，通过图像中原有的GT边框来进行标注：</p>
+<ul>
+<li>将与GT边框有最大重叠率的anchor标注为前景，其他重叠率较低的anchors皆为背景。</li>
+</ul>
+<p>对于一个anchor的位置坐标标注：</p>
+<ul>
+<li>若anchor为前景，则对应的原图中的GT边框即为位置坐标标注，若anchor为背景，则无位置坐标标注。</li>
+<li>该点存疑，待验证。是坐标偏移？？</li>
+</ul>
+<h3 id="anchors的特征如何表达"><a href="#anchors的特征如何表达" class="headerlink" title="anchors的特征如何表达"></a><code>anchors的特征如何表达</code></h3><p>以尺寸为(600,800)的输入图像为例，经CNNs后，输出步长为16，因此，得到尺寸为$39\times51$的特征图。特征图中的每一个位置，拥有9个anchors，每个anchor有着两个标签，即是前景/背景以及坐标位置。anchors的特征通过如下方式表达：</p>
+<ul>
+<li>对于分类器，让特征图的深度为18($9\times2$)。因此，每个anchor拥有了两个values/logits来表征前景和背景。</li>
+<li>对于回归器，让特征图的深度为36($9\times4$)。因此，每个anchor拥有了四个values来表征xx(坐标偏移？待验证)。</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li><strong>要注意所使用的CNNs的感受野，要确保特征图中每个位置的感受野能够cover住它所需表达的所有anchors</strong>。否则，anchors的特征向量没有足够的信息来做出预测。</li>
+</ul>
+<h3 id="RPN的损失函数"><a href="#RPN的损失函数" class="headerlink" title="RPN的损失函数"></a>RPN的损失函数</h3><p>对于RPN的损失函数，即有两部分构成：<code>分类损失</code>+<code>边框回归损失</code><br>待补。</p>
+<h2 id="Faster-R-CNN训练流程"><a href="#Faster-R-CNN训练流程" class="headerlink" title="Faster R-CNN训练流程"></a>Faster R-CNN训练流程</h2><p>RPN在和Fast R-CNN共享CNN的情况下的练流程，推理流程<br>待补。</p>
+<h1 id="R-CNN家族对比"><a href="#R-CNN家族对比" class="headerlink" title="R-CNN家族对比"></a>R-CNN家族对比</h1><p><img src="/images/Faster R-CNN/3.png" width="800" height="400"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>待补。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="http://openaccess.thecvf.com/content_iccv_2015/papers/Girshick_Fast_R-CNN_ICCV_2015_paper.pdf" target="_blank" rel="noopener">论文：Faster R-CNN</a></li>
-<li><a href="https://arxiv.org/pdf/1311.2524v3.pdf" target="_blank" rel="noopener">论文：Rich feature hierarchies for accurate object detection and semantic segmentation</a></li>
-<li><a href="https://lilianweng.github.io/lil-log/2017/12/31/object-recognition-for-dummies-part-3.html#fast-r-cnn" target="_blank" rel="noopener">博客(极好)：Object Detection for Dummies Part 3: R-CNN Family</a></li>
+<li><a href="https://lilianweng.github.io/lil-log/2017/12/31/object-recognition-for-dummies-part-3.html#fast-r-cnn" target="_blank" rel="noopener">博客：Object Detection for Dummies Part 3: R-CNN Family</a></li>
+<li><a href="https://medium.com/@smallfishbigsea/faster-r-cnn-explained-864d4fb7e3f8" target="_blank" rel="noopener">博客：Faster R-CNN Explained</a></li>
+<li><a href="https://medium.com/mlreview/a-guide-to-receptive-field-arithmetic-for-convolutional-neural-networks-e0f514068807" target="_blank" rel="noopener">博客：A guide to receptive field arithmetic for Convolutional Neural Networks</a></li>
 <li><a href="https://www.youtube.com/playlist?list=PLkRkKTC6HZMzp28TxR_fJYZ-K8Yu3EQw0" target="_blank" rel="noopener">视频：Paper Review : Faster R-CNN for Real-time Object Detection</a></li>
+<li><a href="https://blog.csdn.net/u014380165/article/details/80379812" target="_blank" rel="noopener">x</a></li>
+<li><a href="https://towardsdatascience.com/fasterrcnn-explained-part-1-with-code-599c16568cff" target="_blank" rel="noopener">x</a></li>
+<li><a href="https://blog.csdn.net/lanran2/article/details/54376126" target="_blank" rel="noopener">x</a></li>
 </ul>
 
       
@@ -586,7 +625,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Faster-R-CNN总体结构"><span class="nav-text">Faster R-CNN总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPN"><span class="nav-text">RPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练流程"><span class="nav-text">训练流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R-CNN家族对比"><span class="nav-text">R-CNN家族对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Faster-R-CNN总体结构"><span class="nav-text">Faster R-CNN总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPN"><span class="nav-text">RPN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Anchors的定义"><span class="nav-text">Anchors的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RPN的训练数据制作"><span class="nav-text">RPN的训练数据制作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#anchors的特征如何表达"><span class="nav-text">anchors的特征如何表达</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RPN的损失函数"><span class="nav-text">RPN的损失函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Faster-R-CNN训练流程"><span class="nav-text">Faster R-CNN训练流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R-CNN家族对比"><span class="nav-text">R-CNN家族对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -1122,7 +1161,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
