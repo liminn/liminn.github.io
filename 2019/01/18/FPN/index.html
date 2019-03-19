@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="摘要 x">
+<meta name="description" content="摘要 FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。 FPN = bottom-up pathway + top-down pathway + lateral connections bottom-up pathway：通过ResNet，构成自下而上的路径。 top-down pathway：通过对各层级特征进行逐步上采样，构成自">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FPN">
 <meta property="og:url" content="http://yoursite.com/2019/01/18/FPN/index.html">
 <meta property="og:site_name" content="Limin&#39;s Notes">
-<meta property="og:description" content="摘要 x">
+<meta property="og:description" content="摘要 FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。 FPN = bottom-up pathway + top-down pathway + lateral connections bottom-up pathway：通过ResNet，构成自下而上的路径。 top-down pathway：通过对各层级特征进行逐步上采样，构成自">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/FPN/1.png">
-<meta property="og:updated_time" content="2019-03-18T11:02:52.449Z">
+<meta property="og:updated_time" content="2019-03-19T11:03:51.274Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="FPN">
-<meta name="twitter:description" content="摘要 x">
+<meta name="twitter:description" content="摘要 FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。 FPN = bottom-up pathway + top-down pathway + lateral connections bottom-up pathway：通过ResNet，构成自下而上的路径。 top-down pathway：通过对各层级特征进行逐步上采样，构成自">
 <meta name="twitter:image" content="http://yoursite.com/images/FPN/1.png">
 
 
@@ -388,13 +388,22 @@
 
       
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>x</li>
+<li>FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。</li>
+<li><code>FPN</code> = <code>bottom-up pathway</code> + <code>top-down pathway</code> + <code>lateral connections</code><ul>
+<li><code>bottom-up pathway</code>：通过ResNet，构成自下而上的路径。</li>
+<li><code>top-down pathway</code>：通过对各层级特征进行逐步上采样，构成自上而下的路径。</li>
+<li><code>lateral connections</code>：横向连接将<code>bottom-up pathway</code>与<code>top-down pathway</code>中对应层级的特征相加，弥补丢失的空间信息，增强定位能力。</li>
+</ul>
+</li>
+<li>文中将FPN与RPN以及Faster R-CNN相结合，大幅提升了原有效果。</li>
 </ul>
 <a id="more"></a>
 <h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="FPN总体结构"><a href="#FPN总体结构" class="headerlink" title="FPN总体结构"></a>FPN总体结构</h2><p><img src="/images/FPN/1.png" width="400" height="400"><br>如上图所示，为FPN的总体结构示意图。</p>
 <h2 id="Bottom-up-pathway"><a href="#Bottom-up-pathway" class="headerlink" title="Bottom-up pathway"></a>Bottom-up pathway</h2><h2 id="Bottom-up-pathway-1"><a href="#Bottom-up-pathway-1" class="headerlink" title="Bottom-up pathway"></a>Bottom-up pathway</h2><h2 id="FPN-with-RPN"><a href="#FPN-with-RPN" class="headerlink" title="FPN with RPN"></a>FPN with RPN</h2><h2 id="Bottom-up-pathway-2"><a href="#Bottom-up-pathway-2" class="headerlink" title="Bottom-up pathway"></a>Bottom-up pathway</h2><h2 id="Segmentation"><a href="#Segmentation" class="headerlink" title="Segmentation"></a>Segmentation</h2><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1612.03144.pdf" target="_blank" rel="noopener">论文：Feature Pyramid Networks for Object Detection</a></li>
-<li><a href="https://medium.com/@jonathan_hui/understanding-feature-pyramid-networks-for-object-detection-fpn-45b227b9106c" target="_blank" rel="noopener">Understanding Feature Pyramid Networks for object detection (FPN)</a></li>
+<li><a href="https://medium.com/@jonathan_hui/understanding-feature-pyramid-networks-for-object-detection-fpn-45b227b9106c" target="_blank" rel="noopener">博客：Understanding Feature Pyramid Networks for object detection (FPN)</a></li>
+<li><a href="https://www.jiqizhixin.com/articles/2017-07-25-2" target="_blank" rel="noopener">x</a></li>
+<li><a href="https://blog.csdn.net/u014380165/article/details/72890275" target="_blank" rel="noopener">x</a></li>
 </ul>
 
       
