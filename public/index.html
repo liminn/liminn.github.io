@@ -710,7 +710,14 @@
       
         
           <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>x</li>
+<li>FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。</li>
+<li><code>FPN</code> = <code>bottom-up pathway</code> + <code>top-down pathway</code> + <code>lateral connections</code><ul>
+<li><code>bottom-up pathway</code>：通过ResNet，构成自下而上的路径。</li>
+<li><code>top-down pathway</code>：通过对各层级特征进行逐步上采样，构成自上而下的路径。</li>
+<li><code>lateral connections</code>：横向连接将<code>bottom-up pathway</code>与<code>top-down pathway</code>中对应层级的特征相加，弥补丢失的空间信息，增强定位能力。</li>
+</ul>
+</li>
+<li>文中将FPN与RPN以及Faster R-CNN相结合，大幅提升了原有效果。</li>
 </ul>
           <!--noindex-->
           <div class="post-button text-center">
