@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="摘要 FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。 FPN = bottom-up pathway + top-down pathway + lateral connections bottom-up pathway：通过ResNet，构成自下而上的路径。 top-down pathway：通过对各层级特征进行逐步上采样，构成自">
+<meta name="description" content="摘要 FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。 FPN = bottom-up pathway + top-down pathway + lateral connections bottom-up pathway：任意backbone ConvNet，文中通过ResNet，构成自下而上的路径。 top-down pathwa">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FPN">
 <meta property="og:url" content="http://yoursite.com/2019/01/18/FPN/index.html">
 <meta property="og:site_name" content="Limin&#39;s Notes">
-<meta property="og:description" content="摘要 FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。 FPN = bottom-up pathway + top-down pathway + lateral connections bottom-up pathway：通过ResNet，构成自下而上的路径。 top-down pathway：通过对各层级特征进行逐步上采样，构成自">
+<meta property="og:description" content="摘要 FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。 FPN = bottom-up pathway + top-down pathway + lateral connections bottom-up pathway：任意backbone ConvNet，文中通过ResNet，构成自下而上的路径。 top-down pathwa">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/FPN/2.png">
-<meta property="og:updated_time" content="2019-03-20T03:46:05.245Z">
+<meta property="og:updated_time" content="2019-03-20T14:20:12.195Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="FPN">
-<meta name="twitter:description" content="摘要 FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。 FPN = bottom-up pathway + top-down pathway + lateral connections bottom-up pathway：通过ResNet，构成自下而上的路径。 top-down pathway：通过对各层级特征进行逐步上采样，构成自">
+<meta name="twitter:description" content="摘要 FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。 FPN = bottom-up pathway + top-down pathway + lateral connections bottom-up pathway：任意backbone ConvNet，文中通过ResNet，构成自下而上的路径。 top-down pathwa">
 <meta name="twitter:image" content="http://yoursite.com/images/FPN/2.png">
 
 
@@ -390,16 +390,32 @@
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
 <li>FPN(Feature Pyramid Networks)的目的是通过特征金字塔来解决检测任务中的多尺度目标问题。</li>
 <li><code>FPN</code> = <code>bottom-up pathway</code> + <code>top-down pathway</code> + <code>lateral connections</code><ul>
-<li><code>bottom-up pathway</code>：通过ResNet，构成自下而上的路径。</li>
-<li><code>top-down pathway</code>：通过对各层级特征进行逐步上采样，构成自上而下的路径。</li>
+<li><code>bottom-up pathway</code>：任意backbone ConvNet，文中通过ResNet，构成自下而上的路径。</li>
+<li><code>top-down pathway</code>：通过对<code>bottom-up pathway</code>中各金字塔层级的特征进行逐步上采样，构成自上而下的路径。</li>
 <li><code>lateral connections</code>：横向连接将<code>bottom-up pathway</code>与<code>top-down pathway</code>中对应层级的特征相加，弥补丢失的空间信息，增强定位能力。</li>
 </ul>
 </li>
 <li>文中将FPN与RPN以及Faster R-CNN相结合，大幅提升了原有效果。</li>
 </ul>
 <a id="more"></a>
-<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="FPN总体结构"><a href="#FPN总体结构" class="headerlink" title="FPN总体结构"></a>FPN总体结构</h2><p><img src="/images/FPN/2.png" width="450" height="400"><br>如上图所示，为FPN的总体结构示意图。</p>
-<h2 id="Bottom-up-pathway"><a href="#Bottom-up-pathway" class="headerlink" title="Bottom-up pathway"></a>Bottom-up pathway</h2><h2 id="Bottom-up-pathway-1"><a href="#Bottom-up-pathway-1" class="headerlink" title="Bottom-up pathway"></a>Bottom-up pathway</h2><h2 id="FPN-with-RPN"><a href="#FPN-with-RPN" class="headerlink" title="FPN with RPN"></a>FPN with RPN</h2><h2 id="FPN-with-Fast-R-CNN-or-Faster-R-CNN"><a href="#FPN-with-Fast-R-CNN-or-Faster-R-CNN" class="headerlink" title="FPN with Fast R-CNN or Faster R-CNN"></a>FPN with Fast R-CNN or Faster R-CNN</h2><h2 id="Segmentation"><a href="#Segmentation" class="headerlink" title="Segmentation"></a>Segmentation</h2><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="FPN总体结构"><a href="#FPN总体结构" class="headerlink" title="FPN总体结构"></a>FPN总体结构</h2><p><img src="/images/FPN/2.png" width="450" height="400"><br>如上图所示，为FPN的总体结构示意图：<br>首先，见总体结构示意图中的”bottom-up”部分所示：</p>
+<ul>
+<li>Bottom-up pathway即为主干网络，文中选用ResNet；ResNet由<code>conv1</code>、<code>conv2_x</code>、<code>conv3_x</code>、<code>conv4_x</code>、<code>conv5_x</code>构成；</li>
+<li>文中选用<code>conv2_x</code>、<code>conv3_x</code>、<code>conv4_x</code>、<code>conv5_x</code>的输出特征$\{C_2,C_3,C_4,C_5\}$为四个金字塔层级，其输出步长分别为$\{4,8,16,32\}$。</li>
+<li>文中未将<code>conv1</code>的输出特征包含进金字塔之中，是因为其需要大量的内存占用。</li>
+</ul>
+<p>然后，见总体结构示意图中的”top-down”部分所示：</p>
+<ul>
+<li>首先，对$C_5$施加$1\times1$卷积(通道数固定为$d=256$)，得到$M_5$</li>
+<li>然后，进行横向连接，将$M_5$进行上采样(最近邻插值)后的特征图，与$C_4$进行$1\times1$卷积(通道数固定为$d=256$)后的特征图，进行像素级加法(element-wise addition)，即得到$M_4$；依此类推，得到$M_3$和$M_2$</li>
+<li><strong>为什么要横向连接</strong>：将$M_5$进行上采样(最近邻插值)后的特征图记为$M_{4before}$。$M_{4before}$相比于$C_4$，$M_{4before}$的<strong>语义信息更丰富(分类能力强)，但空间信息更粗糙(定位能力弱)</strong>。因此，将$C_4$于$M_{4before}$进行连接，补充$M_{4before}$的空间信息，弥补其定位能力的不足。</li>
+</ul>
+<p>最后，见总体结构示意图中的最右侧一列：</p>
+<ul>
+<li><strong>为了减少上采样带来的混叠影响(reduce the aliasing effect of upsampling)</strong>：对$M_4$进行$3\times 3$卷积，得到$P_4$。依此类推，得到$P_3$以及$P_2$。</li>
+<li>FPN各金字塔层级的最终特征图即为${P_5,P_4,P_3,P_2}$，分别对应于${C_5,C_4,C_3,C_2}$，它们的空间尺寸，对应相等。</li>
+</ul>
+<h2 id="FPN-with-RPN"><a href="#FPN-with-RPN" class="headerlink" title="FPN with RPN"></a>FPN with RPN</h2><h2 id="FPN-with-Fast-R-CNN-or-Faster-R-CNN"><a href="#FPN-with-Fast-R-CNN-or-Faster-R-CNN" class="headerlink" title="FPN with Fast R-CNN or Faster R-CNN"></a>FPN with Fast R-CNN or Faster R-CNN</h2><h2 id="Segmentation"><a href="#Segmentation" class="headerlink" title="Segmentation"></a>Segmentation</h2><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1612.03144.pdf" target="_blank" rel="noopener">论文：Feature Pyramid Networks for Object Detection</a></li>
 <li><a href="https://medium.com/@jonathan_hui/understanding-feature-pyramid-networks-for-object-detection-fpn-45b227b9106c" target="_blank" rel="noopener">博客：Understanding Feature Pyramid Networks for object detection (FPN)</a></li>
 <li><a href="https://www.jiqizhixin.com/articles/2017-07-25-2" target="_blank" rel="noopener">x</a></li>
@@ -590,7 +606,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN总体结构"><span class="nav-text">FPN总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bottom-up-pathway"><span class="nav-text">Bottom-up pathway</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bottom-up-pathway-1"><span class="nav-text">Bottom-up pathway</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN-with-RPN"><span class="nav-text">FPN with RPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN-with-Fast-R-CNN-or-Faster-R-CNN"><span class="nav-text">FPN with Fast R-CNN or Faster R-CNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Segmentation"><span class="nav-text">Segmentation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN总体结构"><span class="nav-text">FPN总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN-with-RPN"><span class="nav-text">FPN with RPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN-with-Fast-R-CNN-or-Faster-R-CNN"><span class="nav-text">FPN with Fast R-CNN or Faster R-CNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Segmentation"><span class="nav-text">Segmentation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
