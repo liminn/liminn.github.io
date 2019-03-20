@@ -21,7 +21,7 @@ tags:
 # 创新点
 ## FPN总体结构
 
-<img src="/images/FPN/1.png"  width = "400" height = "400"/>
+<img src="/images/FPN/2.png"  width = "450" height = "400"/>
 如上图所示，为FPN的总体结构示意图。
 
 ## Bottom-up pathway
@@ -30,7 +30,7 @@ tags:
 
 ## FPN with RPN
 
-## Bottom-up pathway
+## FPN with Fast R-CNN or Faster R-CNN
 
 ## Segmentation
 
