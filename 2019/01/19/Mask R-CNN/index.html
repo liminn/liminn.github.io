@@ -79,20 +79,21 @@
 
 
 
-<meta name="description" content="摘要 为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，Mask R-CNN = Faster R-CNN + FCN。 Mask R-CNN的技术要点： 要点1——更强的基础网络：基础网络采用ResNet/ResNeXt+FPN(Feature Pyramid Networks)。 要点2——RoIAlign：RoIPoo">
+<meta name="description" content="摘要 为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，Mask R-CNN = Faster R-CNN + Mask Head(FCN)。 Mask R-CNN在单GPU上的推理速度约为200ms，即5FPS。 Mask R-CNN的技术要点： 要点1——更强的基础网络：基础网络采用ResNet/ResNeXt+FPN(">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mask R-CNN">
 <meta property="og:url" content="http://yoursite.com/2019/01/19/Mask R-CNN/index.html">
 <meta property="og:site_name" content="Limin&#39;s Notes">
-<meta property="og:description" content="摘要 为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，Mask R-CNN = Faster R-CNN + FCN。 Mask R-CNN的技术要点： 要点1——更强的基础网络：基础网络采用ResNet/ResNeXt+FPN(Feature Pyramid Networks)。 要点2——RoIAlign：RoIPoo">
+<meta property="og:description" content="摘要 为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，Mask R-CNN = Faster R-CNN + Mask Head(FCN)。 Mask R-CNN在单GPU上的推理速度约为200ms，即5FPS。 Mask R-CNN的技术要点： 要点1——更强的基础网络：基础网络采用ResNet/ResNeXt+FPN(">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Mask%20R-CNN/1.png">
 <meta property="og:image" content="http://yoursite.com/images/Mask%20R-CNN/2.png">
 <meta property="og:image" content="http://yoursite.com/images/Mask%20R-CNN/3.png">
-<meta property="og:updated_time" content="2019-03-18T10:49:37.528Z">
+<meta property="og:image" content="http://yoursite.com/images/Mask%20R-CNN/4.png">
+<meta property="og:updated_time" content="2019-03-26T11:18:45.818Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mask R-CNN">
-<meta name="twitter:description" content="摘要 为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，Mask R-CNN = Faster R-CNN + FCN。 Mask R-CNN的技术要点： 要点1——更强的基础网络：基础网络采用ResNet/ResNeXt+FPN(Feature Pyramid Networks)。 要点2——RoIAlign：RoIPoo">
+<meta name="twitter:description" content="摘要 为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，Mask R-CNN = Faster R-CNN + Mask Head(FCN)。 Mask R-CNN在单GPU上的推理速度约为200ms，即5FPS。 Mask R-CNN的技术要点： 要点1——更强的基础网络：基础网络采用ResNet/ResNeXt+FPN(">
 <meta name="twitter:image" content="http://yoursite.com/images/Mask%20R-CNN/1.png">
 
 
@@ -401,38 +402,63 @@
 
       
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，<code>Mask R-CNN</code> = <code>Faster R-CNN</code> + <code>FCN</code>。</li>
+<li>为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，<code>Mask R-CNN</code> = <code>Faster R-CNN</code> + <code>Mask Head(FCN)</code>。</li>
+<li>Mask R-CNN在单GPU上的推理速度约为200ms，即5FPS。</li>
 <li>Mask R-CNN的技术要点：<ul>
 <li>要点1——更强的基础网络：基础网络采用<code>ResNet/ResNeXt</code>+<code>FPN(Feature Pyramid Networks)</code>。</li>
 <li>要点2——RoIAlign：RoIPool适用于目标检测任务，但不适用于分割任务。因此，对RoIPool进行改进，提出RoIAlign。</li>
-<li>要点3——解耦mask预测与类别预测：FCN分支输出$K$个binary mask，只有所属类别的第$k$个binary mask对loss做出贡献。因此，通过此种loss计算方式，避免了类间竞争。<a id="more"></a>
+<li>要点3——解耦mask预测与类别预测：Mask Head分支输出$K$个binary mask，只有RoI所属的GT类别所对应的第$k$个binary mask对loss做出贡献。因此，通过此种loss计算方式，避免了类间竞争。<a id="more"></a>
 </li>
 </ul>
 </li>
 </ul>
 <h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="Mask-R-CNN总体结构"><a href="#Mask-R-CNN总体结构" class="headerlink" title="Mask R-CNN总体结构"></a>Mask R-CNN总体结构</h2><p><img src="/images/Mask R-CNN/1.png" width="1000" height="300"><br>如上图所示，为Mask R-CNN的总体结构示意图。</p>
-<h2 id="FPN"><a href="#FPN" class="headerlink" title="FPN"></a>FPN</h2><p>x</p>
+<h2 id="Backbone-Architecture"><a href="#Backbone-Architecture" class="headerlink" title="Backbone Architecture"></a>Backbone Architecture</h2><p>backbone architecture用于提取整张图片的特征。在Mask R-CNN中，使用了如下几种backbone architecture：</p>
+<ul>
+<li><code>ResNet-C4</code>：Faster R-CNN即是采用ResNet中4-th阶段的最后卷积层的特征来作为提取到的输出特征，C4即是此含义。<ul>
+<li>疑问：Faster R-CNN为什么用C4？？？</li>
+</ul>
+</li>
+<li><code>ResNet-FPN</code>/<code>ResNeXt-FPN</code>：采用FPN作为backbone，使得Mask R-CNN在精度和速度上均得到显著受益。</li>
+</ul>
 <h2 id="RoIAlign"><a href="#RoIAlign" class="headerlink" title="RoIAlign"></a>RoIAlign</h2><p>RoIPool缺点：</p>
 <ul>
-<li>RoIPool在<code>坐标映射</code>以及<code>区域分块</code>两步骤，均在一次量化(quantization)，因此打破了像素到像素的对齐(breaks pixel-topixel alignment)。</li>
-<li>RoIPool是为检测任务而设计，包围边框不需要像素级别的精度。因此，RoIPool在目标检测任务中可以表现的不错。</li>
-<li>但在分割任务中，需要像素级别的特征。因此，RoIPool导致的选择出的特征图区域与原图中对应的图像区域不对齐(misaligned)，对分割任务不利。</li>
+<li>RoIPool在<code>坐标映射</code>以及<code>区域分块</code>两步骤，均在一次量化(quantization)。这两次量化，造成了RoI与提取出的特征之间的不对齐(misalignments)。</li>
+<li>分类性能对此种不对齐现象，表现得很鲁棒，并未造成大的影响。因此，RoIPool在Fast/Faster R-CNN中工作的不错。</li>
+<li>但在分割任务中，需要像素级别的特征。因此，RoIPool导致的不对齐现象，对分割任务有非常负面的影响。</li>
 </ul>
-<p>RoIAligh做法：</p>
+<p><img src="/images/Mask R-CNN/2.png" width="600" height="300"><br>RoIAligh做法，如Fig3所示：</p>
 <ul>
 <li>在<code>坐标映射</code>步骤，不进行量化，保留浮点数级别的坐标映射。</li>
-<li>在<code>区域分块</code>步骤，不进行量化，保留浮点数级别的区域划分。在每一个划分出的矩形单元(bin)中，将其划分成四部分，每部分中的中点为一个采样点。各采样点的值通过双线性差值获得。然后，取四个采样点的最大值，为该bin的输出值。</li>
+<li>在<code>区域分块</code>步骤，不进行量化，保留浮点数级别的矩形区域划分。</li>
+<li>在每一个划分出的矩形区域中，采样四个点；然后通过双线性插值，计算出该四个采样点的准确值；然后，取四个采样点的最大值，为该矩形区域的输出值。<ul>
+<li>实验发现：只要不使用任何量化，采样点的位置以及采样点的个数对结果的影响不大。</li>
+<li>疑问：那到底是如何采样的？随机采样？到底是如何通过双线性差值的方式计算出采样点的值的？</li>
 </ul>
-<p>下图为RoIPool与RoIAlign的对比图：<br><img src="/images/Mask R-CNN/2.png" width="1000" height="300"></p>
-<h2 id="FCN"><a href="#FCN" class="headerlink" title="FCN"></a>FCN</h2><p>FCN分支，解耦了mask和类别预测，避免了类间竞争：</p>
+</li>
+</ul>
+<p>下图为RoIPool与RoIAlign的对比图：<br><img src="/images/Mask R-CNN/3.png" width="1000" height="300"></p>
+<h2 id="Mask-Head"><a href="#Mask-Head" class="headerlink" title="Mask Head"></a>Mask Head</h2><p><img src="/images/Mask R-CNN/4.png" width="500" height="300"><br>如Fig4所示，Mask R-CNN在两种现有Faster R-CNN head的基础上，进行了拓展：</p>
 <ul>
-<li>在FCN分支中，每个RoI特征的输出维度为$K$，$K$即类别个数。</li>
-<li>输出特征的每个维度均为binary mask，其loss计算方式如下：$L_{mask}(Cls_{k}) = \frac{1}{N} Sum(sigmoid(Cls_{k}))$，即平均二值交叉熵损失(average binary cross-entrop loss)。</li>
-<li>只有第$k$个通道的binary mask对loss做出贡献，其他通道的binary mask不贡献loss。</li>
-<li>因此，通过此种loss计算方式，避免了类间竞争。</li>
+<li>图我没看懂！</li>
+<li>论文中该段相关的文字我也没看懂！已用蓝色标注出！</li>
 </ul>
-<h2 id="总体训练流程"><a href="#总体训练流程" class="headerlink" title="总体训练流程"></a>总体训练流程</h2><p>补训练流程，推理流程</p>
-<h1 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h1><p><img src="/images/Mask R-CNN/3.png" width="900" height="300"><br>如Table1所示，为xx。</p>
+<h2 id="Multi-task-loss"><a href="#Multi-task-loss" class="headerlink" title="Multi-task loss"></a>Multi-task loss</h2><p>在训练过程中，对于每一个RoI，其多任务loss为：</p>
+<ul>
+<li>$L = L_{cls} +  L_{box} + L_{mask}$</li>
+<li>其中，分类损失$L_{cls}$和包围边框损失$L_{box}$与Fast R-CNN中定义的一样。</li>
+</ul>
+<p>对于$L_{mask}$：</p>
+<ul>
+<li>对于每一个RoI，Mask Head分支的输出通道数为$Km^2$。其中，$K$为类别数，$m \times m$为binary mask的分辨率，即该$K$个$m \times m$的binary mask分别对应了$K$个类别中的每一个类别。</li>
+<li>$L_{mask}$的计算方式为：对输出特征图施加逐像素的sigmoid，$L_{mask}$即等于<code>average binary cross-entropy loss</code>。</li>
+<li>并且，只有该RoI所属的GT类别的第$k$个通道的binary mask对loss做出贡献，其余通道的binary mask均不做出贡献。</li>
+<li>这种$L_{mask}$的定义方式，使得网络为每个类别生成mask，而没有类别之间的竞争。Mask R-CNN依靠分类分支去预测类别，然后再选择出输出的mask。这解耦了mask预测和类别预测。这与语义分割中常规的FCN的做法不同，它们使用逐像素的softmax(a per-pixel softamx)和多项式的交叉熵(a multinomial cross-entropy loss)，在这种情况里，mask通过了类别竞争。</li>
+<li>实验证明了本文的做法对示例分割取得好结果很关键。</li>
+</ul>
+<h1 id="实施细节-超参数设置"><a href="#实施细节-超参数设置" class="headerlink" title="实施细节(超参数设置)"></a>实施细节(超参数设置)</h1><p>见文中3.1Implementation Details，关于训练和推理的超参数设置，均有详细的细节解释，还未看！</p>
+<h1 id="训练流程"><a href="#训练流程" class="headerlink" title="训练流程"></a>训练流程</h1><p>补训练流程</p>
+<h1 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h1><p>从文中4. Experiments: Instance Segmentation开始，还未看！</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>x</p>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1703.06870.pdf" target="_blank" rel="noopener">论文：Mask R-CNN</a></li>
@@ -625,7 +651,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mask-R-CNN总体结构"><span class="nav-text">Mask R-CNN总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN"><span class="nav-text">FPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RoIAlign"><span class="nav-text">RoIAlign</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FCN"><span class="nav-text">FCN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总体训练流程"><span class="nav-text">总体训练流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验结果"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mask-R-CNN总体结构"><span class="nav-text">Mask R-CNN总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backbone-Architecture"><span class="nav-text">Backbone Architecture</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RoIAlign"><span class="nav-text">RoIAlign</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mask-Head"><span class="nav-text">Mask Head</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multi-task-loss"><span class="nav-text">Multi-task loss</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实施细节-超参数设置"><span class="nav-text">实施细节(超参数设置)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练流程"><span class="nav-text">训练流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验结果"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>

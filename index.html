@@ -559,11 +559,12 @@
       
         
           <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，<code>Mask R-CNN</code> = <code>Faster R-CNN</code> + <code>FCN</code>。</li>
+<li>为了实现实例分割，Mask R-CNN在Faster R-CNN的基础上，添加一个并行的分支，用来预测目标的mask。因此，<code>Mask R-CNN</code> = <code>Faster R-CNN</code> + <code>Mask Head(FCN)</code>。</li>
+<li>Mask R-CNN在单GPU上的推理速度约为200ms，即5FPS。</li>
 <li>Mask R-CNN的技术要点：<ul>
 <li>要点1——更强的基础网络：基础网络采用<code>ResNet/ResNeXt</code>+<code>FPN(Feature Pyramid Networks)</code>。</li>
 <li>要点2——RoIAlign：RoIPool适用于目标检测任务，但不适用于分割任务。因此，对RoIPool进行改进，提出RoIAlign。</li>
-<li>要点3——解耦mask预测与类别预测：FCN分支输出$K$个binary mask，只有所属类别的第$k$个binary mask对loss做出贡献。因此，通过此种loss计算方式，避免了类间竞争。
+<li>要点3——解耦mask预测与类别预测：Mask Head分支输出$K$个binary mask，只有RoI所属的GT类别所对应的第$k$个binary mask对loss做出贡献。因此，通过此种loss计算方式，避免了类间竞争。
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/01/19/Mask R-CNN/#more" rel="contents">
