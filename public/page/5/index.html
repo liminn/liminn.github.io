@@ -296,6 +296,325 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/04/Softmax回归模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Limin's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/04/Softmax回归模型/" itemprop="url">Softmax回归模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-04T20:52:50+08:00">
+                2017-12-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Softmax回归模型是逻辑回归模型在多分类问题上的推广，在多分类问题中，类别标签$y$可以取$k$个不同的值（而不是2个）。<br>Softmax回归模型对于诸如MNIST手写数字分类等问题是很有用的，该问题的目的是辨识10个不同的单个数字，故有$k=10$个不同的类别。</p>
+<h1 id="1-模型"><a href="#1-模型" class="headerlink" title="1.模型"></a>1.模型</h1><h2 id="1-1-假设函数"><a href="#1-1-假设函数" class="headerlink" title="1.1 假设函数"></a>1.1 假设函数</h2><p>假设函数：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+h_\theta(x^{(i)}) =
+\begin{bmatrix}
+p(y^{(i)} = 1 | x^{(i)}; \theta) \\
+,
+p(y^{(i)} = 2 | x^{(i)}; \theta) \\
+,
+\dotsc \\
+,
+p(y^{(i)} = k | x^{(i)}; \theta)
+\end{bmatrix}
+=
+\frac{1}{ \sum_{j=1}^{k}{e^{ \theta_j^T x^{(i)} }} }
+\begin{bmatrix}
+e^{ \theta_1^T x^{(i)} } \\
+,
+e^{ \theta_2^T x^{(i)} } \\
+,
+\dotsc \\
+,
+e^{ \theta_k^T x^{(i)} } \\
+\end{bmatrix}
+\end{align}</script>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/04/Softmax回归模型/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/04/逻辑回归模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Limin's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/04/逻辑回归模型/" itemprop="url">逻辑回归模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-04T16:35:50+08:00">
+                2017-12-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>逻辑回归(logistic regression)属于监督学习中的分类(classification)模型，模型输出为离散值。</p>
+<h2 id="1-模型"><a href="#1-模型" class="headerlink" title="1.模型"></a>1.模型</h2><h3 id="1-1-sigmoid函数"><a href="#1-1-sigmoid函数" class="headerlink" title="1.1 sigmoid函数"></a>1.1 sigmoid函数</h3><p>在介绍逻辑回归模型之前，先引入sigmoid函数，其数学形式是：</p>
+<script type="math/tex; mode=display">g(x) = \frac{1}{1 + e ^ {-x}}</script><p>对应的函数曲线如下图所示：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/sigmoid.png" width="30%" height="30%"><br>sigmoid函数是一个S形的曲线，它的取值在[0, 1]之间，在远离0的地方函数的值会很快接近0/1（这个性质使我们能够以概率的方式来解释）。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/04/逻辑回归模型/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/03/线性回归模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1496,159 +1815,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/21/线性表/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="min">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/me.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Limin's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/21/线性表/" itemprop="url">线性表</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-21T22:40:50+08:00">
-                2017-11-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构与算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="一、线性表的概念"><a href="#一、线性表的概念" class="headerlink" title="一、线性表的概念"></a>一、线性表的概念</h2><p>线性表：零个或者多个具有相同类型的数据元素组成的有限序列。<br>线性表的抽象数据类型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ADT 线性表(List)</span><br><span class="line">Data</span><br><span class="line">    线性表的数据对象集合为&#123;a1,a2,...,an&#125;，每个元素的类型均为DataType</span><br><span class="line">Operation</span><br><span class="line">    ListInit(*L):          初始化操作，建立一个空的线性表L。</span><br><span class="line">    ListEmpty(L):          若线性表为空，返回<span class="literal">true</span>，否则返回<span class="literal">false</span>。</span><br><span class="line">    ListInsert(*L,i,e):    在L的第i个位置插入新元素e。</span><br><span class="line">    ListDelete(*L,i,*e):   删除L中的第i个元素，并用e返回其值。</span><br><span class="line">    ListLength(L):         返回L中的元素个数</span><br><span class="line">    GetElem(L, i, *e):     将线性表L中的第i个位置元素值返回给e。</span><br><span class="line">    ListClear(*L):         将线性表清空。</span><br><span class="line">endADT</span><br></pre></td></tr></table></figure></p>
-<h2 id="二、顺序存储结构——顺序表"><a href="#二、顺序存储结构——顺序表" class="headerlink" title="二、顺序存储结构——顺序表"></a>二、顺序存储结构——顺序表</h2><p>顺序存储结构:用一段地址连续的存储单元依次存储线性表的数据元素。  </p>
-<h3 id="2-1-顺序表的实现"><a href="#2-1-顺序表的实现" class="headerlink" title="2.1 顺序表的实现"></a>2.1 顺序表的实现</h3><p>实现：C语言的一维数组可以实现线性表的顺序存储结构。<br>（1）线性表的下标从1开始，数组的下标从0开始；<br>（2）在任意时刻，线性表的长度应该小于等于数组的长度。<br>示例：<br><img src="http://7xjzhz.com1.z0.glb.clouddn.com/3-4-3.jpg" width="90%" height="50%"><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/11/21/线性表/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1698,7 +1869,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-count">51</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1709,7 +1880,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
