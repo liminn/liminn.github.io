@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/SiamFC/1.png">
 <meta property="og:image" content="http://yoursite.com/images/SiamFC/2.png">
-<meta property="og:updated_time" content="2019-04-10T10:56:18.586Z">
+<meta property="og:updated_time" content="2019-04-10T13:44:26.234Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SiamFC">
 <meta name="twitter:description" content="摘要 首次提出用全卷积的孪生网络(fully-convolutional Siamese network)，来处理视频目标跟踪问题。 该方法在视频目标跟踪任务上的速度能够达到实时。 根本思想：通过相似度学习(similarity learning)的方式，来处理对任意目标进行跟踪的问题。">
@@ -401,6 +401,7 @@
 <li>“*”代表对上述两个输出特征，进行相似度计算。具体地，计算两特征之间的互相关性(cross-correlation)。</li>
 <li>经相似度计算之后，得到score map，尺寸为$17\times 17 \times 1$。其中，score map中的红色像素点和蓝色像素点，即对应于$x$ 中红色区域窗口和蓝色区域窗口。score map中红色像素点和蓝色像素点所包含的值，即代表了$x$ 中红色区域窗口和蓝色区域窗口与$z$的相似度。</li>
 </ul>
+<h2 id="相似度计算"><a href="#相似度计算" class="headerlink" title="相似度计算"></a>相似度计算</h2><p>xx</p>
 <h1 id="训练流程相关"><a href="#训练流程相关" class="headerlink" title="训练流程相关"></a>训练流程相关</h1><h2 id="training-pairs-exemplar-image与search-image-的制作"><a href="#training-pairs-exemplar-image与search-image-的制作" class="headerlink" title="training pairs(exemplar image与search image)的制作"></a>training pairs(exemplar image与search image)的制作</h2><ul>
 <li>首先，每段视频标注数据包含：每一帧的原图以及每一帧中物体的包围框($x,y,w,h$)。</li>
 <li>对某一段视频，选取其中不超过最大距离$T$的任意两帧，一帧用于制作exemplar image，一帧用于制作search image。</li>
@@ -454,6 +455,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/10/DIM/" rel="prev" title="DIM">
+                DIM <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -537,7 +542,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-count">51</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -548,7 +553,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -602,7 +607,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SiamFC总体结构"><span class="nav-text">SiamFC总体结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练流程相关"><span class="nav-text">训练流程相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#training-pairs-exemplar-image与search-image-的制作"><span class="nav-text">training pairs(exemplar image与search image)的制作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#label的制作"><span class="nav-text">label的制作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数"><span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练流程"><span class="nav-text">训练流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#推理流程相关"><span class="nav-text">推理流程相关</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验结果"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SiamFC总体结构"><span class="nav-text">SiamFC总体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相似度计算"><span class="nav-text">相似度计算</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练流程相关"><span class="nav-text">训练流程相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#training-pairs-exemplar-image与search-image-的制作"><span class="nav-text">training pairs(exemplar image与search image)的制作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#label的制作"><span class="nav-text">label的制作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数"><span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练流程"><span class="nav-text">训练流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#推理流程相关"><span class="nav-text">推理流程相关</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验结果"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
