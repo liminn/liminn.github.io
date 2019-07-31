@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/images/ResNet/2.png">
 <meta property="og:image" content="http://yoursite.com/images/ResNet/3.png">
 <meta property="og:image" content="http://yoursite.com/images/ResNet/4.png">
-<meta property="og:updated_time" content="2019-07-25T10:00:01.161Z">
+<meta property="og:updated_time" content="2019-07-31T10:31:58.308Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ResNet">
 <meta name="twitter:description" content="摘要 为了解决随着网络层数的加深，随之带来的退化问题(degradation problem)，提出ResNet。 对于ResNet，其带有捷径连接(shortcut connections)的构建模块(BasicBlock或Bottleneck)，为其最大的创新点。 ResNet的思想是将神经网络的学习重新定义为学习关于层输入的残差函数(residual functions)，而不是学习无参考的">
@@ -422,14 +422,13 @@
 <li>随机水平翻转</li>
 <li>随机剪裁224x224的图像块</li>
 <li>减去均值</li>
-<li>标准颜色增强(standard color augmentation)？？？</li>
+<li>标准颜色增强(standard color augmentation)</li>
 </ul>
 </li>
-<li><p>训练相关：</p>
+<li><p>优化器及学习率策略：</p>
 <ul>
-<li>SGD，batch size为256</li>
-<li>初始学习率为0.1， 达到error plateaus时，学习率除以10，训练60x10^4次迭代</li>
-<li>权重衰减为0.0001, 动量为0.9</li>
+<li>SGD, 动量为0.9, 权重衰减为1e-4</li>
+<li>初始学习率为0.1， 达到error plateaus时，学习率除以10</li>
 </ul>
 </li>
 </ul>
