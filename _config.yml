@@ -3,9 +3,9 @@
 ## Source: https://github.com/hexojs/hexo/
 #
 # Site
-title: Limin's Notes
+title: CV Notes
 subtitle: 
-description: 弥补快速遗忘的记忆
+description: 防止遗忘
 author: min
 language: zh-Hans
 timezone: 
@@ -51,7 +51,7 @@ index_generator:
   path: ''
   per_page: 10
   order_by: -date
-  
+
 # Category & Tag
 default_category: uncategorized
 category_map:
