@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/images/ResNet/2.png">
 <meta property="og:image" content="http://yoursite.com/images/ResNet/3.png">
 <meta property="og:image" content="http://yoursite.com/images/ResNet/4.png">
-<meta property="og:updated_time" content="2019-07-31T10:36:33.757Z">
+<meta property="og:updated_time" content="2019-08-02T09:03:36.772Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ResNet">
 <meta name="twitter:description" content="摘要 为了解决随着网络层数的加深，随之带来的退化问题(degradation problem)，提出ResNet。 对于ResNet，其带有捷径连接(shortcut connections)的构建模块(BasicBlock或Bottleneck)，为其最大的创新点。 ResNet的思想是将神经网络的学习重新定义为学习关于层输入的残差函数(residual functions)，而不是学习无参考的">
@@ -427,20 +427,20 @@
 </li>
 <li><p>优化器及学习率策略：</p>
 <ul>
-<li>SGD, batch_size为256, 动量为0.9, 权重衰减为1e-4</li>
+<li>SGD, batch_size为256, 动量为0.9, 权重衰减为1e-4，he初始化</li>
 <li>初始学习率为0.1， 达到error plateaus时，学习率除以10，共训练60x10^4次迭代</li>
 </ul>
 </li>
 </ul>
 <h1 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h1><p><img src="/images/ResNet/4.png" width="450" height="100"><br>如上图所示，为ResNet单模型在ImageNet验证集上的结果。</p>
-<h1 id="Diss-and-Respect"><a href="#Diss-and-Respect" class="headerlink" title="Diss and Respect"></a>Diss and Respect</h1><p>Diss: </p>
-<ul>
-<li>没有diss，只有respect</li>
-</ul>
-<p>Respect:</p>
+<h1 id="Diss-and-Respect"><a href="#Diss-and-Respect" class="headerlink" title="Diss and Respect"></a>Diss and Respect</h1><p>Respect:</p>
 <ul>
 <li>ResNet解决了随着网络层数加深时，出现的退化问题。</li>
 <li>这也意味着，当构建的网络较深时，捷径连接是必须要有的操作了。</li>
+</ul>
+<p>Diss: </p>
+<ul>
+<li>没有diss，只有respect</li>
 </ul>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1512.03385.pdf" target="_blank" rel="noopener">论文：Deep Residual Learning for Image Recognition</a></li>
@@ -479,6 +479,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/01/ResNext/" rel="prev" title="ResNext">
+                ResNext <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -562,7 +566,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">54</span>
+                  <span class="site-state-item-count">55</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
