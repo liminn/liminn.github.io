@@ -389,8 +389,10 @@
       
         
           <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>文中一方面肯定了Inception中’split/transform/merge’的思想，一方面否定了其过于人工设计的结构，认为其会对某一任务过度拟合；同时肯定了VGG/ResNet的规整化的结构思想，认为其更适合泛化到其他任务；因此，因为综合在一起提出ResNet。</li>
-<li>实验结果证明：xx。
+<li>对于Inception系列：作者一方面归纳出其中蕴含的split-transform-merge思想，该策略使Inception具有了强大的表达能力；一方面否定了其过于人工设计的结构。</li>
+<li>对VGG/ResNet：作者肯定了其高度模块化的设计：堆叠相同拓扑的构建模块，来构成深度网络，可以减少在特定数据集上过度设计超参数的风险。</li>
+<li>作者将split-transform-merge思想与ResNet相结合，提出ResNext。</li>
+<li>实验结果证明：ResNext结果优于ResNet及Inception系列。
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/08/01/ResNext/#more" rel="contents">

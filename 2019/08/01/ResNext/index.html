@@ -79,12 +79,12 @@
 
 
 
-<meta name="description" content="摘要 文中一方面肯定了Inception中’split/transform/merge’的思想，一方面否定了其过于人工设计的结构，认为其会对某一任务过度拟合；同时肯定了VGG/ResNet的规整化的结构思想，认为其更适合泛化到其他任务；因此，因为综合在一起提出ResNet。 实验结果证明：xx。">
+<meta name="description" content="摘要 对于Inception系列：作者一方面归纳出其中蕴含的split-transform-merge思想，该策略使Inception具有了强大的表达能力；一方面否定了其过于人工设计的结构。 对VGG/ResNet：作者肯定了其高度模块化的设计：堆叠相同拓扑的构建模块，来构成深度网络，可以减少在特定数据集上过度设计超参数的风险。 作者将split-transform-merge思想与ResNet相">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ResNext">
 <meta property="og:url" content="http://yoursite.com/2019/08/01/ResNext/index.html">
 <meta property="og:site_name" content="CV Notes">
-<meta property="og:description" content="摘要 文中一方面肯定了Inception中’split/transform/merge’的思想，一方面否定了其过于人工设计的结构，认为其会对某一任务过度拟合；同时肯定了VGG/ResNet的规整化的结构思想，认为其更适合泛化到其他任务；因此，因为综合在一起提出ResNet。 实验结果证明：xx。">
+<meta property="og:description" content="摘要 对于Inception系列：作者一方面归纳出其中蕴含的split-transform-merge思想，该策略使Inception具有了强大的表达能力；一方面否定了其过于人工设计的结构。 对VGG/ResNet：作者肯定了其高度模块化的设计：堆叠相同拓扑的构建模块，来构成深度网络，可以减少在特定数据集上过度设计超参数的风险。 作者将split-transform-merge思想与ResNet相">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/ResNext/1.png">
 <meta property="og:image" content="http://yoursite.com/images/ResNext/2.png">
@@ -94,10 +94,10 @@
 <meta property="og:image" content="http://yoursite.com/images/ResNext/6.png">
 <meta property="og:image" content="http://yoursite.com/images/ResNext/7.png">
 <meta property="og:image" content="http://yoursite.com/images/ResNext/8.png">
-<meta property="og:updated_time" content="2019-08-02T09:13:44.059Z">
+<meta property="og:updated_time" content="2019-08-02T10:27:39.326Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ResNext">
-<meta name="twitter:description" content="摘要 文中一方面肯定了Inception中’split/transform/merge’的思想，一方面否定了其过于人工设计的结构，认为其会对某一任务过度拟合；同时肯定了VGG/ResNet的规整化的结构思想，认为其更适合泛化到其他任务；因此，因为综合在一起提出ResNet。 实验结果证明：xx。">
+<meta name="twitter:description" content="摘要 对于Inception系列：作者一方面归纳出其中蕴含的split-transform-merge思想，该策略使Inception具有了强大的表达能力；一方面否定了其过于人工设计的结构。 对VGG/ResNet：作者肯定了其高度模块化的设计：堆叠相同拓扑的构建模块，来构成深度网络，可以减少在特定数据集上过度设计超参数的风险。 作者将split-transform-merge思想与ResNet相">
 <meta name="twitter:image" content="http://yoursite.com/images/ResNext/1.png">
 
 
@@ -395,13 +395,15 @@
 
       
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>文中一方面肯定了Inception中’split/transform/merge’的思想，一方面否定了其过于人工设计的结构，认为其会对某一任务过度拟合；同时肯定了VGG/ResNet的规整化的结构思想，认为其更适合泛化到其他任务；因此，因为综合在一起提出ResNet。</li>
-<li>实验结果证明：xx。<a id="more"></a>
+<li>对于Inception系列：作者一方面归纳出其中蕴含的split-transform-merge思想，该策略使Inception具有了强大的表达能力；一方面否定了其过于人工设计的结构。</li>
+<li>对VGG/ResNet：作者肯定了其高度模块化的设计：堆叠相同拓扑的构建模块，来构成深度网络，可以减少在特定数据集上过度设计超参数的风险。</li>
+<li>作者将split-transform-merge思想与ResNet相结合，提出ResNext。</li>
+<li>实验结果证明：ResNext结果优于ResNet及Inception系列。<a id="more"></a>
 </li>
 </ul>
 <h1 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h1><h2 id="split-transform-merge思想"><a href="#split-transform-merge思想" class="headerlink" title="split-transform-merge思想"></a>split-transform-merge思想</h2><p><img src="/images/ResNext/1.png" width="500" height="100"><br>如上图所示，为Inception模块结构图，作者将其归纳为split-transform-merge策略：</p>
 <ul>
-<li>输入inputs被<strong>split</strong>成多个低维嵌入(通过1x1卷积)，然后通过卷积层(通过3x3卷积,5x5卷积,等等)进行<strong>transform</strong>，最后以concatenation的方式进行<strong>merge</strong>。</li>
+<li>输入inputs被<strong>split</strong>为多个支路，分为多个低维嵌入(通过1x1卷积)，然后通过卷积层(通过3x3卷积,5x5卷积,等等)进行<strong>transform</strong>，最后以concatenation的方式进行<strong>merge</strong>。</li>
 <li>作者认为Inception模块中蕴含的split-transform-merge思想，使其具有了强大的表达能力。</li>
 </ul>
 <p><img src="/images/ResNext/2.png" width="500" height="100"><br>如上图所示，以一个最简单的普通神经元在执行内积时的运算过程为例：</p>
