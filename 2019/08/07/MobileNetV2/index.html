@@ -90,11 +90,11 @@
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV2/2.png">
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV2/3.png">
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV2/4.png">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV2/5.png">
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV2/6.png">
-<meta property="og:image" content="http://yoursite.com/images/MobileNetV2/7.png">
+<meta property="og:image" content="http://yoursite.com/images/MobileNetV2/6.png">
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV2/8.png">
-<meta property="og:image" content="http://yoursite.com/images/MobileNetV2/9.png">
-<meta property="og:updated_time" content="2019-08-09T06:22:51.972Z">
+<meta property="og:updated_time" content="2019-08-09T06:27:54.235Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MobileNetV2">
 <meta name="twitter:description" content="摘要 相比于MobileNetV1，MobileNetV2的创新点在于基础模块——线性瓶颈层的倒置残差模块(the inverted residual block with linear bottleneck)。 同时，对MobileNetV2应用于目标检测(SSDLite)和语义分割(MobileDeepLabV3)进行了应用及实验比较。">
@@ -449,7 +449,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="MobileNetV2总体结构"><a href="#MobileNetV2总体结构" class="headerlink" title="MobileNetV2总体结构"></a>MobileNetV2总体结构</h2><p><img src="/images/MobileNetV2/6.png" width="500" height="100"><br>如Table2所示，为MobileNetV2结构，其中：</p>
+<h2 id="MobileNetV2总体结构"><a href="#MobileNetV2总体结构" class="headerlink" title="MobileNetV2总体结构"></a>MobileNetV2总体结构</h2><p><img src="/images/MobileNetV2/5.png" width="500" height="100"><br>如Table2所示，为MobileNetV2结构，其中：</p>
 <ul>
 <li>$t$是倒置残差模块的扩张比率(expansion rate); $n$是该模块重复次数; $c$是输出通道数; $s$是该阶段第一次重复时的第一个模块的depthwise convolution的步长(后面重复都是步长为1)</li>
 <li>MobileNetV2主要由初始的标准卷积层和17个线性瓶颈层的倒置残差模块构成。</li>
@@ -461,7 +461,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="线性瓶颈层的倒置残差模块的设计原因解释"><a href="#线性瓶颈层的倒置残差模块的设计原因解释" class="headerlink" title="线性瓶颈层的倒置残差模块的设计原因解释"></a>线性瓶颈层的倒置残差模块的设计原因解释</h2><p><img src="/images/MobileNetV2/7.png" width="500" height="100"><br>如上图所示，为对于MobileNetV1, MobileNetV2和ShuffleNet，在每个空间分辨率阶段，所需的通道数和内存大小对比：</p>
+<h2 id="线性瓶颈层的倒置残差模块的设计原因解释"><a href="#线性瓶颈层的倒置残差模块的设计原因解释" class="headerlink" title="线性瓶颈层的倒置残差模块的设计原因解释"></a>线性瓶颈层的倒置残差模块的设计原因解释</h2><p><img src="/images/MobileNetV2/6.png" width="500" height="100"><br>如上图所示，为对于MobileNetV1, MobileNetV2和ShuffleNet，在每个空间分辨率阶段，所需的通道数和内存大小对比：</p>
 <ul>
 <li></li>
 </ul>
@@ -471,8 +471,8 @@
 <li>同MobileNetV1一样，初始学习率为0.045，学习速率衰减策略：每一epoch乘以0.98</li>
 <li>采用16个GPU，batch size为96</li>
 </ul>
-<h1 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h1><p><img src="/images/MobileNetV2/8.png" width="450" height="100"><br>如上图所示，为在ImageNet上，MobileNetV2与MobileNetV1、ShuffleNet和NASNet-A模型的准确率、参数量、计算量及CPU运行时间的对比。</p>
-<p><img src="/images/MobileNetV2/9.png" width="500" height="100"><br>如上图所示，为针对线性瓶颈层和倒置残差连接的消融实验结果：</p>
+<h1 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h1><p><img src="/images/MobileNetV2/6.png" width="450" height="100"><br>如上图所示，为在ImageNet上，MobileNetV2与MobileNetV1、ShuffleNet和NASNet-A模型的准确率、参数量、计算量及CPU运行时间的对比。</p>
+<p><img src="/images/MobileNetV2/8.png" width="500" height="100"><br>如上图所示，为针对线性瓶颈层和倒置残差连接的消融实验结果：</p>
 <ul>
 <li>如图(a)所示，实验结果表明，线性瓶颈层的表现优于非线性瓶颈层，提供了对于非线性激活函数会破坏低维空间的信息的支持。</li>
 <li>如图(b)所示，实验结果表明：对于残差连接，与瓶颈层进行残差连接的表现，优于与扩张层进行残差连接以及不使用残差连接。</li>
