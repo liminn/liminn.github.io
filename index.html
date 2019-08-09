@@ -389,8 +389,8 @@
       
         
           <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>提出新的移动端模型——MobileNetV2。相比于MobileNetV1，其改进之处即在于基础模块——线性瓶颈层的转置残差模块(the inverted residual with linear bottleneck)。</li>
-<li><p>并且，对MobileNetV2应用于目标检测和语义分割进行了应用及实验比较(见原文)。</p>
+<li>相比于MobileNetV1，MobileNetV2的创新点在于基础模块——线性瓶颈层的倒置残差模块(the inverted residual block with linear bottleneck)。</li>
+<li><p>同时，对MobileNetV2应用于目标检测(SSDLite)和语义分割(MobileDeepLabV3)进行了应用及实验比较。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/08/07/MobileNetV2/#more" rel="contents">
@@ -537,9 +537,8 @@
       
         
           <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>利用深度可分离卷积(depthwise separable convolution)，构建轻量级的深度神经网络，即MobileNet。</li>
-<li>其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。</li>
-<li>本质：只是用深度可分离卷积来替换常规CNN中的常规卷积
+<li>利用深度可分离卷积(depthwise separable convolution)替换常规CNN中的标准卷积，构建轻量级的深度神经网络，即MobileNet。</li>
+<li>其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/08/07/MobileNetV1/#more" rel="contents">

@@ -79,12 +79,12 @@
 
 
 
-<meta name="description" content="摘要 利用深度可分离卷积(depthwise separable convolution)，构建轻量级的深度神经网络，即MobileNet。 其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。 本质：只是用深度可分离卷积来替换常规CNN中的常规卷积">
+<meta name="description" content="摘要 利用深度可分离卷积(depthwise separable convolution)替换常规CNN中的标准卷积，构建轻量级的深度神经网络，即MobileNet。 其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MobileNetV1">
 <meta property="og:url" content="http://yoursite.com/2019/08/07/MobileNetV1/index.html">
 <meta property="og:site_name" content="CV Notes">
-<meta property="og:description" content="摘要 利用深度可分离卷积(depthwise separable convolution)，构建轻量级的深度神经网络，即MobileNet。 其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。 本质：只是用深度可分离卷积来替换常规CNN中的常规卷积">
+<meta property="og:description" content="摘要 利用深度可分离卷积(depthwise separable convolution)替换常规CNN中的标准卷积，构建轻量级的深度神经网络，即MobileNet。 其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV1/1.png">
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV1/2.png">
@@ -99,10 +99,10 @@
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV1/12.png">
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV1/13.png">
 <meta property="og:image" content="http://yoursite.com/images/MobileNetV1/14.png">
-<meta property="og:updated_time" content="2019-08-07T09:57:07.609Z">
+<meta property="og:updated_time" content="2019-08-09T03:24:02.305Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MobileNetV1">
-<meta name="twitter:description" content="摘要 利用深度可分离卷积(depthwise separable convolution)，构建轻量级的深度神经网络，即MobileNet。 其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。 本质：只是用深度可分离卷积来替换常规CNN中的常规卷积">
+<meta name="twitter:description" content="摘要 利用深度可分离卷积(depthwise separable convolution)替换常规CNN中的标准卷积，构建轻量级的深度神经网络，即MobileNet。 其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。">
 <meta name="twitter:image" content="http://yoursite.com/images/MobileNetV1/1.png">
 
 
@@ -400,9 +400,8 @@
 
       
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>利用深度可分离卷积(depthwise separable convolution)，构建轻量级的深度神经网络，即MobileNet。</li>
-<li>其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。</li>
-<li>本质：只是用深度可分离卷积来替换常规CNN中的常规卷积<a id="more"></a>
+<li>利用深度可分离卷积(depthwise separable convolution)替换常规CNN中的标准卷积，构建轻量级的深度神经网络，即MobileNet。</li>
+<li>其中，引进了两个简单的超参数：宽度乘子(width multiplier)和分辨率乘子(resolution multiplier)，来有效地权衡延迟(latency)和精度。<a id="more"></a>
 </li>
 </ul>
 <h1 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h1><h2 id="深度可分离卷积"><a href="#深度可分离卷积" class="headerlink" title="深度可分离卷积"></a>深度可分离卷积</h2><p><img src="/images/MobileNetV1/1.png" width="300"><br>如上图所示，对于输入，标准卷积(stanard convolution)将filtering和combinng的操作一步完成，得到输出。</p>
@@ -484,11 +483,7 @@
 <ul>
 <li>可手工验证此结果。</li>
 </ul>
-<h1 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h1><ul>
-<li>带有异步梯度下降的RMSprop（和Inception V3相似）</li>
-<li>用更少的正则化和更少的数据增强技术，因为小的网络不易过拟合。</li>
-<li>发现用非常小或不使用权重衰减(L2正则)在depthwise卷积上很重要，因为它们只有如此少的参数。</li>
-</ul>
+<h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><p>略，见MobileNetV2</p>
 <h1 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h1><p><img src="/images/MobileNetV1/10.png" width="500"><br>如上图所示，比较了MobileNet与其全卷积实现形式：</p>
 <ul>
 <li>在ImageNet上，只损失了1%的精度，但节约了大量的计算量和参数。</li>
@@ -512,7 +507,7 @@
 <li>简化版MobileNet比Squeezenet的精度高3%，同时参数量相同，计算量为其$1/22$。</li>
 </ul>
 <h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>略，见MobileNetV2的代码实现。</p>
-<h1 id="Diss-amp-Respect"><a href="#Diss-amp-Respect" class="headerlink" title="Diss&amp;Respect"></a>Diss&amp;Respect</h1><p>xx</p>
+<h1 id="Diss-amp-Respect"><a href="#Diss-amp-Respect" class="headerlink" title="Diss&amp;Respect"></a>Diss&amp;Respect</h1><p>MobileNet虽然除了用深度可分离卷积替换标准卷积以外，没有任何创新点。但作者这么做了，且给我们证明了这是有效的(并且有详细的对比试验)，那这就是牛逼。<br>当然，肯定会有很多可以改进的地方，比如没有引入捷径连接等，具体改进见MobileNetV2。</p>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1704.04861.pdf" target="_blank" rel="noopener">论文：MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications</a></li>
 <li><a href="https://machinethink.net/blog/googles-mobile-net-architecture-on-iphone/" target="_blank" rel="noopener">博客：Google’s MobileNets on the iPhone</a></li>
@@ -703,7 +698,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关键点"><span class="nav-text">关键点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#深度可分离卷积"><span class="nav-text">深度可分离卷积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构"><span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#宽度乘子-Width-Multiplier"><span class="nav-text">宽度乘子(Width Multiplier)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分辨率乘子-Resolution-Multiplier"><span class="nav-text">分辨率乘子(Resolution Multiplier)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现细节"><span class="nav-text">实现细节</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验结果"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码实现"><span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Diss-amp-Respect"><span class="nav-text">Diss&amp;Respect</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关键点"><span class="nav-text">关键点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#深度可分离卷积"><span class="nav-text">深度可分离卷积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构"><span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#宽度乘子-Width-Multiplier"><span class="nav-text">宽度乘子(Width Multiplier)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分辨率乘子-Resolution-Multiplier"><span class="nav-text">分辨率乘子(Resolution Multiplier)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验结果"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码实现"><span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Diss-amp-Respect"><span class="nav-text">Diss&amp;Respect</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
