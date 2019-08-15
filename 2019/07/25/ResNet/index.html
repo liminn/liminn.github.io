@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/images/ResNet/2.png">
 <meta property="og:image" content="http://yoursite.com/images/ResNet/3.png">
 <meta property="og:image" content="http://yoursite.com/images/ResNet/4.png">
-<meta property="og:updated_time" content="2019-08-02T09:03:36.772Z">
+<meta property="og:updated_time" content="2019-08-15T07:10:03.135Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ResNet">
 <meta name="twitter:description" content="摘要 为了解决随着网络层数的加深，随之带来的退化问题(degradation problem)，提出ResNet。 对于ResNet，其带有捷径连接(shortcut connections)的构建模块(BasicBlock或Bottleneck)，为其最大的创新点。 ResNet的思想是将神经网络的学习重新定义为学习关于层输入的残差函数(residual functions)，而不是学习无参考的">
@@ -410,9 +410,13 @@
 </ul>
 </li>
 </ul>
-<h2 id="ResNet结构"><a href="#ResNet结构" class="headerlink" title="ResNet结构"></a>ResNet结构</h2><p><img src="/images/ResNet/3.png" width="900" height="500"><br>如上图所示，为ResNet结构：</p>
+<h2 id="ResNet结构"><a href="#ResNet结构" class="headerlink" title="ResNet结构"></a>ResNet结构</h2><p><img src="/images/ResNet/3.png" width="900" height="500"><br>如上图所示，分别为ResNet-18, ResNet-34, ResNet-50, ResNet-101以及ResNet-152结构：</p>
 <ul>
-<li>分别为ResNet-18, ResNet-34, ResNet-50, ResNet-101以及ResNet-152。</li>
+<li>其中，对于ResNet-50, ResNet-101, ResNet-152：<ul>
+<li>各阶段的每个block中第一个1x1卷积的输出通道数(planes)分别为[64, 128,  256, 512]。</li>
+<li>各阶段的每个block的expansion均为4，即第2个1x1卷积的输出通道数是4*planes。</li>
+</ul>
+</li>
 </ul>
 <h1 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h1><p>对于ImageNet：</p>
 <ul>
@@ -470,8 +474,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/04/10/SiamFC/" rel="next" title="SiamFC">
-                <i class="fa fa-chevron-left"></i> SiamFC
+              <a href="/2019/04/10/DIM/" rel="next" title="DIM">
+                <i class="fa fa-chevron-left"></i> DIM
               </a>
             
           </div>
