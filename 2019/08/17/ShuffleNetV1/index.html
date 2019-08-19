@@ -79,12 +79,12 @@
 
 
 
-<meta name="description" content="摘要 提出CNN结构ShuffleNet，专门针对计算力非常有限的移动设备(10-150MFLOPs)而设计。 ShuffleNet利用两种新的操作：逐点分组卷积(pointwise group convolution)和通道重排(channel shuffle)，在保持准确率的同时，显著地减少了计算代价。 在给定的计算复杂度开销下，ShuffleNet允许更多的特征图通道数，这一点可以帮助编码更">
+<meta name="description" content="摘要 旷视(Face++)研究院提出ShuffleNet，专门针对计算力非常有限的移动端低功耗设备(10-150MFLOPs)而设计。 ShuffleNet利用两种新的操作：逐点分组卷积(pointwise group convolution)和通道重排(channel shuffle)，在大幅降低模型计算复杂度的同时仍然保持了较高的识别精度。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ShuffleNetV1">
-<meta property="og:url" content="http://yoursite.com/2018/12/30/ShuffleNetV1/index.html">
+<meta property="og:url" content="http://yoursite.com/2019/08/17/ShuffleNetV1/index.html">
 <meta property="og:site_name" content="CV Notes">
-<meta property="og:description" content="摘要 提出CNN结构ShuffleNet，专门针对计算力非常有限的移动设备(10-150MFLOPs)而设计。 ShuffleNet利用两种新的操作：逐点分组卷积(pointwise group convolution)和通道重排(channel shuffle)，在保持准确率的同时，显著地减少了计算代价。 在给定的计算复杂度开销下，ShuffleNet允许更多的特征图通道数，这一点可以帮助编码更">
+<meta property="og:description" content="摘要 旷视(Face++)研究院提出ShuffleNet，专门针对计算力非常有限的移动端低功耗设备(10-150MFLOPs)而设计。 ShuffleNet利用两种新的操作：逐点分组卷积(pointwise group convolution)和通道重排(channel shuffle)，在大幅降低模型计算复杂度的同时仍然保持了较高的识别精度。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV1/1.png">
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV1/2.png">
@@ -94,10 +94,10 @@
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV1/6.png">
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV1/7.png">
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV1/8.png">
-<meta property="og:updated_time" content="2019-02-01T03:32:48.177Z">
+<meta property="og:updated_time" content="2019-08-19T07:23:30.792Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ShuffleNetV1">
-<meta name="twitter:description" content="摘要 提出CNN结构ShuffleNet，专门针对计算力非常有限的移动设备(10-150MFLOPs)而设计。 ShuffleNet利用两种新的操作：逐点分组卷积(pointwise group convolution)和通道重排(channel shuffle)，在保持准确率的同时，显著地减少了计算代价。 在给定的计算复杂度开销下，ShuffleNet允许更多的特征图通道数，这一点可以帮助编码更">
+<meta name="twitter:description" content="摘要 旷视(Face++)研究院提出ShuffleNet，专门针对计算力非常有限的移动端低功耗设备(10-150MFLOPs)而设计。 ShuffleNet利用两种新的操作：逐点分组卷积(pointwise group convolution)和通道重排(channel shuffle)，在大幅降低模型计算复杂度的同时仍然保持了较高的识别精度。">
 <meta name="twitter:image" content="http://yoursite.com/images/ShuffleNetV1/1.png">
 
 
@@ -128,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/30/ShuffleNetV1/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/08/17/ShuffleNetV1/"/>
 
 
 
@@ -305,7 +305,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/30/ShuffleNetV1/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/17/ShuffleNetV1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="min">
@@ -334,8 +334,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-30T22:22:50+08:00">
-                2018-12-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-17T23:56:50+08:00">
+                2019-08-17
               </time>
             
 
@@ -357,8 +357,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/轻量型CNN/" itemprop="url" rel="index">
-                    <span itemprop="name">轻量型CNN</span>
+                  <a href="/categories/CNN/" itemprop="url" rel="index">
+                    <span itemprop="name">CNN</span>
                   </a>
                 </span>
 
@@ -395,51 +395,52 @@
 
       
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>提出CNN结构ShuffleNet，专门针对计算力非常有限的移动设备(10-150MFLOPs)而设计。</li>
-<li>ShuffleNet利用两种新的操作：逐点分组卷积(pointwise group convolution)和通道重排(channel shuffle)，在保持准确率的同时，显著地减少了计算代价。</li>
-<li>在给定的计算复杂度开销下，ShuffleNet允许更多的特征图通道数，这一点可以帮助编码更多的信息，这对于小型网络的表现是尤其关键的。</li>
-<li>在ImageNet分类任务中，在计算开销为40MFLOPs时，ShuffleNet的top-1错误率，比MobileNetV1要低7.8%。</li>
-<li>在基于ARM的移动设备上，ShuffleNet相比于AlexNet得到了大约13倍的实际加速，同时保持了类似的精度。</li>
+<li>旷视(Face++)研究院提出ShuffleNet，专门针对计算力非常有限的移动端低功耗设备(10-150MFLOPs)而设计。</li>
+<li>ShuffleNet利用两种新的操作：逐点分组卷积(pointwise group convolution)和通道重排(channel shuffle)，在大幅降低模型计算复杂度的同时仍然保持了较高的识别精度。</li>
 </ul>
 <a id="more"></a>
-<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="逐点分组卷积-pointwise-group-convolution"><a href="#逐点分组卷积-pointwise-group-convolution" class="headerlink" title="逐点分组卷积(pointwise group convolution)"></a>逐点分组卷积(pointwise group convolution)</h2><p>背景：</p>
+<h1 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h1><h2 id="逐点分组卷积-pointwise-group-convolution"><a href="#逐点分组卷积-pointwise-group-convolution" class="headerlink" title="逐点分组卷积(pointwise group convolution)"></a>逐点分组卷积(pointwise group convolution)</h2><p>背景：</p>
 <ul>
-<li>现代卷积神经网络的绝大多数计算量集中在卷积操作上，因此高效的卷积层设计是减少网络复杂度的关键。</li>
+<li>当前CNN的绝大多数计算量集中在卷积操作上，因此高效的卷积层设计是减少网络复杂度的关键。</li>
 <li>其中，稀疏连接(sparse connection)是提高卷积运算效率的有效途径，当前不少优秀的卷积模型均沿用了这一思路：<ul>
-<li>谷歌的”Xception“网络引入了”深度可分离卷积”的概念，将普通的卷积运算拆分成逐通道卷积（depthwise convolution）和逐点卷积（pointwise convolution）两部进行，有效地减少了计算量和参数量；</li>
-<li>而 Facebook 的“ResNeXt”网络[2]则首先使用逐点卷积减少输入特征的通道数，再利用计算量较小的分组卷积（group convolution）结构取代原有的卷积运算，同样可以减少整体的计算复杂度。</li>
+<li>谷歌的”Xception“引入了”深度可分离卷积”的概念，将普通的卷积运算拆分成逐通道卷积（depthwise convolution）和逐点卷积（pointwise convolution）两步进行，有效地减少了计算量和参数量；</li>
+<li>Facebook 的“ResNeXt”则是先使用pointwise convolution减少输入特征的通道数，再利用计算量较小的分组卷积（group convolution）结构取代原有的卷积运算，同样可以减少整体的计算复杂度。</li>
 </ul>
 </li>
 </ul>
-<p>具体改进：</p>
+<p>本文具体改进：</p>
 <ul>
-<li>ShuffleNet 网络结构同样沿袭了稀疏连接的设计理念。</li>
-<li>作者通过分析Xception和ResNeXt模型，发现这两种结构通过卷积核拆分虽然计算复杂度均较原始卷积运算有所下降，然而拆分所产生的逐点卷积计算量却相当可观，成为了新的瓶颈。</li>
-<li>即分析Xception和ResNeXt，它们在$1 \times1$卷积上的代价过大。因此提出逐点分组卷积来减少$1 \times1$卷积的复杂度:<ul>
-<li>例如：在ResNeXt中，只有$3 \times3$卷积配备了分组卷积。因此，在ResNeXt的残差单元中，逐点卷积占据了93.4%的multiplication-adds。</li>
-<li>在小型网络中，昂贵的逐点卷积会限制通道的数目，以应对复杂度限制。但这也显著地伤害了准确率。</li>
+<li>ShuffleNet同样沿袭了稀疏连接的设计理念。作者通过分析Xception和ResNeXt模型，发现这两种结构通过卷积核拆分虽然计算复杂度均较原始卷积运算有所下降，然而拆分所产生的逐点卷积计算量却相当可观，成为了新的瓶颈：<ul>
+<li>例如：在ResNeXt中，只有$3 \times3$卷积配备了分组卷积，而在ResNeXt的残差单元中，pointwise convolution占据了93.4%的multiplication-adds。</li>
+</ul>
+</li>
+<li>因此提出逐点分组卷积(pointwise group convolution)来减少$1 \times1$卷积的复杂度:<ul>
+<li>在小型网络中，昂贵的逐点卷积会限制通道的数目，以应对复杂度限制，但这也显著地伤害了准确率。</li>
 <li>为了解决这个问题，一个直截了当的解决方案便是施加通道稀疏连接，如对$1 \times1$卷积进行分组卷积。</li>
 <li>分组卷积通过保证在对应的输入通道分组上进行卷积，因此显著地减少了计算代价。</li>
 </ul>
 </li>
 </ul>
-<h2 id="通道重排-channel-shuffle"><a href="#通道重排-channel-shuffle" class="headerlink" title="通道重排(channel shuffle)"></a>通道重排(channel shuffle)</h2><p><img src="/images/ShuffleNetV1/1.png" width="400" height="100"></p>
+<h2 id="通道重排-channel-shuffle"><a href="#通道重排-channel-shuffle" class="headerlink" title="通道重排(channel shuffle)"></a>通道重排(channel shuffle)</h2><p><img src="/images/ShuffleNetV1/1.png" width="650" height="100"></p>
 <p>原因：</p>
 <ul>
-<li>在多层逐点卷积堆叠时，模型的信息流被分割在各个组内，组与组之间没有信息交换（如图 1(a) 所示）。这将可能影响到模型的表示能力和识别精度。</li>
-<li>因此，在使用分组逐点卷积的同时，需要引入组间信息交换的机制；也就是说，对于第二层卷积而言，每个卷积核需要同时接收各组的特征作为输入，如图 1(b) 所示。</li>
-<li>作者指出，通过引入“通道重排”（channel shuffle，见图 1(c) ）可以很方便地实现这一机制；并且由于通道重排操作是可导的，因此可以嵌在网络结构中实现端到端的学习。</li>
+<li>在多层pointwise group convolution堆叠时，模型的信息流被分割在各个组内，组与组之间没有信息交换（如图 1(a) 所示）。这将影响到模型的表示能力和识别精度。</li>
+</ul>
+<p>解决方案：</p>
+<ul>
+<li>因此，在使用pointwise group convolution的同时，需要引入组间信息交换的机制；也就是说，对于第二层卷积而言，每个卷积核需要同时接收各组的特征作为输入，如图 1(b) 所示。</li>
+<li>作者指出：通过引入“通道重排”（channel shuffle，见图 1(c) ）可以很方便地实现这一机制；并且由于通道重排操作是可导的，因此可以嵌在网络结构中实现端到端的学习。</li>
 </ul>
 <h2 id="ShuffleNet单元-ShuffleNet-Unit"><a href="#ShuffleNet单元-ShuffleNet-Unit" class="headerlink" title="ShuffleNet单元(ShuffleNet Unit)"></a>ShuffleNet单元(ShuffleNet Unit)</h2><p><img src="/images/ShuffleNetV1/2.png" width="700" height="100"></p>
 <p>基于分组逐点卷积和通道重排操作，作者提出了全新的ShuffleNet结构单元，如Fig2所示。该结构继承了“残差网络”（ResNet）的设计思想，在此基础上做出了一系列改进来提升模型的效率：</p>
 <ul>
-<li>首先，如Fig2(a)所示，使用逐通道卷积替换原有的 3x3 卷积，降低卷积操作抽取空间特征的复杂度；</li>
-<li>然后，如Fig2(b)所示，将原先结构中前后两个 1x1 逐点卷积分组化，并在两层之间添加通道重排操作，进一步降低卷积运算的跨通道计算量。最终的结构单元如图 2(b) 所示。<ul>
-<li>第二个逐点分组卷积的目的是恢复通道的维度，来与捷径相匹配。</li>
-<li>为了简洁，没有在第二个逐点分组卷积层之后施加通道重排，因为这样的网络结构已经可以得到有力的结果。</li>
+<li>首先，如Fig2(a)所示，使用depthwise convolution替换原有的3x3卷积，降低卷积操作抽取空间特征的复杂度；</li>
+<li>然后，如Fig2(b)所示，将原先结构中前后两个1x1改为pointwise group convolution，并在两层之间添加channel shuffle操作。<ul>
+<li>第二个pointwise group convolution的目的是恢复通道的维度，来与捷径相匹配。</li>
+<li>注意1：为了简洁，没有在第二个逐点分组卷积层之后施加通道重排，因为这样的网络结构已经可以得到有力的结果。</li>
+<li>注意2：BN和非线性激活函数的使用同ResNet和ResNeXt类似；但在depthwise卷积之后，不使用ReLU。这一点由Xception建议。</li>
 </ul>
 </li>
-<li>BN和非线性激活函数的使用同ResNet和ResNeXt类似；但在depthwise卷积之后，不适用ReLU。这一点由Xception建议。</li>
 <li>如Fig2(c)所示，为ShuffleNet专门用于特征图的降采样的单元，做了两点修改：<ul>
 <li>在捷径中增加$3\times 3$的步长为2的平均池化操作</li>
 <li>用通道串联(channel concatenation)替代逐像素加(element-wise addition)，使得通过较少的额外的计算代价，来简单地实现通道维度的扩大</li>
@@ -447,32 +448,37 @@
 </li>
 <li>由于伴有通道重排的逐点分组卷积，ShuffleNet单元中的所有组件均能够有效地进行计算。给定一个计算开销，ShuffleNet能够得到更宽的特征图，这一点对于小型网络至关重要，因为小型网络通常没有足够数量的通道数目来处理信息。</li>
 </ul>
-<h2 id="ShuffleNet结构"><a href="#ShuffleNet结构" class="headerlink" title="ShuffleNet结构"></a>ShuffleNet结构</h2><p><img src="/images/ShuffleNetV1/3.png" width="800" height="100"></p>
-<p>如Table1所示，为ShuffleNet总体结构：</p>
+<h2 id="ShuffleNet结构"><a href="#ShuffleNet结构" class="headerlink" title="ShuffleNet结构"></a>ShuffleNet结构</h2><p><img src="/images/ShuffleNetV1/3.png" width="700" height="100"></p>
+<p>如Table1所示，借助ShuffleNet结构单元，构建了完整的ShuffeNet网络模型：</p>
 <ul>
-<li>借助ShuffleNet结构单元，作者构建了完整的ShuffeNet网络模型：<ul>
-<li>它主要由16个ShuffleNet结构单元堆叠而成，分属网络的三个阶段；</li>
-<li>每经过一个阶段特征图的空间尺寸减半，而通道数翻倍；</li>
-<li>即在每一个阶段中的第一个building block中施加步长为2；在每一阶段中的其他超参数保持一致；下一个阶段的输出通道数double；</li>
-<li>整个模型的总计算量约为 140 MFLOPs。通过简单地将各层通道数进行放缩，可以得到其他任意复杂度的模型。</li>
-</ul>
-</li>
+<li>ShuffleNet主要由16个ShuffleNet结构单元堆叠而成，分属网络的三个阶段，每经过一个阶段特征图的空间尺寸减半，而通道数翻倍。</li>
+<li>整个模型的总计算量约为140MFLOPs。通过简单地将各层通道数进行放缩，可以得到其他任意复杂度的模型。</li>
 <li>对于每一个ShuffleNet单元，与ResNet相似，设置bottleneck的通道数为输出通道数的$1/4$。</li>
-<li>在ShuffleNet中，分组数目$g$控制着逐点卷积的连接稀疏性。Table1中探究了不同的分组数目，文中通过调整输出通道数来保证了总体的计算代价大体不变(~140MFLOPs)：<ul>
+<li>在ShuffleNet中，分组数目$g$控制着逐点卷积的连接稀疏性。图中探究了在不同的分组数目下，通过调整输出通道数来保证了总体的计算代价大体不变(~140MFLOPs)：<ul>
 <li>可以发现，当卷积运算的分组数越多，模型的计算量就越低；</li>
 <li>这就意味着当总计算量一定时，较大的分组数可以允许较多的通道数，作者认为这将有利于网络编码更多的信息，提升模型的识别能力。</li>
 </ul>
 </li>
-<li>为了定制模型到想要的复杂度，简单地在通道数目上施加一个缩放因子$s$即可。Table1中的模型称为”ShuffleNet 1x”，”ShuffleNet sx”意为缩放”ShuffleNet 1x”中的通道数目$s$倍，因此，总体地复杂度大约是”ShuffleNet 1x”的$s^2$倍。<ul>
+<li>为了定制指定复杂度的模型，简单地在通道数目上施加一个缩放因子$s$即可。上图中的模型称为”ShuffleNet 1x”：<ul>
+<li>“ShuffleNet sx”意为缩放”ShuffleNet 1x”中的通道数目$s$倍，因此，总体地复杂度大约是”ShuffleNet 1x”的$s^2$倍。</li>
 <li>疑问：为什么是$s^2$倍？</li>
 </ul>
 </li>
 </ul>
-<h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><p>大多数的训练设置和超参数选择和ResNeXt一致，有两点例外：</p>
+<h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><p>对于ImageNet：</p>
 <ul>
-<li>将权重衰减设置为$4e^{-5}$而不是$1e^{-4}$；用线性衰减学习率策略(从0.5减少到0)</li>
+<li>大多数的训练设置和超参数选择和ResNeXt一致，有两点例外：<ul>
+<li>将权重衰减设置为$4e^{-5}$而不是$1e^{-4}$；采用线性衰减学习率策略(从0.5下降到0)</li>
 <li>在预处理时，用更少的尺寸增强(scale augmentation)</li>
 <li>在MobileNet中，也有上述两点相似的修改，因为小网络通常更易欠拟合而不是过拟合。</li>
+</ul>
+</li>
+<li>采用4个GPU，bath size为1024，共迭代$3\times 10^5次$，花费1-2天时间。</li>
+<li>备注：ImageNet上标准的模型评估方式：<ul>
+<li>短边缩放到256，然后centre-cropping出224×224尺寸的图像</li>
+<li>如果是Inception-ResNet-v2 and SE-Inception-ResNet-v2，则是短边缩放到352，然后centre-cropping出299×299尺寸的图像</li>
+</ul>
+</li>
 </ul>
 <h1 id="消融实验"><a href="#消融实验" class="headerlink" title="消融实验"></a>消融实验</h1><p><img src="/images/ShuffleNetV1/4.png" width="600" height="100"></p>
 <p> 如Table2所示，为逐点分组卷积的组数对分类错误率的影响：</p>
@@ -506,13 +512,13 @@
 <p><img src="/images/ShuffleNetV1/8.png" width="700" height="100"></p>
 <p> 如Table8所示，为在基于ARM平台的移动设备上，ShuffleNet与不同模型的真实推理速度评估结果：</p>
 <ul>
-<li>对于ShuffleNet，尽管更大的分组卷积(如$g=4$或如$g=8$)通常有更好的表现，但文中发现在实际应用中地效率较低；因此，文中经验性地选择$g=3$来作为精度和实际推理速度之间的合适的权衡值。</li>
+<li>对于ShuffleNet，尽管更大的分组卷积(如$g=4$或如$g=8$)通常有更好的表现，但文中发现在实际应用中地效率较低；<strong>因此，文中经验性地选择$g=3$来作为精度和实际推理速度之间的合适的权衡值</strong>。</li>
 <li>在实际应用中，由于内存访问和其他开销，文中发现：每4倍的理论复杂度减少通常会导致约2.6倍的实际加速。</li>
-<li>相比于AlexNet，ShuffleNet0.5x在得到相似准确率的同时，得到约13倍的实际加速(理论加速为18倍)。</li>
+<li>相比于AlexNet，ShuffleNet0.5x在得到相似准确率的同时，得到约13倍的实际加速(理论加速为18倍)。224 x 224 输入下只需 15.2 毫秒便可完成一次推理，在 1280 x 720 的输入下也只需要 260.1 毫秒。</li>
 </ul>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1707.01083.pdf" target="_blank" rel="noopener">论文：ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices, 2017</a></li>
-<li><a href="https://www.sohu.com/a/156321743_418390" target="_blank" rel="noopener">博客(旷视官方)：为移动AI而生——旷视(Face++)最新成果ShuffleNet全面解读</a></li>
+<li><a href="https://www.sohu.com/a/156321743_418390" target="_blank" rel="noopener">博客(官方)：为移动AI而生——旷视(Face++)最新成果ShuffleNet全面解读</a></li>
 </ul>
 
       
@@ -538,8 +544,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/29/VGG/" rel="next" title="Xception">
-                <i class="fa fa-chevron-left"></i> Xception
+              <a href="/2019/08/14/screen后台运行程序/" rel="next" title="screen后台运行程序">
+                <i class="fa fa-chevron-left"></i> screen后台运行程序
               </a>
             
           </div>
@@ -548,7 +554,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/30/ShuffleNetV2/" rel="prev" title="ShuffleNetV2">
+              <a href="/2019/08/18/ShuffleNetV2/" rel="prev" title="ShuffleNetV2">
                 ShuffleNetV2 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -699,7 +705,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#逐点分组卷积-pointwise-group-convolution"><span class="nav-text">逐点分组卷积(pointwise group convolution)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通道重排-channel-shuffle"><span class="nav-text">通道重排(channel shuffle)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNet单元-ShuffleNet-Unit"><span class="nav-text">ShuffleNet单元(ShuffleNet Unit)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNet结构"><span class="nav-text">ShuffleNet结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#消融实验"><span class="nav-text">消融实验</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关键点"><span class="nav-text">关键点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#逐点分组卷积-pointwise-group-convolution"><span class="nav-text">逐点分组卷积(pointwise group convolution)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通道重排-channel-shuffle"><span class="nav-text">通道重排(channel shuffle)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNet单元-ShuffleNet-Unit"><span class="nav-text">ShuffleNet单元(ShuffleNet Unit)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNet结构"><span class="nav-text">ShuffleNet结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#消融实验"><span class="nav-text">消融实验</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>

@@ -79,12 +79,12 @@
 
 
 
-<meta name="description" content="摘要 目前，神经网络架构的设计主要由计算复杂度的间接指标(即FLOPs)来指导； 但是，直接指标(如速度或延迟)还依赖于其他因素，如内存访问成本(MAC, memory access cost)和平台特点(platform characterics)； 因此，本文指出过去在网络架构设计上仅注重间接指标 FLOPs 的不足，并提出两个基本原则(principles)和四个实用准则(practical">
+<meta name="description" content="摘要 目前，CNN结构的设计主要由计算复杂度的间接指标(即FLOPs)来指导；但是，直接指标(如速度或延迟)还依赖于其他因素，如内存访问成本(MAC, memory access cost)和平台特点(platform characterics)； 因此，本文指出过去在CNN结构设计上仅注重间接指标FLOPs的不足，并提出两个基本原则(principles)和四个实用准则(practical gu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ShuffleNetV2">
-<meta property="og:url" content="http://yoursite.com/2018/12/30/ShuffleNetV2/index.html">
+<meta property="og:url" content="http://yoursite.com/2019/08/18/ShuffleNetV2/index.html">
 <meta property="og:site_name" content="CV Notes">
-<meta property="og:description" content="摘要 目前，神经网络架构的设计主要由计算复杂度的间接指标(即FLOPs)来指导； 但是，直接指标(如速度或延迟)还依赖于其他因素，如内存访问成本(MAC, memory access cost)和平台特点(platform characterics)； 因此，本文指出过去在网络架构设计上仅注重间接指标 FLOPs 的不足，并提出两个基本原则(principles)和四个实用准则(practical">
+<meta property="og:description" content="摘要 目前，CNN结构的设计主要由计算复杂度的间接指标(即FLOPs)来指导；但是，直接指标(如速度或延迟)还依赖于其他因素，如内存访问成本(MAC, memory access cost)和平台特点(platform characterics)； 因此，本文指出过去在CNN结构设计上仅注重间接指标FLOPs的不足，并提出两个基本原则(principles)和四个实用准则(practical gu">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV2/1.png">
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV2/2.png">
@@ -94,10 +94,10 @@
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV2/6.png">
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV2/7.png">
 <meta property="og:image" content="http://yoursite.com/images/ShuffleNetV2/8.png">
-<meta property="og:updated_time" content="2019-02-01T03:32:48.177Z">
+<meta property="og:updated_time" content="2019-08-19T08:57:16.532Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ShuffleNetV2">
-<meta name="twitter:description" content="摘要 目前，神经网络架构的设计主要由计算复杂度的间接指标(即FLOPs)来指导； 但是，直接指标(如速度或延迟)还依赖于其他因素，如内存访问成本(MAC, memory access cost)和平台特点(platform characterics)； 因此，本文指出过去在网络架构设计上仅注重间接指标 FLOPs 的不足，并提出两个基本原则(principles)和四个实用准则(practical">
+<meta name="twitter:description" content="摘要 目前，CNN结构的设计主要由计算复杂度的间接指标(即FLOPs)来指导；但是，直接指标(如速度或延迟)还依赖于其他因素，如内存访问成本(MAC, memory access cost)和平台特点(platform characterics)； 因此，本文指出过去在CNN结构设计上仅注重间接指标FLOPs的不足，并提出两个基本原则(principles)和四个实用准则(practical gu">
 <meta name="twitter:image" content="http://yoursite.com/images/ShuffleNetV2/1.png">
 
 
@@ -128,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/30/ShuffleNetV2/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/08/18/ShuffleNetV2/"/>
 
 
 
@@ -305,7 +305,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/30/ShuffleNetV2/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/18/ShuffleNetV2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="min">
@@ -334,8 +334,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-30T22:25:50+08:00">
-                2018-12-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-18T22:25:50+08:00">
+                2019-08-18
               </time>
             
 
@@ -357,8 +357,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/轻量型CNN/" itemprop="url" rel="index">
-                    <span itemprop="name">轻量型CNN</span>
+                  <a href="/categories/CNN/" itemprop="url" rel="index">
+                    <span itemprop="name">CNN</span>
                   </a>
                 </span>
 
@@ -395,18 +395,16 @@
 
       
         <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
-<li>目前，神经网络架构的设计主要由计算复杂度的间接指标(即FLOPs)来指导；</li>
-<li>但是，直接指标(如速度或延迟)还依赖于其他因素，如内存访问成本(MAC, memory access cost)和平台特点(platform characterics)；</li>
-<li>因此，本文指出过去在网络架构设计上仅注重间接指标 FLOPs 的不足，并提出两个基本原则(principles)和四个实用准则(practical guidelines)来指导网络架构设计；</li>
-<li>提出针对移动端深度学习的第二代卷积神经网络ShuffleNetV2，在综合实验评估中，ShuffleNetV2在速度和精度的权衡方面达到当前最优水平。</li>
+<li>目前，CNN结构的设计主要由计算复杂度的间接指标(即FLOPs)来指导；但是，直接指标(如速度或延迟)还依赖于其他因素，如内存访问成本(MAC, memory access cost)和平台特点(platform characterics)；</li>
+<li>因此，本文指出过去在CNN结构设计上仅注重间接指标FLOPs的不足，并提出两个基本原则(principles)和四个实用准则(practical guidelines)来指导网络架构设计；</li>
+<li>提出针对移动端的ShuffleNetV2，在综合实验评估中，ShuffleNetV2在速度和精度的权衡方面达到当前最优水平。</li>
 <li>注：FLOPs，即the number of float-point operations，定义为the number of multiply-adds.<a id="more"></a>
 </li>
 </ul>
-<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="间接指标-FLOPs-与直接指标-速度-延迟"><a href="#间接指标-FLOPs-与直接指标-速度-延迟" class="headerlink" title="间接指标(FLOPs)与直接指标(速度/延迟)"></a>间接指标(FLOPs)与直接指标(速度/延迟)</h2><p>对于FLOPs：</p>
+<h1 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h1><h2 id="间接指标-FLOPs-与直接指标-速度-延迟"><a href="#间接指标-FLOPs-与直接指标-速度-延迟" class="headerlink" title="间接指标(FLOPs)与直接指标(速度/延迟)"></a>间接指标(FLOPs)与直接指标(速度/延迟)</h2><p>对于FLOPs：</p>
 <ul>
-<li>当前，FLOPs，即浮点运算数，是度量计算复杂度的常用指标。</li>
-<li>然而，FLOPs是一种间接指标。它只是本文真正关心的直接指标(如速度或延迟)的一种近似形式，通常无法与直接指标划等号。</li>
-<li>实验表明：FLOPs近似的网络也会有不同的速度。</li>
+<li>当前，FLOPs即浮点运算数，是度量计算复杂度的常用指标。然而，FLOPs是一种间接指标，它只是本文真正关心的直接指标(如速度或延迟)的一种近似形式，通常无法与直接指标划等号。</li>
+<li>实验表明：FLOPs近似的网络也会有不同的速度。例如，MobileNetV2要远快于NASNET-A，但是两者FLOPs相当。</li>
 <li>所以，将FLOPs作为衡量计算复杂度的唯一标准是不够的，这样会导致次优设计。</li>
 </ul>
 <p>间接指标(FLOPs)与直接指标(速度/延迟)之间存在差异的原因可以归结为两点：</p>
@@ -424,7 +422,7 @@
 <h2 id="两个基本原则-two-principles"><a href="#两个基本原则-two-principles" class="headerlink" title="两个基本原则(two principles)"></a>两个基本原则(two principles)</h2><p>基于上述间接指标(FLOPs)与直接指标(速度/延迟)之间存在差异的原因，本文提出了高效网络架构设计应该考虑的两个基本原则：</p>
 <ul>
 <li>第一，应该用直接指标(速度/延迟)替换间接指标(FLOPs)；</li>
-<li>第二，这些指标应该在目标平台(target platform)上进行评估。</li>
+<li>第二，直接指标应该在目标平台(target platform)上进行评估。</li>
 </ul>
 <h2 id="ShuffleNetV1和MobileNetV2的运行时间性能-runtime-performance-分析"><a href="#ShuffleNetV1和MobileNetV2的运行时间性能-runtime-performance-分析" class="headerlink" title="ShuffleNetV1和MobileNetV2的运行时间性能(runtime performance)分析"></a>ShuffleNetV1和MobileNetV2的运行时间性能(runtime performance)分析</h2><p><img src="/images/ShuffleNetV2/1.png" width="600" height="100"></p>
 <p>如Fig2所示，为ShuffleNetV1和MobileNetV2在ARM和GPU上的运行时间分析：</p>
@@ -435,7 +433,7 @@
 </ul>
 <h2 id="四个实用准则-practical-guidelines"><a href="#四个实用准则-practical-guidelines" class="headerlink" title="四个实用准则(practical guidelines)"></a>四个实用准则(practical guidelines)</h2><p>基于上述网络运行时间性能的分析，提出设计高效网络架构需要遵循的四个实用准则(practical guidelines)。</p>
 <h3 id="G1-相同的通道宽度可最小化内存访问成本-MAC）"><a href="#G1-相同的通道宽度可最小化内存访问成本-MAC）" class="headerlink" title="G1. 相同的通道宽度可最小化内存访问成本(MAC）"></a>G1. 相同的通道宽度可最小化内存访问成本(MAC）</h3><ul>
-<li>现代网络大多会采用depthwise separable convolutions，pointwise convolution($1\times1$卷积)占据了其中大部分复杂度。</li>
+<li>现代网络大多会采用深度可分离卷积(depthwise separable convolutions)，pointwise convolution占据了其中大部分复杂度。</li>
 <li>$1\times1$卷积的FLOPs为：$B=h w c_1 c_2$<ul>
 <li>其中，$h$和$w$为特征图的空间尺寸，$c_1$为输入通道数，$c_2$为输出通道数</li>
 </ul>
@@ -456,9 +454,8 @@
 <li>因此，G1得到实际验证。</li>
 </ul>
 <h3 id="G2-过度的组卷积会增加MAC"><a href="#G2-过度的组卷积会增加MAC" class="headerlink" title="G2. 过度的组卷积会增加MAC"></a>G2. 过度的组卷积会增加MAC</h3><ul>
-<li>分组卷积通过改变所有通道之间的密集卷积(dense convolution)，成为只和组内通道进行的稀疏卷积(sparse convolution)，来减少计算复杂度(FLOPs)；</li>
-<li>一方面，在固定的FLOPs下，它允许了更多的通道数；并且，它增加了网络的容量(capacity)，也因此得到更高的准确率；</li>
-<li><p>另一方面，然而，增加的通道数量导致了更多的MAC。</p>
+<li>分组卷积通过改变密集卷积(dense convolution)所有通道之间密集连接的方式，成为只和组内通道进行卷积的稀疏卷积(sparse convolution)，来减少计算复杂度(FLOPs)；</li>
+<li><p>一方面，在固定的FLOPs下，它允许了更多的通道数；并且，它增加了网络的容量(capacity)，也因此得到更高的准确率；但另一方面，增加的通道数量导致了更多的MAC。</p>
 </li>
 <li><p>正式的讲，对于$1\times1$分组卷积，MAC和FLOPs的关系为：$MAC = hw(c_1+c_2)+\frac{c_1c_2}{g} = hwc_1 + \frac{Bg}{c_1}+ \frac{B}{hw} $</p>
 <ul>
@@ -476,16 +473,15 @@
 <li>这主要是由于MAC的增加。</li>
 </ul>
 </li>
-<li>因此，我们建议：<ul>
+<li>因此，文中建议：<ul>
 <li>对于分组数，基于目标平台和任务，来谨慎地选择；</li>
 <li>简单地因为大的分组数可以允许更大的通道数(获得更高的准确率)，而选择大的分组数，是不明智的。</li>
 </ul>
 </li>
 </ul>
 <h3 id="G3-网络碎片化-network-fragmentation-会降低并行度-degree-of-parallelism"><a href="#G3-网络碎片化-network-fragmentation-会降低并行度-degree-of-parallelism" class="headerlink" title="G3. 网络碎片化(network fragmentation)会降低并行度(degree of parallelism)"></a>G3. 网络碎片化(network fragmentation)会降低并行度(degree of parallelism)</h3><ul>
-<li>例如GoogLeNet的多路径结构会降低并行度</li>
-<li>尽管这种分散的结构(fragmented structure)已经展示出对准确率有益，但是它可能降低效率，因为它对像GPU这种带有强大并行计算能力(parallel<br>computing powers)的设备很不友好。<ul>
-<li>疑问：为啥不友好？</li>
+<li>例如GoogLeNet的多路径结构会降低并行度。尽管这种分散的结构(fragmented structure)已经展示出对准确率有益，但是它可能降低效率，因为它对像GPU这种带有强大并行计算能力(parallel computing powers)的设备很不友好。<ul>
+<li>疑问：为啥不友好？这里的并行计算能力和多路径的冲突的原因，能再具体解释下么</li>
 </ul>
 </li>
 <li>这种分散的结构也引起了诸如卷积核加载(kernel launching)和同步化(synchronization)等开销。</li>
@@ -524,20 +520,15 @@
 <li>MobileNetV2使用倒置的瓶颈结构，违反了G1。它在「厚」特征图上(“thick” feature maps)使用了depthwise convolution和ReLU，违反了G4</li>
 <li>自动生成结构(the auto-generated structures)的高度碎片化，违反了G3</li>
 </ul>
-<h2 id="ShuffleNetV1回顾与分析"><a href="#ShuffleNetV1回顾与分析" class="headerlink" title="ShuffleNetV1回顾与分析"></a>ShuffleNetV1回顾与分析</h2><p><img src="/images/ShuffleNetV2/6.png" width="600" height="100"></p>
+<h2 id="ShuffleNetV1回顾与分析"><a href="#ShuffleNetV1回顾与分析" class="headerlink" title="ShuffleNetV1回顾与分析"></a>ShuffleNetV1回顾与分析</h2><p><img src="/images/ShuffleNetV2/6.png" width="750" height="100"><br>如上图所示，为ShuﬄeNetV1ShuﬄeNetV2的构造模块。其中，(a)ShuﬄeNet 基本单元；(b) 用于空间下采样 (2×) 的 ShuffleNet 单元；(c) ShuﬄeNet V2 的基本单元；(d) 用于空间下采样 (2×) 的 ShuffleNet V2 单元。DWConv：深度卷积 (depthwise convolution)。GConv：组卷积 (group convolution)。</p>
 <ul>
 <li>ShuﬄeNetV1是一种先进的网络架构，广泛应用于手机等低配设备。它启发了本文工作，因此首先对其进行回顾与分析。</li>
 <li>根据ShuﬄeNetV1，轻量级网络的主要挑战是在给定计算预算(FLOPs)时，只能获得有限数量的特征通道。</li>
-<li>为了在不显著增加FLOPs情况下增加通道数量，ShuﬄeNetV1采用了两种技术：逐点分组卷积(pointwise group convolutions)和类瓶颈(bottleneck-like)结构；</li>
-<li>然后引入通道重排(channel shuﬄe)操作，令不同组的通道之间能够进行信息交流，提高精度。</li>
-<li><p>其构建模块如Fig3中的(a)(b)所示。</p>
+<li><p>为了在不显著增加FLOPs情况下增加通道数量，ShuﬄeNetV1采用了两种技术：逐点分组卷积(pointwise group convolutions)和类瓶颈(bottleneck-like)结构；然后引入通道重排(channel shuﬄe)操作，令不同组的通道之间能够进行信息交流，提高精度。其构建模块如Fig3中的(a)(b)所示。</p>
 </li>
 <li><p>如第二部分所述，逐点分组卷积和瓶颈结构都增加了MAC(G2和G1)。这个成本不可忽视，特别是对于轻量级模型。</p>
 </li>
-<li>另外，使用太多分组也违背了G3。<ul>
-<li>疑问：应该是违背了G2吧</li>
-</ul>
-</li>
+<li>另外，使用太多分组也违背了G2。</li>
 <li>捷径连接（shortcut connection）中的元素级「加法」操作也不可取 (G4)。</li>
 <li>因此，为了实现较高的模型容量和效率，关键问题是如何保持大量且同样宽的通道，既没有密集卷积也没有太多的分组。</li>
 </ul>
@@ -551,7 +542,7 @@
 <li>与ShuffleNetV1不同的是，两个$1\times 1$卷积不再是分组卷积。这样做的部分原因是为了遵循G2，部分原因是因为通道分割操作已经产生了两个组。</li>
 <li>卷积之后，把两个分支拼接起来，从而通道数量保持不变(G1)。然后进行与ShuffleNetV1相同的通道重排(channel shuﬄe)操作来保证两个分支间能进行信息交流。</li>
 <li>通道重排(Channel Shuﬄe)之后，下一个单元开始运算。</li>
-<li>注意，ShuﬄeNetV1中的「加法」操作不再存在。像ReLU 和epth- wise convolutions这样的操作只存在一个分支中。</li>
+<li>注意，ShuﬄeNetV1中的「加法」操作不再存在。像ReLU和depth-wise convolutions这样的操作只存在一个分支中。</li>
 <li>另外，三个连续的操作拼接(concat)、通道重排(channel shuﬄe)和通道分割(channel shuﬄe)合并成一个元素级操作。根据G4，这些变化是有利的。</li>
 <li>疑问：三个连续操作时如何合并成一个的？？</li>
 </ul>
@@ -562,17 +553,18 @@
 </ul>
 </li>
 </ul>
-<h2 id="ShuffleNetV2"><a href="#ShuffleNetV2" class="headerlink" title="ShuffleNetV2"></a>ShuffleNetV2</h2><p><img src="/images/ShuffleNetV2/7.png" width="600" height="100"></p>
+<h2 id="ShuffleNetV2"><a href="#ShuffleNetV2" class="headerlink" title="ShuffleNetV2"></a>ShuffleNetV2</h2><p><img src="/images/ShuffleNetV2/7.png" width="700" height="100"></p>
 <ul>
 <li>基于本文提出的构造模块Fig3(c)(d)而构成的网络，被称之为ShuﬄeNetV2。</li>
 <li>基于上述对构造模块Fig3(c)(d)分析，本文得出结论：由于遵循四个准则的遵循，该架构设计异常高效。</li>
 <li>上述基础构建模块被重复堆叠以构建整个网络。为了简洁，本文令$c’ = c/2$。</li>
 <li>如Table5所示，为ShufﬂeNetV2的整体结构：<ul>
-<li>整个网络结构类似于ShufﬂeNetV1，二者之间只有一个区别：前者在全局平均池化层之前添加了一个额外的$1\times 1$卷积层来混合特征，ShuﬄeNetV1中没有该层。</li>
+<li>整个网络结构类似于ShufﬂeNetV1，二者之间只有一个区别：ShuﬄeNetV2在全局平均池化层之前添加了一个额外的$1\times 1$卷积层来混合特征，ShuﬄeNetV1中没有该层。</li>
 <li>与ShuﬄeNetV1类似，每个构建块中的通道数量可以扩展以生成不同复杂度的网络，标记为<code>0.5×</code>、<code>1×</code>等。</li>
 </ul>
 </li>
 </ul>
+<h1 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h1><p>同ShuffleNetV1一致。</p>
 <h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><p><img src="/images/ShuffleNetV2/8.png" width="600" height="100"></p>
 <ul>
 <li>如Table8所示，为各网络在四个级别的计算复杂度(40/140/300/500+ MFLOPs)级别上的FLOPs、Top-1错误率以及在GPU/ARM上的速度对比。<ul>
@@ -582,7 +574,8 @@
 </ul>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
 <li><a href="https://arxiv.org/pdf/1807.11164.pdf" target="_blank" rel="noopener">论文：ShuffleNet V2: Practical Guidelines for Efficient CNN Architecture Design</a></li>
-<li><a href="http://www.sohu.com/a/244491616_418390" target="_blank" rel="noopener">博客(旷视官方)：ECCV 2018 | 旷视科技提出新型轻量架构ShuffleNet V2：从理论复杂度到实用设计准则</a></li>
+<li><a href="http://www.sohu.com/a/244491616_418390" target="_blank" rel="noopener">博客(官方)：ECCV 2018 | 旷视科技提出新型轻量架构ShuffleNet V2：从理论复杂度到实用设计准则</a></li>
+<li><a href="https://github.com/liminn/vision/blob/master/torchvision/models/shufflenetv2.py" target="_blank" rel="noopener">代码及注释：vision/torchvision/models/shufflenetv2.py</a></li>
 </ul>
 
       
@@ -608,7 +601,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/30/ShuffleNetV1/" rel="next" title="ShuffleNetV1">
+              <a href="/2019/08/17/ShuffleNetV1/" rel="next" title="ShuffleNetV1">
                 <i class="fa fa-chevron-left"></i> ShuffleNetV1
               </a>
             
@@ -617,10 +610,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/08/FCN/" rel="prev" title="FCN">
-                FCN <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -769,7 +758,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#间接指标-FLOPs-与直接指标-速度-延迟"><span class="nav-text">间接指标(FLOPs)与直接指标(速度/延迟)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两个基本原则-two-principles"><span class="nav-text">两个基本原则(two principles)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNetV1和MobileNetV2的运行时间性能-runtime-performance-分析"><span class="nav-text">ShuffleNetV1和MobileNetV2的运行时间性能(runtime performance)分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四个实用准则-practical-guidelines"><span class="nav-text">四个实用准则(practical guidelines)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#G1-相同的通道宽度可最小化内存访问成本-MAC）"><span class="nav-text">G1. 相同的通道宽度可最小化内存访问成本(MAC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G2-过度的组卷积会增加MAC"><span class="nav-text">G2. 过度的组卷积会增加MAC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G3-网络碎片化-network-fragmentation-会降低并行度-degree-of-parallelism"><span class="nav-text">G3. 网络碎片化(network fragmentation)会降低并行度(degree of parallelism)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G4-元素级运算-element-wise-operations-不可忽视-non-negligible"><span class="nav-text">G4. 元素级运算(element-wise operations)不可忽视(non-negligible)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论和建议"><span class="nav-text">结论和建议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#近期轻量型网络分析"><span class="nav-text">近期轻量型网络分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNetV1回顾与分析"><span class="nav-text">ShuffleNetV1回顾与分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通道分割-channel-split"><span class="nav-text">通道分割(channel split)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNetV2"><span class="nav-text">ShuffleNetV2</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关键点"><span class="nav-text">关键点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#间接指标-FLOPs-与直接指标-速度-延迟"><span class="nav-text">间接指标(FLOPs)与直接指标(速度/延迟)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两个基本原则-two-principles"><span class="nav-text">两个基本原则(two principles)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNetV1和MobileNetV2的运行时间性能-runtime-performance-分析"><span class="nav-text">ShuffleNetV1和MobileNetV2的运行时间性能(runtime performance)分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四个实用准则-practical-guidelines"><span class="nav-text">四个实用准则(practical guidelines)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#G1-相同的通道宽度可最小化内存访问成本-MAC）"><span class="nav-text">G1. 相同的通道宽度可最小化内存访问成本(MAC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G2-过度的组卷积会增加MAC"><span class="nav-text">G2. 过度的组卷积会增加MAC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G3-网络碎片化-network-fragmentation-会降低并行度-degree-of-parallelism"><span class="nav-text">G3. 网络碎片化(network fragmentation)会降低并行度(degree of parallelism)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G4-元素级运算-element-wise-operations-不可忽视-non-negligible"><span class="nav-text">G4. 元素级运算(element-wise operations)不可忽视(non-negligible)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论和建议"><span class="nav-text">结论和建议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#近期轻量型网络分析"><span class="nav-text">近期轻量型网络分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNetV1回顾与分析"><span class="nav-text">ShuffleNetV1回顾与分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通道分割-channel-split"><span class="nav-text">通道分割(channel split)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNetV2"><span class="nav-text">ShuffleNetV2</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练策略"><span class="nav-text">训练策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
