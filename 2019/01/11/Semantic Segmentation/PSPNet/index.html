@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要 PSPNet(Pyramid Scene Parsing Network)，由施加膨胀卷积的ResNet和金字塔池化模块(pyramid pooling module)构成。 PSPNet为当时最优，在PASCAL VOC 2012上的mIoU为85.4%，在Cityscapes上的mIoU为80.2%，均列第一。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PSPNet">
+<meta property="og:url" content="http://yoursite.com/2019/01/11/Semantic Segmentation/PSPNet/index.html">
+<meta property="og:site_name" content="CV Notes">
+<meta property="og:description" content="摘要 PSPNet(Pyramid Scene Parsing Network)，由施加膨胀卷积的ResNet和金字塔池化模块(pyramid pooling module)构成。 PSPNet为当时最优，在PASCAL VOC 2012上的mIoU为85.4%，在Cityscapes上的mIoU为80.2%，均列第一。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/PSPNet/1.png">
+<meta property="og:image" content="http://yoursite.com/images/PSPNet/2.png">
+<meta property="og:image" content="http://yoursite.com/images/PSPNet/3.png">
+<meta property="og:image" content="http://yoursite.com/images/PSPNet/4.png">
+<meta property="og:updated_time" content="2020-02-19T02:37:34.378Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PSPNet">
+<meta name="twitter:description" content="摘要 PSPNet(Pyramid Scene Parsing Network)，由施加膨胀卷积的ResNet和金字塔池化模块(pyramid pooling module)构成。 PSPNet为当时最优，在PASCAL VOC 2012上的mIoU为85.4%，在Cityscapes上的mIoU为80.2%，均列第一。">
+<meta name="twitter:image" content="http://yoursite.com/images/PSPNet/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/11/Semantic Segmentation/PSPNet/"/>
+
+
+
+
+
+  <title>PSPNet | CV Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CV Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/11/Semantic Segmentation/PSPNet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CV Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PSPNet</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-11T22:26:50+08:00">
+                2019-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Semantic-Segmentation/" itemprop="url" rel="index">
+                    <span itemprop="name">Semantic Segmentation</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
+<li>PSPNet(Pyramid Scene Parsing Network)，由施加膨胀卷积的ResNet和金字塔池化模块(pyramid pooling module)构成。</li>
+<li>PSPNet为当时最优，在PASCAL VOC 2012上的mIoU为85.4%，在Cityscapes上的mIoU为80.2%，均列第一。</li>
+</ul>
+<a id="more"></a>
+<h1 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h1><h2 id="施加膨胀卷积的ResNet-金字塔池化模块-PSPNet总体结构"><a href="#施加膨胀卷积的ResNet-金字塔池化模块-PSPNet总体结构" class="headerlink" title="施加膨胀卷积的ResNet/金字塔池化模块/PSPNet总体结构"></a>施加膨胀卷积的ResNet/金字塔池化模块/PSPNet总体结构</h2><p><img src="/images/PSPNet/1.png" width="900" height="200"><br>如Fig3所示，为<strong>PSPNet总体结构</strong>：</p>
+<ul>
+<li>如Fig3(a)，为输入图片，输入尺寸为：$(473,473,3)$</li>
+<li>如Fig3(b)，通过施加膨胀卷积且预训练的ResNet，输出特征图为输入原图的$1/8$大小，即输出尺寸为：$(60,60,2048)$</li>
+<li>如Fig3(c)，用<strong>金字塔池化模块</strong>来聚合上下文信息,金字塔层级为4:<ul>
+<li>层级1：通过核大小为$(60,60)$，步长为$(60,60)$的平均池化，输出尺寸为$(1,1,2048)$的特征图</li>
+<li>层级2：通过核大小为$(30,30)$，步长为$(30,30)$的平均池化，输出尺寸为$(2,2,2048)$的特征图</li>
+<li>层级3：通过核大小为$(20,20)$，步长为$(20,20)$的平均池化，输出尺寸为$(3,3,2048)$的特征图</li>
+<li>层级4：通过核大小为$(10,10)$，步长为$(10,10)$的平均池化，输出尺寸为$(6,6,2048)$的特征图</li>
+<li>对四个层级的特征图，分别通过$1\times1$卷积(conv/bn/ReLU)，降通道数至512</li>
+<li>对四个层级的特征图，分别通过上采样(线性插值)，将各特征图的空间尺寸还原至金字塔池化模块的输入的空间尺寸，即各层级特征图的输出尺寸均还原为$(60,60,512)$</li>
+<li>将四个层级的特征图以及金字塔池化模块的输入相串联，输出尺寸为$(60,60,(512 \times 4+2048)) = (60,60,4096)$</li>
+</ul>
+</li>
+<li>如Fig4(d)，通过卷积层，得到最终经的预测特征图 :<ul>
+<li>通过$1\times1$卷积(conv/bn/ReLU)，降通道数至512，故输出尺寸为$(60,60,512)$</li>
+<li>通过$1\times1$卷积，调整通道等于目标分类数$num_{class}$，输出尺寸为$(60,60,num_{class})$</li>
+<li>上采样，缩放空间尺寸(线性插值)到原始输入的空间尺寸，故输出尺寸为$(473,473,num_{class})$</li>
+</ul>
+</li>
+</ul>
+<p>其中，对于<strong>施加膨胀卷积的ResNet</strong>，其改动表述如下：</p>
+<ul>
+<li>对于原始的ResNet：<ul>
+<li>原始的ResNet由<code>conv1</code>,<code>conv2_x</code>,<code>conv3_x</code>,<code>conv4_x</code>,<code>conv5_x</code>构成</li>
+<li>其中，<code>conv1</code>,<code>conv2_1</code>,<code>conv3_1</code>,<code>conv4_1</code>,<code>conv5_1</code>分别进行一次下采样，因此共下采样5次，输出特征图为输入尺寸的1/32</li>
+</ul>
+</li>
+<li><p>施加膨胀卷积的ResNet，对原始的ResNet的改动如下：</p>
+<ul>
+<li><code>conv1</code>,<code>conv2_x</code>,<code>conv3_x</code>保持不变</li>
+<li>改动1：<code>conv4_1</code>中第一个1x1卷积的步长由2改为1；<code>conv4_2</code>及后续的3x3卷积采用采样率(sampling rates)为2的膨胀卷积</li>
+<li>改动2：<code>conv5_1</code>中第一个1x1卷积的步长由2改为1，并采用采样率(sampling rates)为2的膨胀卷积；<code>conv5_2</code>及后续的3x3卷积采用采样率为4的膨胀卷积</li>
+<li>因此，施加膨胀卷积的ResNet的下采样次数减少2次，为3次，输出特征图为输入尺寸的1/8；同时，通过膨胀卷积，扩大了特征图的感受野。</li>
+</ul>
+</li>
+<li><p>举例说明：若输入尺寸为$(473,473,3)$</p>
+<ul>
+<li>对于原始的ResNet，进行了5次下采样，即输出特征图的空间尺寸为原图的$1/32$，则输出尺寸为$(15,15,2048)$ </li>
+<li>注1：此处的输出是指<code>conv5_x</code>的输出，去除后续平均池化层及全连接层</li>
+<li>注2：<code>output_dim = ceil(input_dim / 32.0)</code> </li>
+<li>对于施加膨胀卷积的ResNet,进行了3次下采样，即输出特征图的空间尺寸为原图的$1/8$，则输出尺寸为$(60,60,2048)$</li>
+</ul>
+</li>
+</ul>
+<p>其中，对于金字塔池化模块：</p>
+<ul>
+<li>其根本目的是为了通过不同的金字塔层级，得到不同尺度的特征图，然后聚合这些特征图，因此便聚合了不同尺度的上下文信息。</li>
+<li>对于金字塔模块，可以针对输入尺寸的大小，来进行自定义，示例如下：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">### 依据不同的输入尺寸，定义各层级的平均池化操作的核大小及步长</span></span><br><span class="line"><span class="keyword">if</span> input_shape == (<span class="number">473</span>, <span class="number">473</span>):</span><br><span class="line">    kernel_strides_map = &#123;<span class="number">1</span>: <span class="number">60</span>, <span class="number">2</span>: <span class="number">30</span>, <span class="number">3</span>: <span class="number">20</span>, <span class="number">6</span>: <span class="number">10</span>&#125;</span><br><span class="line"><span class="keyword">elif</span> input_shape == (<span class="number">713</span>, <span class="number">713</span>):</span><br><span class="line">    kernel_strides_map = &#123;<span class="number">1</span>: <span class="number">90</span>, <span class="number">2</span>: <span class="number">45</span>, <span class="number">3</span>: <span class="number">30</span>, <span class="number">6</span>: <span class="number">15</span>&#125;</span><br><span class="line"><span class="comment"># 针对(320,320)，自定义金字塔池化模块</span></span><br><span class="line"><span class="keyword">elif</span> input_shape == (<span class="number">320</span>,<span class="number">320</span>):                                  </span><br><span class="line">    kernel_strides_map = &#123;<span class="number">1</span>: <span class="number">40</span>, <span class="number">2</span>: <span class="number">20</span>, <span class="number">4</span>: <span class="number">10</span>, <span class="number">8</span>: <span class="number">5</span>&#125;        </span><br><span class="line"><span class="comment"># 针对(512, 512)，自定义金字塔池化模块</span></span><br><span class="line"><span class="keyword">elif</span> input_shape == (<span class="number">512</span>, <span class="number">512</span>):</span><br><span class="line">    kernel_strides_map = &#123;<span class="number">1</span>: <span class="number">64</span>, <span class="number">2</span>: <span class="number">32</span>, <span class="number">4</span>: <span class="number">16</span>, <span class="number">8</span>: <span class="number">8</span>&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="模型比较"><a href="#模型比较" class="headerlink" title="模型比较"></a>模型比较</h1><p><img src="/images/PSPNet/2.png" width="600" height="200"><br>如表Table1所示，为金字塔池化模块在不同设置下，PSPNet的表现：</p>
+<ul>
+<li>其中当金字塔池化模块采用<code>B1236</code>+<code>AVE</code>+<code>DR</code>的配置时，PSPNet的表现为最优</li>
+<li>注：<code>B1236</code>+<code>AVE</code>+<code>DR</code>三者合起来，称为金字塔池化模块</li>
+<li><code>B1236</code>(即金字塔模块中的4个层级尺度)对相比于<code>B1</code>的单尺度，可提升PSPNet表现</li>
+<li><code>AVE</code>(即金字塔模块中采用平均池化)相比于采用<code>MAX</code>(即金字塔模块中采用最大池化)，可提升PSPNet表现</li>
+<li><code>DR</code>(即在<code>AVE</code>后，通过1x1卷积降通道数)，可提升PSPNet表现</li>
+</ul>
+<p><img src="/images/PSPNet/3.png" width="600" height="200"><br>如Table3所示，为在不同的预训练模型下，PSPNet的表现：</p>
+<ul>
+<li>更好的预训练模型，更好的PSPNet(<code>PSPNet269&gt;PSPNet152&gt;PSPNet101&gt;PSPNet50</code>)；</li>
+<li>MS(即多尺度测试)，可提升PSPNet表现</li>
+</ul>
+<p><img src="/images/PSPNet/4.png" width="600" height="200"><br>如Table4所示，为PSPNet与不同模型的比较：</p>
+<ul>
+<li>PSPNet在ResNet(基础网络)、DA(数据增强)、AL(辅助loss)、金字塔模块的加持下，效果最优。</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>PSPNet的组成很简单：dilatd ResNet + 金字塔池化模块。</li>
+<li>PSPNet属于常规语义分割模型，目的是为了更好的效果，并没有考虑性能。在效果方面，PSPNet比FCN/SegNet/DeeplabV1都要好。</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="https://arxiv.org/pdf/1612.01105.pdf" target="_blank" rel="noopener">论文：Pyramid Scene Parsing Network</a></li>
+<li><a href="https://blog.csdn.net/FX677588/article/details/71308096" target="_blank" rel="noopener">博客：论文笔记——CVPR 2017 Dilated Residual Networks</a></li>
+<li><a href="https://github.com/liminn/Keras-PSPNet/blob/master/pspnet_model.py" target="_blank" rel="noopener">代码及注释：liminn/Keras-PSPNet</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/10/Semantic Segmentation/ENet/" rel="next" title="ENet">
+                <i class="fa fa-chevron-left"></i> ENet
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/12/Semantic Segmentation/DeepLabV1/" rel="prev" title="DeepLabV1">
+                DeepLabV1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">防止遗忘</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="11172918@qq.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创新点"><span class="nav-text">创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#施加膨胀卷积的ResNet-金字塔池化模块-PSPNet总体结构"><span class="nav-text">施加膨胀卷积的ResNet/金字塔池化模块/PSPNet总体结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型比较"><span class="nav-text">模型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

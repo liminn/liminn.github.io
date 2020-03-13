@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="提升(Boosting)方法实际采用加法模型（即基函数的线性组合）与前向分布算法。　　提升树(boosting tree)：以决策树为基函数的提升方法称为提升树。对分类问题，决策树是二叉分类树，对回归问题，决策树是二叉回归树。　　本文先记录回归问题的提升树算法，后记录回归问题的梯度提升树(gradient boosting decision tree,GBDT)算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GBDT模型">
+<meta property="og:url" content="http://yoursite.com/2017/12/13/待修改/GBDT模型/index.html">
+<meta property="og:site_name" content="CV Notes">
+<meta property="og:description" content="提升(Boosting)方法实际采用加法模型（即基函数的线性组合）与前向分布算法。　　提升树(boosting tree)：以决策树为基函数的提升方法称为提升树。对分类问题，决策树是二叉分类树，对回归问题，决策树是二叉回归树。　　本文先记录回归问题的提升树算法，后记录回归问题的梯度提升树(gradient boosting decision tree,GBDT)算法。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-22T12:29:30.685Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBDT模型">
+<meta name="twitter:description" content="提升(Boosting)方法实际采用加法模型（即基函数的线性组合）与前向分布算法。　　提升树(boosting tree)：以决策树为基函数的提升方法称为提升树。对分类问题，决策树是二叉分类树，对回归问题，决策树是二叉回归树。　　本文先记录回归问题的提升树算法，后记录回归问题的梯度提升树(gradient boosting decision tree,GBDT)算法。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/13/待修改/GBDT模型/"/>
+
+
+
+
+
+  <title>GBDT模型 | CV Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CV Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/13/待修改/GBDT模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CV Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GBDT模型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-13T21:20:50+08:00">
+                2017-12-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>　　<strong>提升(Boosting)方法</strong>实际采用加法模型（即基函数的线性组合）与前向分布算法。<br>　　<strong>提升树(boosting tree)</strong>：以<strong>决策树为基函数</strong>的<strong>提升方法</strong>称为提升树。对分类问题，决策树是二叉分类树，对回归问题，决策树是二叉回归树。<br>　　本文先记录回归问题的提升树算法，后记录回归问题的梯度提升树(gradient boosting decision tree,GBDT)算法。<br><a id="more"></a> </p>
+<h1 id="一、提升树"><a href="#一、提升树" class="headerlink" title="一、提升树"></a>一、提升树</h1><h2 id="1-回归问题的提升树算法"><a href="#1-回归问题的提升树算法" class="headerlink" title="1. 回归问题的提升树算法"></a>1. 回归问题的提升树算法</h2><h3 id="1-1-基本分类器：回归树-同CART回归树"><a href="#1-1-基本分类器：回归树-同CART回归树" class="headerlink" title="1.1 基本分类器：回归树 (同CART回归树)"></a>1.1 基本分类器：回归树 (同<a href="http://zhanglimin.com/2017/12/07/CART%E6%A8%A1%E5%9E%8B/" target="_blank" rel="noopener">CART回归树</a>)</h3><p>　　已知一个训练数据集$T=\{(x_1,y_1),(x_2,y_2),…,(x_N,y_N)\}$,$x_i \in X \in R^n$，$X$为输入空间，$y_i\in Y \in R$，$Y$为输出空间。如果将输入空间$X$划分为$J$个互不相交的区域$R_1,R_2,…,R_j$，并且在每个区域上确定输出的常量$c_j$，那么树可表示为</p>
+<script type="math/tex; mode=display">T\left(x;\varTheta\right)=\sum_{j=1}^Jc_jI(x\in R_j)</script><p>　　其中，参数$\varTheta=\{(R_1,c_1),(R_2,c_2),…,(R_J,c_J)\}$表示树的区域划分和各区域上的常数。$J$是回归树的复杂度即叶结点个数。</p>
+<h3 id="1-2-提升树模型"><a href="#1-2-提升树模型" class="headerlink" title="1.2 提升树模型"></a>1.2 提升树模型</h3><p>　　提升树模型可以表示为决策树的加法模型：</p>
+<script type="math/tex; mode=display">f_M(x)=\sum_{m=1}^{M}T(x;\theta_m)</script><p>　　其中，$T(x;\Theta_m)$表示决策树；$\Theta_m$为决策树的参数；$M$为树的个数。</p>
+<h3 id="1-3-代价函数：平方误差损失函数"><a href="#1-3-代价函数：平方误差损失函数" class="headerlink" title="1.3 代价函数：平方误差损失函数"></a>1.3 代价函数：平方误差损失函数</h3><script type="math/tex; mode=display">L(y,f(x))=(y-f(x))^2</script><h3 id="1-4-学习算法：前向分步算法"><a href="#1-4-学习算法：前向分步算法" class="headerlink" title="1.4 学习算法：前向分步算法"></a>1.4 学习算法：前向分步算法</h3><p>回归问题提升树使用以下前向分布算法：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray*}
+f_0(x)&=&0\\
+f_m(x)&=&f_{m-1}(x)+T(x;\Theta_m), \quad m=1,2,...,M\\
+f_M(x)&=&\sum_{m=1}^{M}T(x;\theta_m)
+\end{eqnarray*}</script><p>在前向分步算法的第$m$步，给定当前模型$f_{m-1}(x)$，需求解</p>
+<script type="math/tex; mode=display">\hat{\Theta}_m=arg\min_{\Theta_m}\sum_{i=1}^NL(y_i,f_{m-1}(x_i)+T(x_i;\Theta_m))</script><p>得到$\hat{\Theta}_m$，即第$m$颗树的参数。<br>当采用平方误差损失函数时，</p>
+<script type="math/tex; mode=display">L(y,f(x))=(y-f(x))^2</script><p>其损失变为</p>
+<script type="math/tex; mode=display">L(y,f_{m-1}(x)+T(x;\Theta_m))\\
+=[(y-f_{m-1}(x)-T(x;\Theta_m))]^2\\
+=[r-T(x;\Theta_m)]^2</script><p>这里</p>
+<script type="math/tex; mode=display">r=y-f_{m-1}(x)</script><p>是当前模型拟合数据的残差。所以，<strong>对回归问题的提升树算法来说，只需要简单地拟合当前模型的残差</strong>。</p>
+<h3 id="1-5-回归问题的提升树算法"><a href="#1-5-回归问题的提升树算法" class="headerlink" title="1.5 回归问题的提升树算法"></a>1.5 回归问题的提升树算法</h3><p>输入：训练数据集$T=\{(x_1,y_1),(x_2,y_2),…,(x_N,y_N)\}$, $x_i \in X \in R^n$，$y_i\in Y \in R$<br>输出：提升树$f_M(x)$<br>（1）初始化$f_0(x)=0$<br>（2）对$m=1,2,…,M$<br>（a）计算残差</p>
+<script type="math/tex; mode=display">r_{mi}=y_i−f_{m−1}(x_i),\ i=1,2,...,N</script><p>（b）拟合残差<script type="math/tex">r_{mi}</script>学习一个回归树，得到 <script type="math/tex">T(x;\Theta_m)</script><br>（c）更新<script type="math/tex">f_m(x)=f_{m−1}(x)+T(x;\Theta_m)</script><br>（3）得到回归问题提升树</p>
+<script type="math/tex; mode=display">f_M(x)=\sum_{m=1}^MT(x;\Theta_m)</script><h3 id="1-6-例题"><a href="#1-6-例题" class="headerlink" title="1.6 例题"></a>1.6 例题</h3><p>训练数据见下表，$x$的取值范围为区间$[0.5,10.5]$,$y$的取值范围为区间$[5.0,10.0]$,学习这个回归问题的最小二叉回归树。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$x_i$</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:center">6</th>
+<th style="text-align:center">7</th>
+<th style="text-align:center">8</th>
+<th style="text-align:center">9</th>
+<th style="text-align:center">10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">$y_i$</td>
+<td style="text-align:center">5.56</td>
+<td style="text-align:center">5.70</td>
+<td style="text-align:center">5.91</td>
+<td style="text-align:center">6.40</td>
+<td style="text-align:center">6.80</td>
+<td style="text-align:center">7.05</td>
+<td style="text-align:center">8.90</td>
+<td style="text-align:center">8.70</td>
+<td style="text-align:center">9.00</td>
+<td style="text-align:center">9.05</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>首先来看这个优化问题</p>
+<script type="math/tex; mode=display">\min_{j,s}[\min_{c_1} \sum_{x_i\in R_1(j,s)}(y_i-c_1)^2 + \min_{c_2} \sum_{x_i\in R_2(j,s)}(y_i-c_2)^2]</script><p>求解训练数据的切分点$s$:</p>
+<script type="math/tex; mode=display">R_1=\lbrace x\mid x\le s\rbrace , \quad R_2=\lbrace x\mid x\gt s\rbrace</script><p>容易求得在$R_1$,$R_2$内部使得平方损失误差达到最小值的$c_1$,$c_2$为：</p>
+<script type="math/tex; mode=display">c_1={1\over N_1}\sum_{x_i \in R_1}y_i , \quad c_2={1\over N_2}\sum_{x_i \in R_2}y_i</script><p>这里$N_1$,$N_2$是$R_1$,$R_2$的样本点数。<br>求训练数据的切分点，根据所给数据，考虑如下切分点：</p>
+<script type="math/tex; mode=display">1.5 ,2.5 ,3.5 ,4.5 ,5.5 , 6.5 , 7.5 , 8.5 , 9.5</script><p>对各切分点，不难求出相应的$R1$ , $R2$ , $c1$ , $c2$及</p>
+<script type="math/tex; mode=display">m(s)=\min_{j,s}[\min_{c_1} \sum_{x_i\in R_1(j,s)}(y_i-c_1)^2 + \min_{c_2} \sum_{x_i\in R_2(j,s)}(y_i-c_2)^2]</script><p>例如，当$s=1.5$时，$R_1 = \lbrace 1\rbrace$, $R_2 = \lbrace 2, 3 , \ldots , 10\rbrace$ , $c_1 = 5.56$ , $c_2 = 7.50$ ,</p>
+<script type="math/tex; mode=display">m(s)=\min_{j,s}[\min_{c_1} \sum_{x_i\in R_1(j,s)}(y_i-c_1)^2 + \min_{c_2} \sum_{x_i\in R_2(j,s)}(y_i-c_2)^2] = 0+15.72 = 15.72</script><p>现将$s$及$m(s)$的计算结果列表如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$s$</th>
+<th style="text-align:center">1.5</th>
+<th style="text-align:center">2.5</th>
+<th style="text-align:center">3.5</th>
+<th style="text-align:center">4.5</th>
+<th style="text-align:center">5.5</th>
+<th style="text-align:center">6.5</th>
+<th style="text-align:center">7.5</th>
+<th>8.5</th>
+<th>9.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">$m(s)$</td>
+<td style="text-align:center">15.72</td>
+<td style="text-align:center">12.07</td>
+<td style="text-align:center">8.36</td>
+<td style="text-align:center">5.78</td>
+<td style="text-align:center">3.91</td>
+<td style="text-align:center">1.93</td>
+<td style="text-align:center">8.01</td>
+<td>11.73</td>
+<td>15.74</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>由上表可知，当$s=6.5$的时候达到最小值，此时$R_1 = \lbrace 1 ,2 , \ldots , 6\rbrace$, $R_2 ={7 ,8 ,9 , 10}$ , $c_1=6.24$, $c_2=8.9$, 所以回归树$T_1(x)$为：</p>
+<script type="math/tex; mode=display">T_1(x) =
+\begin{cases}
+6.24, & x\lt 6.5 \\
+8.91, & x \ge 6.5 \\
+\end{cases}</script><script type="math/tex; mode=display">f_1(x) = T_1(x)</script><p>用<script type="math/tex">f_1(x)</script>拟合训练数据的残差见下表，表中<script type="math/tex">r_{2i} = y_i - f_1(x_i),i=1,2,\ldots , 10</script></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$x_i$</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:center">6</th>
+<th style="text-align:center">7</th>
+<th style="text-align:center">8</th>
+<th style="text-align:center">9</th>
+<th>10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">$y_i$</td>
+<td style="text-align:center">-0.68</td>
+<td style="text-align:center">-0.54</td>
+<td style="text-align:center">-0.33</td>
+<td style="text-align:center">0.16</td>
+<td style="text-align:center">0.56</td>
+<td style="text-align:center">0.81</td>
+<td style="text-align:center">-0.01</td>
+<td style="text-align:center">-0.21</td>
+<td style="text-align:center">0.09</td>
+<td>0.14</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>用$f_1(x)$拟合训练数据的平方误差：</p>
+<script type="math/tex; mode=display">L(y,f_1(x)) = \sum_{i=1}^{10}(y_i-f_1(x_i))^2 = 1.93</script><p>第2步求$T_2(x)$.方法与求$T_1(x)$一样，只是拟合的数据是上表的残差，可以得到：</p>
+<script type="math/tex; mode=display">T_2(x) =
+\begin{cases}
+-0.52, & x\lt 3.5 \\
+0.22, & x \ge 3.5 \\
+\end{cases}</script><script type="math/tex; mode=display">f_2(x) = f_1(x) + T_2(x)=
+\begin{cases}
+5.72, & x\lt 3.5 \\
+6.46, & 3.5\le x \lt 6.5 \\
+9.13, & x\ge 6.5 \\
+\end{cases}</script><p>用$f_2(x)$拟合训练数据的平方误差是：</p>
+<script type="math/tex; mode=display">L(y,f_2(x)) = \sum_{i=1}^{10}(y_i-f_2(x_i))^2 = 0.79</script><p>继续求得</p>
+<script type="math/tex; mode=display">T_3(x) =
+\begin{cases}
+0.15, & x\lt 6.5 \\
+-0.22, & x \ge 6.5 \\
+\end{cases}
+\quad L(y,f_3(x)) = 0.47 ,</script><script type="math/tex; mode=display">T_4(x) =
+\begin{cases}
+-0.16, & x\lt 4.5 \\
+0.11, & x \ge 4.5 \\
+\end{cases}
+\quad L(y,f_3(x)) = 0.30 ,</script><script type="math/tex; mode=display">T_5(x) =
+\begin{cases}
+0.07, & x\lt 6.5 \\
+-0.11, & x \ge 6.5 \\
+\end{cases}
+\quad L(y,f_3(x)) = 0.23 ,</script><script type="math/tex; mode=display">T_6(x) =
+\begin{cases}
+-0.15, & x\lt 2.5 \\
+0.04, & x \ge 2.5 \\
+\end{cases}</script><script type="math/tex; mode=display">f_6(x) = f_5(x)+T_6(x) =T_1(x)+ \ldots + T_5(x) + T_6(x)=
+\begin{cases}
+5.63, & x\lt 2.5 \\
+5.82, & 2.5 \le x\lt 3.5 \\
+6.56, & 3.5 \le x\lt 4.5 \\
+6.83, & 4.5 \le x\lt 6.5 \\
+8.95, & x\ge 6.5 \\
+\end{cases}</script><p>用$f_6(x)$拟合训练数据的平方损失误差是</p>
+<script type="math/tex; mode=display">L(y,f_6(x)) = \sum_{i=1}^{10}(y_i-f_6(x_i))^2 = 0.17</script><p>假设此时已经满足误差要求，那么$f(x) = f_6(x)$即为所求的回归树。</p>
+<h2 id="2-分类问题的提升树算法"><a href="#2-分类问题的提升树算法" class="headerlink" title="2.分类问题的提升树算法"></a>2.分类问题的提升树算法</h2><p>　　对于二分类问题，提升树算法只需将<a href="http://zhanglimin.com/2017/12/13/Adaboost%E7%AE%97%E6%B3%95/" target="_blank" rel="noopener">AdaBoost算法</a>中的基本分类器限制为二类分类树即可(如<a href="http://zhanglimin.com/2017/12/07/CART%E7%AE%97%E6%B3%95/" target="_blank" rel="noopener">CART分类树</a>)。<br>　　故略。</p>
+<h1 id="二、梯度提升树决策模型"><a href="#二、梯度提升树决策模型" class="headerlink" title="二、梯度提升树决策模型"></a>二、梯度提升树决策模型</h1><p>　　提升树利用加法模型与前向分布算法实现学习的优化过程。<strong>当损失函数是平方损失函数时，每一步优化是很简单的，只需简单地拟合当前模型的残差</strong>；<strong>但对于一般损失函数而言，往往每一步优化并不那么容易</strong>，针对这一问题，梯度提升算法(gradient boosting)被提出。</p>
+<h2 id="2-1-核心思想"><a href="#2-1-核心思想" class="headerlink" title="2.1 核心思想"></a>2.1 核心思想</h2><p>　　<strong>用损失函数的负梯度在当前模型的值作为回归问题提升树算法中的残差的近似值</strong>，拟合一个回归树： </p>
+<script type="math/tex; mode=display">-\left[\frac{\partial L\left(y,f\left(x_i\right)\right)}{\partial f\left(x_i\right)}\right]_{f\left(x\right)=f_{m-1}\left(x\right)}</script><h2 id="2-2-梯度提升算法"><a href="#2-2-梯度提升算法" class="headerlink" title="2.2 梯度提升算法"></a>2.2 梯度提升算法</h2><p><strong>输入</strong>：训练数据集 $T=\{(x_1,y_1),(x_2,y_2),…,(x_N,y_N)\}$,$x_i \in X \in R^n$，$y_i\in Y \in R$，损失函数$L(y,f(x))$<br><strong>输出</strong>：回归树$\hat{f}(x)$<br><strong>步骤1</strong>：初始化</p>
+<script type="math/tex; mode=display">f_0\left(x\right)=arg\min_c\sum_{i=1}^N{L\left(y_i,c\right)}</script><p><strong>说明</strong>：算法第一步初始化，估计使损失函数极小化的常数值，它是只有一个根结点的树。<br><strong>步骤2</strong>：对 $m=1,2,…,M$<br>（a）对 $i=1,2,…,N$，计算</p>
+<script type="math/tex; mode=display">r_{mi}=-\left[\frac{\partial L\left(y,f\left(x_i\right)\right)}{\partial f\left(x_i\right)}\right]_{f\left(x\right)=f_{m-1}\left(x\right)}</script><p><strong>说明</strong>：计算损失函数的负梯度在当前模型的值，将它作为残差的估计。<strong>对于平方损失函数，它就是通常所说的残差；对于一般损失函数，它就是残差的近似值</strong>。<br>（b）对<script type="math/tex">r_{mi}</script>拟合一个回归树，得到第$m$颗树的叶结点区域<script type="math/tex">R_{mj}</script>，<script type="math/tex">j=1,2,...,J</script><br><strong>说明</strong>：估计回归树叶结点区域，以拟合残差的近似值。<br>（c）对<script type="math/tex">j=1,2,...,J</script>，计算</p>
+<script type="math/tex; mode=display">c_{mj}=arg\min_c\sum_{x_i\in R_{mj}}{L\left(y_i,f_{m-1}\left(x_i\right)+c\right)}</script><p><strong>说明</strong>：利用线性搜索估计叶结点区域的值，使损失函数极小化。<br>（d）更新</p>
+<script type="math/tex; mode=display">f_m\left(x\right)=f_{m-1}\left(x\right)+\sum_{j=1}^J{c_{mj}I\left(x\in R_{mj}\right)}</script><p><strong>说明</strong>：更新回归树。<br><strong>步骤3</strong>：得到回归树</p>
+<script type="math/tex; mode=display">\hat{f}\left(x\right)=f_M\left(x\right)=\sum_{m=1}^M{\sum_{j=1}^J{c_{mj}I\left(x\in R_{mj}\right)}}</script><p><strong>说明</strong>：得到输出的最终模型 $\hat{f}(x)$</p>
+<h2 id="2-3-GBDT的特点（待补）"><a href="#2-3-GBDT的特点（待补）" class="headerlink" title="2.3 GBDT的特点（待补）"></a>2.3 GBDT的特点（待补）</h2><p>GBDT中的树是回归树，不是分类树；<br>优点：GBDT几乎可用于所有回归问题（线性/非线性），相对logistic regression仅能用于线性回归，GBDT的适用面非常广。亦可用于二分类问题（设定阈值，大于阈值为正例，反之为负例）。<br>RF与GBDT对比：<br>（1）RF中树的棵树是并行生成的；GBDT中树是顺序生成的；两者中过多的树都会过拟合，但是GBDT更容易过拟合；<br>（2）RF中每棵树分裂的特征比较随机；GBDT中前面的树优先分裂对大部分样本区分的特征，后面的树分裂对小部分样本区分特征；<br>（3）RF中主要参数是树的棵数；GBDT中主要参数是树的深度，一般为1；</p>
+<h1 id="三、参考"><a href="#三、参考" class="headerlink" title="三、参考"></a>三、参考</h1><ul>
+<li>李航，统计学习方法</li>
+<li><a href="http://aandds.com/blog/ensemble-gbdt.html" target="_blank" rel="noopener">AndDS, GBDT</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/13/待修改/Adaboost算法/" rel="next" title="AdaBoost算法">
+                <i class="fa fa-chevron-left"></i> AdaBoost算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/14/待修改/XGBoost模型/" rel="prev" title="XGBoost模型">
+                XGBoost模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">防止遗忘</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="11172918@qq.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、提升树"><span class="nav-text">一、提升树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-回归问题的提升树算法"><span class="nav-text">1. 回归问题的提升树算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-基本分类器：回归树-同CART回归树"><span class="nav-text">1.1 基本分类器：回归树 (同CART回归树)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-提升树模型"><span class="nav-text">1.2 提升树模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-代价函数：平方误差损失函数"><span class="nav-text">1.3 代价函数：平方误差损失函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-学习算法：前向分步算法"><span class="nav-text">1.4 学习算法：前向分步算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-回归问题的提升树算法"><span class="nav-text">1.5 回归问题的提升树算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-例题"><span class="nav-text">1.6 例题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-分类问题的提升树算法"><span class="nav-text">2.分类问题的提升树算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、梯度提升树决策模型"><span class="nav-text">二、梯度提升树决策模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-核心思想"><span class="nav-text">2.1 核心思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-梯度提升算法"><span class="nav-text">2.2 梯度提升算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-GBDT的特点（待补）"><span class="nav-text">2.3 GBDT的特点（待补）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、参考"><span class="nav-text">三、参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

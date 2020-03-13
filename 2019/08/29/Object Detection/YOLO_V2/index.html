@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要 提出YOLO_V2：在YOLO_V1的基础上,做出多种改进从而形成YOLO_V2。 提出YOLO9000：提出了一种联合训练检测和分类(jointly train on object detection and classification)的方法，训练出YOLO9000模型，其可以检测超过9000多类物体。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YOLO_V2">
+<meta property="og:url" content="http://yoursite.com/2019/08/29/Object Detection/YOLO_V2/index.html">
+<meta property="og:site_name" content="CV Notes">
+<meta property="og:description" content="摘要 提出YOLO_V2：在YOLO_V1的基础上,做出多种改进从而形成YOLO_V2。 提出YOLO9000：提出了一种联合训练检测和分类(jointly train on object detection and classification)的方法，训练出YOLO9000模型，其可以检测超过9000多类物体。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/YOLO_V2/1.png">
+<meta property="og:image" content="http://yoursite.com/images/YOLO_V2/2.png">
+<meta property="og:image" content="http://yoursite.com/images/YOLO_V2/3.png">
+<meta property="og:image" content="http://yoursite.com/images/YOLO_V2/4.png">
+<meta property="og:image" content="http://yoursite.com/images/YOLO_V2/5.png">
+<meta property="og:updated_time" content="2019-09-11T13:20:25.444Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="YOLO_V2">
+<meta name="twitter:description" content="摘要 提出YOLO_V2：在YOLO_V1的基础上,做出多种改进从而形成YOLO_V2。 提出YOLO9000：提出了一种联合训练检测和分类(jointly train on object detection and classification)的方法，训练出YOLO9000模型，其可以检测超过9000多类物体。">
+<meta name="twitter:image" content="http://yoursite.com/images/YOLO_V2/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/29/Object Detection/YOLO_V2/"/>
+
+
+
+
+
+  <title>YOLO_V2 | CV Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CV Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/29/Object Detection/YOLO_V2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CV Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">YOLO_V2</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-29T22:26:50+08:00">
+                2019-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Object-Detection/" itemprop="url" rel="index">
+                    <span itemprop="name">Object Detection</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
+<li>提出YOLO_V2：在YOLO_V1的基础上,做出多种改进从而形成YOLO_V2。</li>
+<li>提出YOLO9000：提出了一种联合训练检测和分类(jointly train on object detection and classification)的方法，训练出YOLO9000模型，其可以检测超过9000多类物体。</li>
+</ul>
+<a id="more"></a>
+<h1 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h1><h2 id="Better"><a href="#Better" class="headerlink" title="Better"></a>Better</h2><ul>
+<li>通过错误分析，可以看出，YOLO_V1相比于Fast R-CNN，存在大量的定位误差(localization errors)。</li>
+<li>此外，相比于基于区域建议的方法(region proposal-based methods)，YOLO_V1存在相对较低的召回率(recall)。</li>
+<li>因此，YOLO_V2的主要目的是：在保持分类准确率的同时，提升召回率和定位准确率。</li>
+</ul>
+<p><img src="/images/YOLO_V2/1.png" width="700" height="200"><br>如上图所示，从YOLO_V1到YOLO_V2的改进点：</p>
+<ul>
+<li>xxx</li>
+<li>xxx</li>
+</ul>
+<h3 id="Batch-Normalization"><a href="#Batch-Normalization" class="headerlink" title="Batch Normalization"></a>Batch Normalization</h3><ul>
+<li>Batch Normalization可以显著提升模型收敛速度，并且不再需要其他形式的正则化(regularization)。</li>
+<li>通过在YOLO_V1中的每个卷积层后面都添加了Batch Normalization层，mAP提升了2.4%；BN也起到对模型进行正则化的作用，在移除dropout后，模型也没有过拟合。</li>
+</ul>
+<h3 id="High-Resolution-Classifier"><a href="#High-Resolution-Classifier" class="headerlink" title="High Resolution Classifier"></a>High Resolution Classifier</h3><ul>
+<li>所有的state-of-art检测方法，都会采用在ImageNet上进行预训练的分类器。而从AlexNet开始，大多数的分类器在小于$256 \times 256$的图片上进行操作。</li>
+<li>YOLO_V1首先以$224 \times 224$的尺寸训练分类网络，然后增加分辨率至$448\times 448$来进行检测。但是，直接切换分辨率，检测模型可能难以快速适应高分辨率。</li>
+<li>因此，YOLO_V2增加了在ImageNet数据集上使用$448\times 448$的输入来finetune分类网络这一中间过程(10 epochs)。这可以使得模型在检测数据集上finetune之前已经适应高分辨率输入，该做法使得mAP提升约4%。</li>
+</ul>
+<h3 id="Convolutional-With-Anchor-Boxes"><a href="#Convolutional-With-Anchor-Boxes" class="headerlink" title="Convolutional With Anchor Boxes"></a>Convolutional With Anchor Boxes</h3><ul>
+<li>YOLO_V1通过网络末端的全连接层来直接预测包围边框的坐标(coordinates)；</li>
+<li>在Faster R-CNN中：<ul>
+<li>通过全卷积层的RPN网络来预测对于anchor boxes的偏移(offsets)和置信度(confidences)。</li>
+<li>因为预测层的卷积层，RPN在一张特征图上的每个位置预测这些offsets。</li>
+<li>预测offsets而不是coordinates，简化了该问题，是的网络更容易学习。</li>
+</ul>
+</li>
+<li>因此，移除YOLO_V1中的全连接层，并且通过anchor boxes来预测包围边框：<ul>
+<li>首先，移除一个pool层， 为了卷积层的输出有着更高的分辨率</li>
+<li>然后，采用$416 \times 416$作为输入尺寸，而不再是$448 \times 448$。因为YOLOv2模型下采样的总步长为32，对于$416 \times 416$大小的图片，最终得到的特征图大小为$13 \times 13$。我们希望特征图的维度为奇数，这样会存在一个中心位置。尤其是对于一些大物体，它们中心点往往落入图片中心位置，此时使用特征图的一个中心点(而不是四个中心点)去预测这些物体的边界框相对容易些。</li>
+<li>对于YOLO_V1，只对每个cell预测一组类别概率。而YOLO_V2使用了anchor boxes之后，为每个位置的各个anchor box都单独预测一组类别概率，即各个anchor box预测$x,y,w,h, confidence score$及$P(Classi|Object)$。其中，confidence score与$P(Classi|Object)$的定义同YOLO_V1一致。</li>
+<li>使用anchor boxes之后，YOLOv2的mAP有稍微下降，从69.5mAP降低到 69.2mAP。YOLOv1只能预测98($7\times 7 \times 2$)个边界框，而YOLOv2使用anchor boxes之后可以预测上千($13\times 13 \times num_anchors$)个边界框。所以使用anchor boxes之后，YOLOv2的召回率大大提升，由原来的81%升至88%。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Dimension-Clusters"><a href="#Dimension-Clusters" class="headerlink" title="Dimension Clusters"></a>Dimension Clusters</h3><p>待重读</p>
+<h3 id="Direct-location-prediction"><a href="#Direct-location-prediction" class="headerlink" title="Direct location prediction"></a>Direct location prediction</h3><p>在YOLO中使用anchor boxes时会遇到模型不稳定的问题，尤其是在早期的迭代阶段。大多数的不稳定来源于为box预测(x,y)位置。<br>在RPN网络中，根据模型预测出坐标偏移值$(t_x, t_y)$，先验框的尺度$(w_a,h_a)$，以及特征图每个位置的中心点坐标$(x_a, y_a)$来计算:</p>
+<script type="math/tex; mode=display">\begin{align}
+x=(t_x*w_a)-x_a  \notag \\
+y=(t_y*h_a)-y_a \notag \\
+\end{align}</script><p>但是上面的公式是无约束的，预测的边界框很容易向任何方向偏移，如当$t_x=1$时边界框将向右偏移先验框的一个宽度大小，而当$t_x=-1$时边界框将向左偏移先验框的一个宽度大小，因此每个位置预测的边界框可以落在图片任何位置，这导致模型的不稳定性，在训练时需要很长时间来预测出正确的offsets。<br>所以，YOLOv2弃用了这种预测方式，而是沿用YOLOv1的方法，就是预测边界框中心点相对于对应cell左上角位置的相对偏移值，为了将边界框中心点约束在当前cell中，使用sigmoid函数处理偏移值，这样预测的偏移值在(0,1)范围内（每个cell的尺度看做1）。<br>YOLO_V2在输出特征图的每个cell中预测5个包围边框，对每个包围边框预测根据边界框预测的5个坐标值$(t_x,t_y,t_w,t_h,t_o)$，如果cell的左上角左边为$(c_x,c_y)$，先验anchor box的宽度与高度为$(p_w,p_h)$，则可以按如下公式计算出包围边框的实际位置和大小：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+b_x &= \sigma(t_x) + c_x   \notag \\
+b_y &= \sigma(t_y) + c_y \notag\\
+b_w &= p_w e ^{t_w} \notag\\
+b_h &= p_h e ^{t_h} \notag\\
+P_r(object) * IoU(b, object)&=\sigma(t_o)\notag\\
+\end{align}</script><p>因为约束了位置预测，使得参数更容易学习，使得网络更稳定，dimension clusters结合这种预测方法，YOLOv2的mAP值提升了约5%。<br> <img src="/images/YOLO_V2/2.png" width="500" height="200"></p>
+<h3 id="Fine-Grained-Features"><a href="#Fine-Grained-Features" class="headerlink" title="Fine-Grained Features"></a>Fine-Grained Features</h3><ul>
+<li>YOLOv2的输入图片大小为$416\times 416$，经过5次maxpooling之后得到$13 \times 13$大小的特征图，并以此特征图采用卷积做预测。$13 \times 13$大小的特征图对检测大物体是足够了，但是对于小物体还需要更精细的特征图（Fine-Grained Features）</li>
+<li>Faster R-CNN和SSD均使用了多尺度的特征图来分别检测不同大小的物体，前面更精细的特征图可以用来预测小物体。</li>
+<li>YOLO_V2采用一种不同的做法，提出了一种passthrough层来利用更精细的特征图：<ul>
+<li>YOLOv2所利用的Fine-Grained Features是$26 \times 26$大小的特征图（最后一个maxpooling层的输入），对于Darknet-19模型来说就是大小为$26 \times 26 \times 512$的特征图。</li>
+<li>passthrough层与ResNet网络的shortcut类似，以前面更高分辨率的特征图为输入，然后将其连接到后面的低分辨率特征图上。</li>
+<li>前面的特征图维度是后面的特征图的2倍，passthrough层抽取前面层的每个$2 \times 2$的局部区域，然后将其转化为channel维度，对于$26 \times 26 \times 512$的特征图，经passthrough层处理之后就变成了$13 \times 13 \times 2048$的新特征图（特征图大小降低4倍，而channles增加4倍，图下图所示），这样就可以与后面的$13 \times 13 \times 1024$特征图连接在一起形成$13 \times 13 \times 3072$大小的特征图，然后在此特征图基础上卷积做预测。<br><img src="/images/YOLO_V2/3.png" width="700" height="200"></li>
+</ul>
+</li>
+<li>使用Fine-Grained Features之后YOLOv2的性能有1%的提升。</li>
+</ul>
+<h3 id="Multi-Scale-Training"><a href="#Multi-Scale-Training" class="headerlink" title="Multi-Scale Training"></a>Multi-Scale Training</h3><ul>
+<li>由于YOLOv2模型中只有卷积层和池化层，所以YOLOv2的输入可以不限于$416\times 416$大小的图片。</li>
+<li>为了增强模型的鲁棒性，YOLOv2采用了多尺度输入训练策略，具体来说就是在训练过程中每间隔一定的iterations之后改变模型的输入图片大小。</li>
+<li>由于YOLOv2的下采样总步长为32，输入图片大小选择一系列为32倍数的值：$\{320,352,…,608\}$,输入图片最小为$320\times 320$，此时对应的特征图大小为$10\times 10$（不是奇数了，确实有点尴尬），而输入图片最大为$608\times 608$，对应的特征图大小为$19\times 19$。在训练过程，每隔10个iterations随机选择一种输入图片大小，然后只需要修改对最后检测层的处理就可以重新训练。</li>
+<li>采用Multi-Scale Training策略，强迫网络去学习如何对于不同输入大小的图片，都预测出比较好的结果。因此，YOLOv2可以适应不同大小的图片，并且预测出很好的结果。</li>
+<li>在测试时，YOLOv2可以采用不同大小的图片作为输入，在VOC 2007数据集上的效果如下图所示。可以看到采用较小分辨率时，YOLOv2的mAP值略低，但是速度更快，而采用高分辨输入时，mAP值更高，但是速度略有下降，对于$544\times 544$，mAP高达78.6%，仍然实时。注意，这只是测试时输入图片大小不同，而实际上用的是同一个模型（采用Multi-Scale Training训练）。<br><img src="/images/YOLO_V2/4.png" width="500" height="200"></li>
+</ul>
+<h2 id="Faster"><a href="#Faster" class="headerlink" title="Faster"></a>Faster</h2><ul>
+<li>在YOLO_V1中，基础模型采用基于GoogleNet进行自行设计的网络，其相比于VGG-16:<ul>
+<li>对于$224\times 224$的输入图片，VGG-16需要30.69 billion浮点运算；而YOLO_V1中的基础模型，只需要8.52 billion浮点运算</li>
+<li>但是，其准确率略差于VGG16，对于单次剪裁，输入为$224 \times 224$的图片，在ImageNet上，YOLO_V1中的基础网络的top-5准确率为88.0%，而VGG-16为90.0%。</li>
+</ul>
+</li>
+</ul>
+<p>YOLOv2采用了一个新的基础模型（特征提取器），称为Darknet-19，包括19个卷积层和5个maxpooling层，如图4所示。<br>Darknet-19与VGG16模型设计原则是一致的，主要采用$3\times 3$卷积和$2\times 2$的maxpooling层，在每次池化之后，特征图维度降低2倍，而同时将特征图的channles增加两倍。<br>与NIN(Network in Network)一致，Darknet-19最终采用global avg pooling做预测，并且也在$3\times 3$卷积之间使用$1\times 1$卷积来压缩特征图channles以降低模型计算量和参数。<br>Darknet-19每个卷积层后面同样使用了batch norm层以加快收敛速度，降低模型过拟合。<br>在ImageNet分类数据集上，Darknet-19的top-1准确度为72.9%，top-5准确度为91.2%，但是模型参数相对小一些。使用Darknet-19之后，YOLOv2的mAP值没有显著提升，但是计算量却可以减少约33%(对于$224\times 224$的输入图片，Darknet-19需要5.58 billion浮点运算)。</p>
+<p><img src="/images/YOLO_V2/5.png" width="400" height="200"></p>
+<h2 id="Stronger"><a href="#Stronger" class="headerlink" title="Stronger"></a>Stronger</h2><p>关于YOLO9000，暂略</p>
+<h2 id="训练流程"><a href="#训练流程" class="headerlink" title="训练流程"></a>训练流程</h2><h3 id="Training-for-classification"><a href="#Training-for-classification" class="headerlink" title="Training for classification"></a>Training for classification</h3><ul>
+<li>首先，以$224\times 224$的输入，在ImageNet上，训练160 epochs，采用SGD，初始学习率为0.1,学习率策略为polynomial rate decay with a power of 4， weight decay为0.0005， momentum为0.9。采用标准的数据扩增技巧，包括：随机剪裁，旋转，以及色调(hue)/饱和度(saturation)/曝光(exposure)偏移(shifts)。</li>
+<li>然后，以$448\times 448$的输入，继续在ImageNet数据集上finetune分类模型，训练10个epochs，初始学习率为$10^{-3}$，<br>最终，在较大的分辨率下，分类模型的top-1准确度为76.5%，而top-5准确度为93.3%。</li>
+</ul>
+<h3 id="Training-for-detection"><a href="#Training-for-detection" class="headerlink" title="Training for detection"></a>Training for detection</h3><ul>
+<li>首先，修改Darknet-19分类模型为检测模型，移除最后一个卷积层、global avgpooling层以及softmax层，并且新增了三个$3\times 3 \times 1024$卷积层，最后使用$1\times 1$卷积层输出预测结果，输出的channels数为：$num_anchors \times (5+num_classes)$。对于VOC数据集输出的channels数就是125($5\times (5+20)$)，而对于COCO数据集则为425。并且，增加一个passthrough层，从最后的$3\times\times 512$层到最后的卷积层，因此模型可以使用到更精细的特征。</li>
+<li>在COCO和VOC上采用相同的训练策略：训练160个epochs，初始学习率为$10^{-3}$，在第10、60和90个epochs，学习率除以10，权重衰减为0.0005，动量为0.9。与YOLO和SSD采用相似的数据扩充方法，如随机剪裁，颜色偏移(color shifting)等等。</li>
+</ul>
+<h2 id="推理流程"><a href="#推理流程" class="headerlink" title="推理流程"></a>推理流程</h2><h1 id="训练细节"><a href="#训练细节" class="headerlink" title="训练细节"></a>训练细节</h1><h1 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>总结来看，虽然YOLOv2做了很多改进，但是大部分都是借鉴其它论文的一些技巧，如Faster R-CNN的anchor boxes，YOLOv2采用anchor boxes和卷积做预测，这基本上与SSD模型（单尺度特征图的SSD）非常类似了，而且SSD也是借鉴了Faster R-CNN的RPN网络。从某种意义上来说，YOLOv2和SSD这两个one-stage模型与RPN网络本质上无异，只不过RPN不做类别的预测，只是简单地区分物体与背景。在two-stage方法中，RPN起到的作用是给出region proposals，其实就是作出粗糙的检测，所以另外增加了一个stage，即采用R-CNN网络来进一步提升检测的准确度（包括给出类别预测）。而对于one-stage方法，它们想要一步到位，直接采用“RPN”网络作出精确的预测，要因此要在网络设计上做很多的tricks。YOLOv2的一大创新是采用Multi-Scale Training策略，这样同一个模型其实就可以适应多种大小的图片了。</p>
+<p>YOLO_V2优点：<br>原因：<br>YOLOV2缺点：<br>原因：</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="">论文：xx</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/35325884" target="_blank" rel="noopener">博客：目标检测|YOLOv2原理与实现(附YOLOv3)</a></li>
+<li><a href="http://muyaan.com/2018/08/12/YOLOv2-and-YOLO9000/" target="_blank" rel="noopener">博客：YOLOv2 and YOLO9000</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/28/Object Detection/YOLO_V1/" rel="next" title="YOLO_V1">
+                <i class="fa fa-chevron-left"></i> YOLO_V1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/09/Image Processing/连通区域分析/" rel="prev" title="连通区域分析">
+                连通区域分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">防止遗忘</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="11172918@qq.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摘要"><span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关键点"><span class="nav-text">关键点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Better"><span class="nav-text">Better</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Batch-Normalization"><span class="nav-text">Batch Normalization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#High-Resolution-Classifier"><span class="nav-text">High Resolution Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Convolutional-With-Anchor-Boxes"><span class="nav-text">Convolutional With Anchor Boxes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dimension-Clusters"><span class="nav-text">Dimension Clusters</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Direct-location-prediction"><span class="nav-text">Direct location prediction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fine-Grained-Features"><span class="nav-text">Fine-Grained Features</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Scale-Training"><span class="nav-text">Multi-Scale Training</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Faster"><span class="nav-text">Faster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stronger"><span class="nav-text">Stronger</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练流程"><span class="nav-text">训练流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Training-for-classification"><span class="nav-text">Training for classification</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Training-for-detection"><span class="nav-text">Training for detection</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推理流程"><span class="nav-text">推理流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练细节"><span class="nav-text">训练细节</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验结果"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

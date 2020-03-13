@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.机器学习策略(1)1.1 机器学习策略介绍为什么需要机器学习策略  当试图优化一个深度学习系统时，通常有很多想法可以尝试。如图，比如我们在做一个猫的分类器时，经过一段时间的工作，系统的准确率达到了90%。但对于应用程序来说，表现还不够好，我们可能有许多想法来改进这个系统，想法如图所示。 如果做出了错误的选择，不仅耗费时间而且可能收效甚微。如盲目的选择收集更多数据，花费6个月时间收集数据，但最终">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习课程(三)构建机器学习项目">
+<meta property="og:url" content="http://yoursite.com/2018/01/08/待修改/深度学习课程(三)构建机器学习项目/index.html">
+<meta property="og:site_name" content="CV Notes">
+<meta property="og:description" content="1.机器学习策略(1)1.1 机器学习策略介绍为什么需要机器学习策略  当试图优化一个深度学习系统时，通常有很多想法可以尝试。如图，比如我们在做一个猫的分类器时，经过一段时间的工作，系统的准确率达到了90%。但对于应用程序来说，表现还不够好，我们可能有许多想法来改进这个系统，想法如图所示。 如果做出了错误的选择，不仅耗费时间而且可能收效甚微。如盲目的选择收集更多数据，花费6个月时间收集数据，但最终">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AD%96%E7%95%A5.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%AD%A3%E4%BA%A4%E5%8C%961.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%AD%A3%E4%BA%A4%E5%8C%962.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%8D%95%E4%B8%80%E6%95%B0%E5%AD%97%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87_1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%9F%A5%E5%87%86%E7%8E%87%E5%92%8C%E6%9F%A5%E5%85%A8%E7%8E%87.jpg">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%9F%A5%E5%87%86%E7%8E%87.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%9F%A5%E5%85%A8%E7%8E%87.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/f1score.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%8D%95%E4%B8%80%E6%95%B0%E5%AD%97%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%872.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%BB%A1%E8%B6%B3%E5%92%8C%E4%BC%98%E5%8C%96%E6%8C%87%E6%A0%87.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%86%E5%88%92%E5%88%863.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BC%80%E5%8F%91%E9%9B%86%E5%92%8C%E6%B5%8B%E8%AF%95%E9%9B%86%E7%9A%84%E5%A4%A7%E5%B0%8F1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BC%80%E5%8F%91%E9%9B%86%E5%92%8C%E6%B5%8B%E8%AF%95%E9%9B%86%E7%9A%84%E5%A4%A7%E5%B0%8F2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BC%80%E5%8F%91%E9%9B%86%E5%92%8C%E6%B5%8B%E8%AF%95%E9%9B%86%E7%9A%84%E5%A4%A7%E5%B0%8F3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%8F%98%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%86%E5%92%8C%E6%8C%87%E6%A0%871.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%8F%98%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%86%E5%92%8C%E6%8C%87%E6%A0%872.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%8F%98%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%86%E5%92%8C%E6%8C%87%E6%A0%873.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%BA%E7%9A%84%E8%A1%A8%E7%8E%B01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%BA%E7%9A%84%E8%A1%A8%E7%8E%B02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%8F%AF%E9%81%BF%E5%85%8D%E5%81%8F%E5%B7%AE.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E7%90%86%E8%A7%A3%E4%BA%BA%E7%B1%BB%E6%B0%B4%E5%B9%B3%E8%A1%A8%E7%8E%B01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E7%90%86%E8%A7%A3%E4%BA%BA%E7%B1%BB%E6%B0%B4%E5%B9%B3%E8%A1%A8%E7%8E%B02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%B6%85%E8%B6%8A%E4%BA%BA%E7%B1%BB%E8%A1%A8%E7%8E%B01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%B6%85%E8%B6%8A%E4%BA%BA%E7%B1%BB%E8%A1%A8%E7%8E%B02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%96%84%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%A1%A8%E7%8E%B01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%96%84%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%A1%A8%E7%8E%B02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%BF%9B%E8%A1%8C%E8%AF%AF%E5%B7%AE%E5%88%86%E6%9E%901.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%BF%9B%E8%A1%8C%E8%AF%AF%E5%B7%AE%E5%88%86%E6%9E%902.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%B8%85%E7%90%86%E9%94%99%E8%AF%AF%E6%A0%87%E8%AE%B0%E7%9A%84%E6%95%B0%E6%8D%AE1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%B8%85%E7%90%86%E9%94%99%E8%AF%AF%E6%A0%87%E8%AE%B0%E7%9A%84%E6%95%B0%E6%8D%AE2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%B8%85%E7%90%86%E9%94%99%E8%AF%AF%E6%A0%87%E8%AE%B0%E7%9A%84%E6%95%B0%E6%8D%AE3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%B3%BB%E7%BB%9F%E7%84%B6%E5%90%8E%E8%BF%AD%E4%BB%A3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%9C%A8%E4%B8%8D%E5%90%8C%E5%88%86%E5%B8%83%E4%B8%8A%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83%E6%88%96%E6%B5%8B%E8%AF%951.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%9C%A8%E4%B8%8D%E5%90%8C%E5%88%86%E5%B8%83%E4%B8%8A%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83%E6%88%96%E6%B5%8B%E8%AF%952.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%8D%E5%8C%B9%E9%85%8D%E7%9A%84%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83%E7%9A%84%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%8D%E5%8C%B9%E9%85%8D%E7%9A%84%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83%E7%9A%84%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%8D%E5%8C%B9%E9%85%8D%E7%9A%84%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83%E7%9A%84%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E4%B8%8D%E5%8C%B9%E9%85%8D1.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E4%B8%8D%E5%8C%B9%E9%85%8D2.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E4%B8%8D%E5%8C%B9%E9%85%8D3.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%9A%E4%BB%BB%E5%8A%A1%E5%AD%A6%E4%B9%A01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%9A%E4%BB%BB%E5%8A%A1%E5%AD%A6%E4%B9%A02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%9A%E4%BB%BB%E5%8A%A1%E5%AD%A6%E4%B9%A03.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%BB%80%E4%B9%88%E6%98%AF%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%BB%80%E4%B9%88%E6%98%AF%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A02.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%BB%80%E4%B9%88%E6%98%AF%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A03.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%98%AF%E5%90%A6%E4%BD%BF%E7%94%A8%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A01.JPG">
+<meta property="og:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%98%AF%E5%90%A6%E4%BD%BF%E7%94%A8%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A02.JPG">
+<meta property="og:updated_time" content="2019-08-22T12:30:25.220Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习课程(三)构建机器学习项目">
+<meta name="twitter:description" content="1.机器学习策略(1)1.1 机器学习策略介绍为什么需要机器学习策略  当试图优化一个深度学习系统时，通常有很多想法可以尝试。如图，比如我们在做一个猫的分类器时，经过一段时间的工作，系统的准确率达到了90%。但对于应用程序来说，表现还不够好，我们可能有许多想法来改进这个系统，想法如图所示。 如果做出了错误的选择，不仅耗费时间而且可能收效甚微。如盲目的选择收集更多数据，花费6个月时间收集数据，但最终">
+<meta name="twitter:image" content="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AD%96%E7%95%A5.JPG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/08/待修改/深度学习课程(三)构建机器学习项目/"/>
+
+
+
+
+
+  <title>深度学习课程(三)构建机器学习项目 | CV Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b0787916cdccc31f574cdee20c888dd6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CV Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/08/待修改/深度学习课程(三)构建机器学习项目/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="min">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/me.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CV Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习课程(三)构建机器学习项目</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-08T09:17:50+08:00">
+                2018-01-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-机器学习策略-1"><a href="#1-机器学习策略-1" class="headerlink" title="1.机器学习策略(1)"></a>1.机器学习策略(1)</h1><h2 id="1-1-机器学习策略介绍"><a href="#1-1-机器学习策略介绍" class="headerlink" title="1.1 机器学习策略介绍"></a>1.1 机器学习策略介绍</h2><h3 id="为什么需要机器学习策略"><a href="#为什么需要机器学习策略" class="headerlink" title="为什么需要机器学习策略"></a>为什么需要机器学习策略</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AD%96%E7%95%A5.JPG" width="80%" height="80%"></p>
+<ul>
+<li>当试图优化一个深度学习系统时，通常有很多想法可以尝试。如图，比如我们在做一个猫的分类器时，经过一段时间的工作，系统的准确率达到了90%。但对于应用程序来说，表现还不够好，我们可能有许多想法来改进这个系统，想法如图所示。</li>
+<li>如果做出了错误的选择，不仅耗费时间而且可能收效甚微。如盲目的选择收集更多数据，花费6个月时间收集数据，但最终对系统的改进很小。</li>
+<li>机器学习策略就是分析机器学习问题的方法，指引我们朝着最有希望的想法的方向去尝试。</li>
+</ul>
+<a id="more"></a> 
+<h3 id="正交化"><a href="#正交化" class="headerlink" title="正交化"></a>正交化</h3><p>学会诊断出限制系统性能的瓶颈在哪里，然后找到一组<strong>特定的旋钮(方法)</strong>，从而改善系统<strong>特定方面的性能</strong>。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%AD%A3%E4%BA%A4%E5%8C%961.JPG" width="80%" height="80%"></p>
+<ul>
+<li>如图，以电视机屏幕调节为例，每个旋钮对应一个功能(如长度调整、宽度调整、梯度调整等)，每一旋钮解决特定问题，是正交的，可很好的调节电视机屏幕。</li>
+<li>如图，以驾驶汽车为例，方向盘、油门及刹车，这三种正交化的操作，可以很好的控制汽车。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%AD%A3%E4%BA%A4%E5%8C%962.JPG" width="80%" height="80%"></li>
+<li>要做好一个监督学习系统，需要调节系统的旋钮，去确保四件事情：</li>
+<li>1.使得代价函数很好地拟合训练集。<ul>
+<li>旋钮：更大的网络，使用Adam等优化算法。</li>
+</ul>
+</li>
+<li>2.使得代价函数很好地拟合开发集。<ul>
+<li>旋钮：正则化，采用更大的训练集。</li>
+<li>解释：在训练集上表现好，而开发集表现不好，则是在训练集上过拟合。</li>
+</ul>
+</li>
+<li>3.使得代价函数很好地拟合测试集。<ul>
+<li>旋钮：采用更大的开发集。</li>
+<li>解释：在开发集上表现好，而测试集表现不好，则是在开发集上过拟合。</li>
+</ul>
+</li>
+<li>4.在现实世界中取得好的表现。<ul>
+<li>旋钮：调整开发/测试集，使用新的代价函数。</li>
+<li>解释：在开发/测试集上表现好，在现实中表现不好，要么是开发/测试集设置有问题，要么是代价函数设置有问题。</li>
+</ul>
+</li>
+<li>概括来说，系统的每一旋钮只会针对性的解决一个问题，是正交的。</li>
+<li>此外，提前终止(early stopping)在模型功能调试中并不推荐使用。因为提前终止提升验证集性能的同时降低了训练集的性能。也就是说提前终止同时影响两件事情，不具有正交性。</li>
+</ul>
+<h2 id="1-2-设置你的目标"><a href="#1-2-设置你的目标" class="headerlink" title="1.2 设置你的目标"></a>1.2 设置你的目标</h2><h3 id="单一数字评价指标"><a href="#单一数字评价指标" class="headerlink" title="单一数字评价指标"></a>单一数字评价指标</h3><p>无论是在调节超参数，还是尝试不同的算法，设置一个单一数字评价指标，可以提高决策效率。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%8D%95%E4%B8%80%E6%95%B0%E5%AD%97%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87_1.JPG" width="100%" height="100%"></p>
+<ul>
+<li>之前讲过，应用机器学习是一个经验性的过程：想法-代码-实验，循环迭代。</li>
+<li>如图，对于分类器A和B，若采用两个评价指标：查准率(precision)和查全率(recall)时，将难以决策分类器A和B的好坏。</li>
+<li>此情况下，采用F1得分(F1 score)作为单一数字评价指标，则可快速选出最好的分类器。</li>
+<li>很多机器学习团队的做法：明确的开发集结合单一数字评价指标，可以加速上述迭代过程。</li>
+</ul>
+<p>注：</p>
+<ul>
+<li><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%9F%A5%E5%87%86%E7%8E%87%E5%92%8C%E6%9F%A5%E5%85%A8%E7%8E%87.jpg" width="50%" height="50%"></li>
+<li>查准率(precision)：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%9F%A5%E5%87%86%E7%8E%87.JPG" width="80%" height="50%"><ul>
+<li>假设在是否为猫的分类问题中，查准率代表：所有模型预测为猫的图片中，确实为猫的概率。</li>
+</ul>
+</li>
+<li>查全率(recall)：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%9F%A5%E5%85%A8%E7%8E%87.JPG" width="80%" height="50%"><ul>
+<li>假设在是否为猫的分类问题中，查全率代表：所有真实为猫的图片中，预测正确的概率。</li>
+</ul>
+</li>
+<li>F1得分(F1 score)：<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/f1score.JPG" width="30%" height="30%"><ul>
+<li>F1得分是查准率和查全率的调和平均。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%8D%95%E4%B8%80%E6%95%B0%E5%AD%97%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%872.JPG" width="80%" height="80%"></p>
+<ul>
+<li>另一例，对于不同算法，以每一算法在不同地区表现的平均数作为单一数字评价指标，可以快速选出表现最好的算法。</li>
+</ul>
+<h3 id="满足和优化指标"><a href="#满足和优化指标" class="headerlink" title="满足和优化指标"></a>满足和优化指标</h3><p>有时候，要把所有的性能指标都综合在一起，组成单实数评价指标(single real number evaluation metric)是比较困难的。解决办法是，把某些性能作为<strong>优化指标(Optimizing metic)</strong>，寻求最优化值；而某些性能作为<strong>满意指标(Satisficing metic)</strong>，只要满足阈值就行了。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%BB%A1%E8%B6%B3%E5%92%8C%E4%BC%98%E5%8C%96%E6%8C%87%E6%A0%87.JPG" width="90%" height="90%"> </p>
+<ul>
+<li>如图，分类器的性能：准确率和运行时间。若将准确率和运行时间组合成一个整体评价指标，如：<script type="math/tex">cost=accuracy  -  0.5 \cdot running\ time</script></li>
+<li>可将准确率作为优化指标，将运行时间作为满意指标。即最大限度的提高准确率($maximize\ accuracy$)，但算法必须满足运行时间的要求，即达到一定阈值即可(如$running \ time \leq 100ms$)。这是一个相对合理地权衡准确率和运行时间的方式。</li>
+<li>更一般地说，若有$N$个指标，有时将1个指标作为最优指标，其他$N-1$个作为满意指标。</li>
+</ul>
+<p>第二个例子：谷歌/亚马逊/百度的语音助手的唤醒/触发词，关心的指标有两个：</p>
+<ul>
+<li>一是对于触发词检测系统的准确率(说出触发词，有多大概率唤醒设备)。</li>
+<li>二是假阳性(false positive)的数量(没有说出触发词，设备被随机唤醒的概率)。</li>
+<li>组合这两种评估指标的合理方式是：准确率作为优化指标，最大化准确率。假阳性数量作为满意指标，小于一定阈值即可，如24小时之内少于1次。</li>
+</ul>
+<h3 id="训练-开发-测试集划分"><a href="#训练-开发-测试集划分" class="headerlink" title="训练/开发/测试集划分"></a>训练/开发/测试集划分</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%86%E5%88%92%E5%88%863.JPG" width="80%" height="80%">  开发/测试集划分准则：</p>
+<ul>
+<li>首先，<strong>开发集和测试集需要来自同一分布</strong>。</li>
+<li>然后，选择这样的开发集和测试集：<strong>能够反映未来会得到的数据，并且你认为是很重要的，必须得到好结果的数据</strong>。</li>
+<li><strong>设立开发集以及评价指标，就等同于定义了你要瞄准的目标。测试集和开发集属于同一分布，相当于瞄准的是同一目标(靶心)，否则相当于设置了另一个目标(靶心)。而训练集的设置，影响的是逼近这个目标有多快</strong>。</li>
+</ul>
+<h3 id="开发集和测试集的大小"><a href="#开发集和测试集的大小" class="headerlink" title="开发集和测试集的大小"></a>开发集和测试集的大小</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BC%80%E5%8F%91%E9%9B%86%E5%92%8C%E6%B5%8B%E8%AF%95%E9%9B%86%E7%9A%84%E5%A4%A7%E5%B0%8F1.JPG" width="80%" height="80%"> <img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BC%80%E5%8F%91%E9%9B%86%E5%92%8C%E6%B5%8B%E8%AF%95%E9%9B%86%E7%9A%84%E5%A4%A7%E5%B0%8F2.JPG" width="80%" height="80%"> <img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BC%80%E5%8F%91%E9%9B%86%E5%92%8C%E6%B5%8B%E8%AF%95%E9%9B%86%E7%9A%84%E5%A4%A7%E5%B0%8F3.JPG" width="80%" height="80%"><br>旧的划分数据的方式：</p>
+<ul>
+<li>当没有测试集时：训练集分70%，开发集分30%。</li>
+<li>当有开发集时：训练集分60%，开发集分20%，测试集分20%。</li>
+<li>此划分方法适用于机器学习早期，即适用于数据量小的情况(如100，1000，10000个样本)。</li>
+</ul>
+<p>现代机器学习划分数据的方式（有着非常大的数据集，如有一百万个样本）：</p>
+<ul>
+<li>训练集分98%，开发集分1%，测试集分1%。</li>
+<li>开发集和测试集各有10000个例子，足够了。</li>
+<li>深度学习算法对数据的胃口很大，给训练集划分更多的数据，去喂饱模型。</li>
+</ul>
+<p>开发集的大小设置准则：</p>
+<ul>
+<li>令开发集足够大，能够检测不同算法/模型的区别，选择出更好的算法/模型即可。</li>
+</ul>
+<p>测试集的大小设置准则：</p>
+<ul>
+<li>令测试集足够大，能够以高置信度评价系统的整体性能即可。</li>
+</ul>
+<p>另外：</p>
+<ul>
+<li>虽然不建议这样做，但如果不需要给出对算法/模型的无偏估计，那不设置测试集，只划分训练/开发集也是可以的。</li>
+</ul>
+<h3 id="什么时候改变开发-测试集和评价指标"><a href="#什么时候改变开发-测试集和评价指标" class="headerlink" title="什么时候改变开发/测试集和评价指标"></a>什么时候改变开发/测试集和评价指标</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%8F%98%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%86%E5%92%8C%E6%8C%87%E6%A0%871.JPG" width="80%" height="80%"> 如果当前的评价指标无法给出更好算法的正确排名，那就需要花时间定义一个新的评价指标：</p>
+<ul>
+<li>如图所示，目前的评价指标是错误率。</li>
+<li>虽然算法A的错误率低于算法B的错误率，但算法A会将色情图片分类为猫的图片。这时若将色情图片当作猫的图片推送给用户，那这是极其糟糕的错误。因此，算法A虽然错误率低，但其实是一个很糟糕的算法，相比而言，算法B应该更好。</li>
+<li>因此，当前的评价指标错误率，无法给出更好算法的正确排名，应重新定义一个新的评价指标。</li>
+<li>如定义新的评价指标为<script type="math/tex">Error: \frac{1}{\sum_{i=1}^{m_{dev}} w^{(i)}}\sum_{i=1}^{m_{dev}} w^{(i)}1\{\hat y^{(i)} \neq y^{(i)}\}</script></li>
+<li>其中，<script type="math/tex">w^{(i)}=\begin{cases} 1, & x^{(i)}\ is\ non-porn\\ 10, & x^{(i)}\ is\ porn \end{cases}</script></li>
+<li>注：使用此种加权函数的方式，需手动遍历开发集和测试集，将色情图片标注出来。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%8F%98%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%86%E5%92%8C%E6%8C%87%E6%A0%872.JPG" width="80%" height="80%"> 上一课件中，处理猫类图片反色情问题的方式，实际上是正交化一种体现：</p>
+<ul>
+<li>第一步，只讨论了如何去定义一个评价分类器的指标。这相当于设定一个目标(靶心)。</li>
+<li>第二步，单独去考虑如何提升系统在这个指标上的表现。这相当于如何瞄准/命中这个目标(靶心)。</li>
+<li>对于第二步，为了提高系统在新的评价指标上的评分，如修改神经网络需优化的代价函数为：<script type="math/tex">J=\frac{1}{\sum_{i=1}^m w^{(i)}}\sum_{i=1}^mw^{(i)}L(\hat y^{(i)},y^{(i)})</script></li>
+<li>其中，<script type="math/tex">w^{(i)}=\begin{cases} 1, & x^{(i)}\ is\ non-porn\\ 10, & x^{(i)}\ is\ porn \end{cases}</script></li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%8F%98%E5%BC%80%E5%8F%91%E6%B5%8B%E8%AF%95%E9%9B%86%E5%92%8C%E6%8C%87%E6%A0%873.JPG" width="80%" height="80%"> 如图，另一例：</p>
+<ul>
+<li>开发/测试集是专业且正规的猫的图片，实际应用中用户上传的图片是随意且模糊的。</li>
+<li>当在评价指标和开发/测试集上做的很好，但在实际应用中做的不好时，应该改变评价指标以及开发/测试集。</li>
+<li>可以看出，上图中的开发/测试集设置有误，没有反映出你的算法需要处理好的且在未来会遇到的数据。</li>
+</ul>
+<p>最后的建议：</p>
+<ul>
+<li>有一个评价指标和开发集，可以让你更快的做出决策，到底哪个算法更好，从而加快迭代速度。</li>
+<li>因此，即使无法定义出一个很完美的评价指标和开发集，直接快速设置出来，然后使用它们来驱动迭代速度。</li>
+<li>在这之后，如果发现它们不够好，马上做出改变。</li>
+</ul>
+<h2 id="1-3-相比于人类的表现"><a href="#1-3-相比于人类的表现" class="headerlink" title="1.3 相比于人类的表现"></a>1.3 相比于人类的表现</h2><h3 id="为什么是人类的表现"><a href="#为什么是人类的表现" class="headerlink" title="为什么是人类的表现"></a>为什么是人类的表现</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%BA%E7%9A%84%E8%A1%A8%E7%8E%B01.JPG" width="80%" height="80%"> 在过去的几年里，许多机器团队一直在讨论如何比较机器学习系统和人类的表现：</p>
+<ul>
+<li>图中，机器学习系统以较快地速度接近人类表现，甚至超过它。</li>
+<li>超过人类表现之后，准确性会上升得比较缓慢，最终不断接近理想的最优情况，称之为贝叶斯最优误差(bayes optimal error)。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%BA%E7%9A%84%E8%A1%A8%E7%8E%B02.JPG" width="80%" height="80%"> 当机器学习系统的表现比人类的差时，有一些工具可以用来提高性能，而一旦超越了人类的表现，这些工具就不那么好用了：</p>
+<ul>
+<li>让人类帮助标注数据。<ul>
+<li>解释：这样就可以有更多的数据可以喂给模型。</li>
+</ul>
+</li>
+<li>通过人工错误分析。<ul>
+<li>解释：下周讲解。只要人类的表现比其他任何算法都要好，就可以让人类去查看算法做错的例子，并尝试了解为什么人能做对，算法做错。</li>
+</ul>
+</li>
+<li>进行更好的偏差/方差分析。<ul>
+<li>解释：下节讲解。</li>
+</ul>
+</li>
+<li>注：只要你的算法比人类的表现糟糕，上述三条策略可以改善算法，而一旦你的算法做的比人类好，上述三条策略就很难利用了。</li>
+</ul>
+<h3 id="可避免偏差"><a href="#可避免偏差" class="headerlink" title="可避免偏差"></a>可避免偏差</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%8F%AF%E9%81%BF%E5%85%8D%E5%81%8F%E5%B7%AE.JPG" width="90%" height="90%"> 我们希望算法在训练集上表现好，但实际上不想算法在训练集上表现得太好。当知道人类的表现后，可以准确的告诉你算法在训练集上的表现到底该有多好。<br>如图中的猫分类器为例：</p>
+<ul>
+<li>在第二们课程里关于偏差和方差的讨论中，我们主要假设一些任务的贝叶斯误差几乎接近于0。</li>
+<li>在对于某些人类擅长的任务：如计算机视觉任务，人类水平误差虽高于贝叶斯误差(理论上限)，但可认为近似等于贝叶斯误差。</li>
+<li>在确定人类水平(近似贝叶斯误差)后，就定义了我们认为什么样的水平是可以实现的：<ul>
+<li><strong>将人类水平误差和训练误差之间的差值</strong>称为<strong>可避免偏差(avoidable bias)</strong>，或可避免偏差的度量。</li>
+<li><strong>将训练误差和开发集误差之间的差值</strong>称为<strong>方差</strong>，或方差的度量。</li>
+<li><strong>根据可避免偏差和方差的相对大小，决定专注于减少偏差的策略还是减少方差的策略</strong>。</li>
+<li>若将贝叶斯误差定为1%，而训练误差为8%，我们认为可以将它降低到1%，那么将专注于减小偏差；</li>
+<li>若将贝叶斯误差定为7.5%，而训练误差为8%，可避免误差为0.5%，没什么改进空间，不能再继续减少训练误差了，防止过拟合。而训练误差和开发集误差相差2%，那么将专注于减少方差。</li>
+</ul>
+</li>
+</ul>
+<h3 id="理解人类的表现"><a href="#理解人类的表现" class="headerlink" title="理解人类的表现"></a>理解人类的表现</h3><p>应该这样看待人来水平表现：人类的表现是贝叶斯误差的替代或估计。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E7%90%86%E8%A7%A3%E4%BA%BA%E7%B1%BB%E6%B0%B4%E5%B9%B3%E8%A1%A8%E7%8E%B01.JPG" width="80%" height="80%"></p>
+<ul>
+<li>如图所示，应将人类水平定义为一个专家团队的表现，即错误率为0.5%。0.5%是贝叶斯误差的最佳估计。<ul>
+<li>解释：因为要将人类水平表现看作是贝叶斯误差的替代或近似，故选取表现最好的一组，所以此处便可认为：$Bayes\ error \leq 0.05%$</li>
+</ul>
+</li>
+<li>在上一节，通过人类水平表现来分析偏差和方差时，也是这样看待人类水平表现的，即作为贝叶斯误差的替代。</li>
+<li>在实际应用中，针对具体的应用情况，如果认为达到某个标准，就已经实用了，也可选用其他标准来作为人类水平表现。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E7%90%86%E8%A7%A3%E4%BA%BA%E7%B1%BB%E6%B0%B4%E5%B9%B3%E8%A1%A8%E7%8E%B02.JPG" width="80%" height="80%"></p>
+<ul>
+<li>在系统表现，未达到人类水平表现之前，不管如何定义人类水平表现(1%/0/7%/0.5%)，都不影响减小偏差策略还是减小方差策略的确定。<ul>
+<li>如图中左侧两例。</li>
+</ul>
+</li>
+<li>在系统接近人类表现之后，系统的提升变得很难，因为如果贝叶斯误差估计的不准确，将难以发现到底是方差问题还是偏差问题：<ul>
+<li>如上图最右侧，只有将贝叶斯误差定义为0.5%(一个专家团队的表现)，才能发现可避免偏差0.2%，方差0.1%，从而决定该采用减小偏差策略；</li>
+<li>若将贝叶斯误差定义为0.7%，则可避免偏差为0%，方差为0.1%，则会采用减小方差的策略。、</li>
+<li>当你只知道贝叶斯误差是单个医生的表现即1%时，你甚至无法知道该不该继续去拟合训练集。</li>
+<li>因此，当系统接近人类表现时，很难更进一步。因为很难准确的估计贝叶斯误差，难以确定是偏差还是方差问题。</li>
+</ul>
+</li>
+</ul>
+<p>另外：</p>
+<ul>
+<li>对于计算机视觉任务，比如猫识别问题，人类的表现近乎完美，所以贝叶斯误差也接近完美，那么将贝叶斯误差设为0，没什么问题。</li>
+<li>但如果数据有很大的噪声，对于背景很嘈杂的语音识别问题，有时几乎不可能听清说什么。对于这样的问题，更好的定义贝叶斯误差很重要，可以帮助我们更好的估计可避免误差和方差，这样才能更好的做出决策，选择减少偏差策略还是减少方差策略。</li>
+</ul>
+<h3 id="超越人的表现"><a href="#超越人的表现" class="headerlink" title="超越人的表现"></a>超越人的表现</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%B6%85%E8%B6%8A%E4%BA%BA%E7%B1%BB%E8%A1%A8%E7%8E%B01.JPG" width="80%" height="80%"></p>
+<ul>
+<li>如图左侧，当贝叶斯误差为0.5%，则可避免偏差为0.1%，方差为0.2%，则选择减小方差策略。</li>
+<li>如图右侧，当贝叶斯误差为0.5%，训练误差为0.3%，则不知道是训练误差过拟合了0.2%，还是贝叶斯误差实际上是0.1%/0.2%/0.3%，无法知道。此例中没有足够的信息，来判断应该选择减小偏差还是减小方差，这样取得进展的效率就会降低。</li>
+<li>在这个例子中，一旦超过了0.5%这个阈值，优化算法的方向便不那么明确了，因为现有的一些指明明确方向的工具失效了（但并不意味着不能继续提升，还是可以继续提升）。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%B6%85%E8%B6%8A%E4%BA%BA%E7%B1%BB%E8%A1%A8%E7%8E%B02.JPG" width="80%" height="80%"> 图中列举出了显著超越人类水平表现的机器学习应用：</p>
+<ul>
+<li>首先是对于结构化数据：<ul>
+<li>在线广告（估计某个用户点击某个广告的可能性）</li>
+<li>产品推荐（推荐电影或书籍之类）</li>
+<li>物流预测(logistics)（预测运输时间）</li>
+<li>贷款批准</li>
+<li>原因：计算机擅长访问大量数据，识别出数据中的统计规律。</li>
+</ul>
+</li>
+<li>人类擅长自然感知(natural perception)任务，但也有一些机器学习应用超越了人类水平表现：<ul>
+<li>语音识别</li>
+<li>某些图像识别任务</li>
+<li>某些医疗方面任务，如阅读ECG、皮肤癌诊断、放射科读图任务</li>
+</ul>
+</li>
+</ul>
+<h3 id="改善你的模型表现"><a href="#改善你的模型表现" class="headerlink" title="改善你的模型表现"></a>改善你的模型表现</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%96%84%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%A1%A8%E7%8E%B01.JPG" width="80%" height="80%"> 要让一个监督学习算法足够好，需要完成以下两件事：</p>
+<ul>
+<li>首先，很好的拟合训练集（即让可避免误差很低）。</li>
+<li>然后，在开发/测试集上的泛化很好（即让方差较低）。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%94%B9%E5%96%84%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%A1%A8%E7%8E%B02.JPG" width="80%" height="80%"> 在正交化的精神下，有单独的旋钮，去处理偏差问题或方差问题：</p>
+<ul>
+<li>减少可避免偏差：<ul>
+<li>使用更大的模型</li>
+<li>训练更长的时间，或使用更好的优化算法(如Momentum,RMSprop,Adam)</li>
+<li>尝试其他的神经网络架构(如RNN，CNN，有时会有好的效果，不确定)，或进行超参数搜索</li>
+</ul>
+</li>
+<li>减少方差：<ul>
+<li>搜集更多训练数据（训练更多数据，可以帮助系统泛化到看不到的开发集）</li>
+<li>正则化(如L2正则化，Dropout，数据增强)</li>
+<li>尝试其他的神经网络架构或进行超参数搜索</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-机器学习策略-2"><a href="#2-机器学习策略-2" class="headerlink" title="2.机器学习策略(2)"></a>2.机器学习策略(2)</h1><h2 id="2-1-错误分析"><a href="#2-1-错误分析" class="headerlink" title="2.1 错误分析"></a>2.1 错误分析</h2><h3 id="进行错误分析"><a href="#进行错误分析" class="headerlink" title="进行错误分析"></a>进行错误分析</h3><p>如果你希望让学习算法胜任人类能做的任务，但你的学习算法还没有达到人类的表现。那么，<strong>人工检查算法所犯下的错误，可以让你了解接下来该做什么</strong>。这个过程称为<strong>错误分析(error analysis)</strong>。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%BF%9B%E8%A1%8C%E8%AF%AF%E5%B7%AE%E5%88%86%E6%9E%901.JPG" width="80%" height="80%"></p>
+<ul>
+<li>假设猫分类器在开发集上取得了90%的准确率，即10%的误差。</li>
+<li>注意到把一些狗分类成猫，问题是：是否需要开始做一个项目专门处理狗的问题？</li>
+<li>解决方法：错误分析：<ul>
+<li>首先，从开发集中找出约100个错误分类的样本。</li>
+<li>然后，人工统计出多少个是狗。</li>
+</ul>
+</li>
+<li>如果有5%的错误分类样本是狗，那么解决狗的问题后，算法的性能上限(ceiling)是9.5%(10%减少5%)的错误率。不值得专门花费大量时间。</li>
+<li>如果有50%的错误分类样本是狗，那么解决狗的问题后，算法的性能上限(ceiling)是5%(10%减少50%)的错误率。值得花费时间解决狗的问题。</li>
+<li>另外，尽管是人工统计，但检查100个开发集错误分类样本，只需要5-10分钟的时间，便可以给我们指出最有希望的方向。</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%BF%9B%E8%A1%8C%E8%AF%AF%E5%B7%AE%E5%88%86%E6%9E%902.JPG" width="80%" height="80%"> 并行评估多个想法：</p>
+<ul>
+<li>如图，针对如何改进猫的分类器，你有以下几个想法：狗的误分类问题，大型猫科动物的误分类问题，以及改善系统在模糊图片上的表现。</li>
+<li>进行错误分析：<ul>
+<li>首先，建立一个电子表格，每一列是你的一个想法，每一行是一个开发集上的误分类样本。此外，最后一栏记录你对每个误分类样本的注释。</li>
+<li>然后，人工统计从开发集选出的每一个误分类样本，记录在电子表格中。</li>
+<li>最后，统计出每一列(即每一个想法)所对应的误分类样本的比例，针对不同比例，确定改进猫分类器的方向。</li>
+<li>另外，当你在人工统计时，又有了新的想法，比如发现由于Instagram滤镜的问题经常导致误分类，则可将该想法作为新的一列加入电子表格中。</li>
+</ul>
+</li>
+</ul>
+<p>总结：</p>
+<ul>
+<li>进行错误分析：<ul>
+<li>首先应该从开发集找一组错误分类的例子。</li>
+<li>观察错误分类的例子（假阳性和假阴性），统计出属于不同错误类型的错误样本数量。</li>
+<li>在这个过程中，你可能会得到启发归纳出新的错误类型，那就在中途新建一个错误类型。</li>
+<li>最后，通过统计不同错误类型包含的样本的比例，决定哪个问题需要优先解决，或者给你构思新优化方向的灵感。</li>
+</ul>
+</li>
+</ul>
+<h3 id="清理错误标记的数据"><a href="#清理错误标记的数据" class="headerlink" title="清理错误标记的数据"></a>清理错误标记的数据</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%B8%85%E7%90%86%E9%94%99%E8%AF%AF%E6%A0%87%E8%AE%B0%E7%9A%84%E6%95%B0%E6%8D%AE1.JPG" width="80%" height="80%"> 首先，对于训练集中标记出错的样本：</p>
+<ul>
+<li>深度学习算法对训练集中的随机错误是相当鲁棒的：<ul>
+<li>只要标记出错的样本，是由于随机错误(即标记人员不小心标错)，不管也没问题，不用花费太多时间去修正它们，只要训练集足够大。</li>
+<li>但如果标记出错的样本，是由于系统性错误(如标记人员一直把白色的狗标记成猫)，分类器训练后，将会一直把白色的狗标记成猫。这种情况肯定需要修正。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%B8%85%E7%90%86%E9%94%99%E8%AF%AF%E6%A0%87%E8%AE%B0%E7%9A%84%E6%95%B0%E6%8D%AE2.JPG" width="80%" height="80%"> 然后，对于开发/测试集中标记出错的数据：</p>
+<ul>
+<li>若担心在开发/测试集上标记出错的例子带来的影响，建议在进行错误分析时，增加一列，记录标签出错的样本，然后统计其比例。</li>
+<li>若这些标记错误严重影响了你在开发集上评估算法的能力，那就需要花时间修正错误标记的数据，具体来说，通过查看三个数字：<ul>
+<li>整体开发集错误率</li>
+<li>由错误标记样本导致的错误率</li>
+<li>其他原因导致的错误率</li>
+<li>例1：如图左侧，整体开发集错误率为10%，由错误标记样本导致的错误率为0.6%，其他原因导致的错误率为9.4%，修正错误标记样本是低优先级的方向。</li>
+<li>例2：如图右侧，整体开发集错误率为2%，由错误标记样本导致的错误率为0.6%，其他原因导致的错误率为1.4%，由错误标记样本导致的错误率占了整体开发集错误率的很大比重，值得花费时间去修正错误标记的数据。</li>
+<li>例3：开发集的目的是为了帮助你从分类器A和B中选择更好的一个。<br>算法A的整体开发集错误率为2.1%，算法B的整体开发集错误率为1.9%，而其中由错误标记样本导致的错误率为0.6%，无法再信任开发集，因为它无法正确告诉你分类器A是否真的比分类器B好。此情况必须去修正开发集里的错误标签了。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%B8%85%E7%90%86%E9%94%99%E8%AF%AF%E6%A0%87%E8%AE%B0%E7%9A%84%E6%95%B0%E6%8D%AE3.JPG" width="80%" height="80%"> 如果决定要修正开发集数据里的错误标签(人工逐个检查并修正)，那么有一些指南：</p>
+<ul>
+<li>施加同样的处理手段给开发集和测试集，以保证它们依然来自同一分布。</li>
+<li>考虑同时检测算法判断正确和判断错误的例子。<ul>
+<li>不容易去做，因为如果算法准确率很高，如98%，那检查98%的数据的标签，要花费很长时间，所以通常不总是这么做，但也是需要考虑的。</li>
+</ul>
+</li>
+<li>训练集和开发/测试集有可能来自稍微不同的分布。<ul>
+<li>如果你决定修改开发/测试集(通常比训练集小很多)，而有可能不修改训练集(深度学习算法对随机错误很鲁棒且训练集很大，也不想花费大量时间去修正)，而这样是可以的。后面会进一步讲解。</li>
+</ul>
+</li>
+</ul>
+<p>最后的建议：</p>
+<ul>
+<li>在构建实际的系统时，通常需要更多的人工错误分析和更多的人类见解。</li>
+<li>有些深度学习研究员不愿意去亲自看这100或几百个例子，来统计错误数量，这是我(吴恩达)经常亲自去做的，可能花费十几分钟或几个小时，但可以帮我找到需要优先处理的任务。</li>
+</ul>
+<h3 id="快速构建你的第一个系统，然后迭代"><a href="#快速构建你的第一个系统，然后迭代" class="headerlink" title="快速构建你的第一个系统，然后迭代"></a>快速构建你的第一个系统，然后迭代</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%B3%BB%E7%BB%9F%E7%84%B6%E5%90%8E%E8%BF%AD%E4%BB%A3.JPG" width="80%" height="80%"> 如图，如果要建立一个新的语音识别系统，你可以走很多方向或有很多可以优先考虑的事情，来改善语音识别系统，如图所示。</p>
+<ul>
+<li>建议：如果你正在开发新的机器学习应用，那么应该快速建立你的第一个系统，然后迭代：<ul>
+<li>快速设立开发/测试集以及评价指标 </li>
+<li>快速构建初始的系统</li>
+<li>使用偏差/方差分析以及错误分析去确定下一步优先做什么</li>
+</ul>
+</li>
+</ul>
+<p>最后的总结：</p>
+<ul>
+<li>如果你在这个应用领域有很多经验，这个建议的适用程度要低一些。或当这个领域有很多可以借鉴的学术文献和你要处理扽问题几乎完全相同，这个建议的适用程度也要低一些。例如，在人脸识别领域就有很多学术文献，如果你尝试建立一个人脸识别器，那么就可以从现有的大量学术文献作为基础出发，一开始就建立比较复杂的系统。</li>
+<li>但如果你第一次处理某个新问题，还是遵循以上建议。</li>
+</ul>
+<h2 id="2-2-不匹配的训练集和验证-测试集"><a href="#2-2-不匹配的训练集和验证-测试集" class="headerlink" title="2.2 不匹配的训练集和验证/测试集"></a>2.2 不匹配的训练集和验证/测试集</h2><h3 id="在不同分布上进行训练和测试"><a href="#在不同分布上进行训练和测试" class="headerlink" title="在不同分布上进行训练和测试"></a>在不同分布上进行训练和测试</h3><p>深度学习算法对训练数据的胃口很大，当你收集到足够多的带标签的数据构成训练集时，算法效果最好。这导致很多团队用尽一切办法收集数据，然后把它们放进训练集中，让训练的数据量更大，即使有些数据，甚至是大部分数据都来自和开发集及测试集不同的分布。在深度学习时代，越来越多的团队，都用来自和开发集及测试集不同分布的数据来训练。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%9C%A8%E4%B8%8D%E5%90%8C%E5%88%86%E5%B8%83%E4%B8%8A%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83%E6%88%96%E6%B5%8B%E8%AF%951.JPG" width="50%" height="50%"> </p>
+<ul>
+<li>假设你在开发一个手机应用，有两个数据来源：一个是你真正关心的数据分居，来自应用上传的数据。 <ul>
+<li>一个是你真正关心的数据分居，来自应用上传的数据。如图右侧，或随意或模糊。约10,000张。</li>
+<li>另一个数据源是通过爬虫，从网页中下载的数据。如图左侧，专业且高分辨率。约200,000张。</li>
+</ul>
+</li>
+<li>你真正关心的是：你的最终系统处理来自应用程序的图片分布时，效果好不好。</li>
+<li>选项1：如图，将两组数据组合在一起，共210,000张，然后随机分配到训练集、开发集和测试集中，训练集占205,000张，开发/测试集个占2,500张：<ul>
+<li>好处：训练集和开发集及测试集来自同一分布，这样更易于管理。</li>
+<li>巨大的坏处：开发/测试集中有大量数据($200k/210k*2500 \approx 2381$)来自网页下载，不是你真正关心的数据分布。只有约119张来自用户手机上传。</li>
+<li>设置开发集的目的是告诉团队瞄准的目标(靶心)。此做法相当设置了错误的目标。不建议使用该做法。</li>
+</ul>
+</li>
+<li><strong>选项2</strong>：如图，<strong>训练集由网页下载的200,000张图片加上用户手机上传的5000张图片，共205,000张。开发集和测试集都是手机上传图片，各2,500张</strong>。<ul>
+<li>好处：<strong>开发集和测试集都是用户手机上传的照片，是你真正关心的数据分布</strong>。现在你瞄准的目标就是你想要处理的目标。</li>
+<li>坏处：<strong>训练集和开发/测试集的分布不一样</strong>，<strong>但事实证明，这样分配数据集，在长期能给你带来更好的系统性能</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%9C%A8%E4%B8%8D%E5%90%8C%E5%88%86%E5%B8%83%E4%B8%8A%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83%E6%88%96%E6%B5%8B%E8%AF%952.JPG" width="80%" height="80%"> 如图，以语音激活后视镜应用为例：：</p>
+<ul>
+<li>有两个数据来源：<ul>
+<li>一个是从其他语音识别应用中收集到的数据。约500,000条。</li>
+<li>一个是语音激活后视镜的数据(用户要查询导航信息，可能包含更多街道地址)。约20,000条。</li>
+</ul>
+</li>
+<li>设置训练集、开发集和测试集，如图：<ul>
+<li>训练集包含其他语音识别应用中的500k条语音，开发/测试集各包含10k条语音激活后视镜的语音。</li>
+<li>或训练集包含其他语音识别应用中的500k条语音加上语音激活后视镜的语音的10k条语音，开发/测试集各包含5k条语音激活后视镜的语音。</li>
+</ul>
+</li>
+</ul>
+<h3 id="不匹配的数据分布的偏差和方差"><a href="#不匹配的数据分布的偏差和方差" class="headerlink" title="不匹配的数据分布的偏差和方差"></a>不匹配的数据分布的偏差和方差</h3><p>估计学习算法的偏差和方差，可以帮助你确定接下来优先该进行的方向。但是<strong>当你的训练集和开发/测试集来自不同分布时，分析偏差和方差的方法需要改变</strong>。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%8D%E5%8C%B9%E9%85%8D%E7%9A%84%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83%E7%9A%84%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE1.JPG" width="80%" height="80%"> 以猫分类器为例：</p>
+<ul>
+<li>人类的表现几乎完美，所以贝叶斯误差几乎为0%。</li>
+<li>训练集误差为1%，开发集误差为10%。</li>
+<li><strong>若训练集和开发集来自同一分布，在这种情况下，可以说存在很大的方差问题</strong>。</li>
+<li><strong>但如果训练集和开发集不是来自同一分布，那就无法确定地下结论</strong>。也许分类器已经在开发集上做的很好，因为训练集中都是专业且高分辨率的图片，很容易进行分类，而开发集中是难以精确分类的图片。即有可能分类器不存在方差问题。</li>
+<li>问题在于：从训练误差到开发集误差，改变了两件事情：第一，算法只见过训练集数据，没见过开发集数据。第二，开发集数据来自不同的分布。因为同时改变了两件事，<strong>无法确定导致训练误差和开发集误差的差值9%的原因，有多少是由于没见过开发集导致，即方差问题。有多少是由于开发集来自不同分布</strong>。</li>
+<li>解决方法：<strong>划分出训练-开发集(training-dev set)</strong>。<ul>
+<li>训练-开发集：与训练集同分布，但不用于训练。</li>
+<li>具体划分示意，如图所示。</li>
+</ul>
+</li>
+<li>接来下，分析四个指标：<strong>人类水平表现(贝叶斯误差)、训练集误差、训练-开发集误差和开发集误差</strong>。</li>
+<li><p>例1：贝叶斯误差为0%，训练集误差1%，训练-开发集误差为9%，开发集误差为10%。</p>
+<ul>
+<li>贝叶斯误差和训练集误差之间的差值为可避免偏差，值为1%。训练集误差和训练-开发集的误差的差值为方差，值为8%。训练-开发集误差和开发集误差之间的差值为数据不匹配，值为1%。</li>
+<li>因此，存在方差问题。</li>
+</ul>
+</li>
+<li><p>例2：贝叶斯误差为0%，训练集误差1%，训练-开发集误差为1.5%，开发集误差为10%。</p>
+<ul>
+<li>可避免偏差为1%，方差为0.5%，数据不匹配为8.5%。</li>
+<li>因此，存在数据不匹配问题。</li>
+</ul>
+</li>
+<li><p>例3：贝叶斯误差为0%，训练集误差10%，训练-开发集误差为11%，开发集误差为12%。</p>
+<ul>
+<li>可避免偏差为10%，方差为1%，数据不匹配为1%。</li>
+<li>因此，存在偏差问题。</li>
+</ul>
+</li>
+<li><p>例4：贝叶斯误差为0%，训练集误差10%，训练-开发集误差为11%，开发集误差为20%。</p>
+<ul>
+<li>可避免偏差为10%，方差为1%，数据不匹配为9%。</li>
+<li>因此，存在偏差问题和数据不匹配问题。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%8D%E5%8C%B9%E9%85%8D%E7%9A%84%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83%E7%9A%84%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE2.JPG" width="100%" height="100%"> <strong>总结训练集和开发/测试集来自不同分布时，分析偏差和方差问题的方法</strong>：</p>
+<ul>
+<li>贝叶斯误差和训练集误差之间的差值为<strong>可避免偏差</strong>，或可避免误差的度量。</li>
+<li>训练集误差和训练-开发集的误差的差值为<strong>方差</strong>，或方差的度量。</li>
+<li>训练-开发集误差和开发集误差之间的差值为<strong>数据不匹配</strong>，或数据不匹配的度量。</li>
+<li>开发集误差和测试集误差之间的差值为<strong>对开发集的过拟合程度</strong>，或对开发集的过拟合程度的度量。</li>
+<li>举例一个特殊的例子：<ul>
+<li>贝叶斯误差为4%，训练集误差7%，训练-开发集误差为10%，开发集误差为6%，测试集误差为6%。</li>
+<li>这种情况是合理的，说明训练集的难度比开发/测试集的难度要高很多。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%B8%8D%E5%8C%B9%E9%85%8D%E7%9A%84%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83%E7%9A%84%E5%81%8F%E5%B7%AE%E5%92%8C%E6%96%B9%E5%B7%AE3.JPG" width="90%" height="90%"> 以语音激活后视镜为例：</p>
+<ul>
+<li>第一列为其他通用语音应用中的数据，第二列为语音激活后视镜的数据。</li>
+<li>只不过强调了：<ul>
+<li>算法只在训练集上训练过，而训练-开发集，开发/测试集，算法都没有训练过。</li>
+<li>训练集和训练-开发集来自同一分布(通用语音应用中的数据)。开发/测试集来自另一分布(语音激活后视镜的数据)。</li>
+</ul>
+</li>
+</ul>
+<h3 id="处理数据不匹配"><a href="#处理数据不匹配" class="headerlink" title="处理数据不匹配"></a>处理数据不匹配</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E4%B8%8D%E5%8C%B9%E9%85%8D1.JPG" width="100%" height="100%"> <strong>如果发现有严重的数据不匹配问题</strong>：</p>
+<ul>
+<li>进行人工错误分析，去尝试理解训练集和开发/测试集的区别。<ul>
+<li>如在语音激活后视镜应用中：进行错误分析后，发现开发集中以汽车噪音为背景的语音片段误判很多。或很多请求街道号码的语音片段误判很多。</li>
+</ul>
+</li>
+<li>让训练集更像开发集，收集更多类似开发/测试集的数据。<ul>
+<li>如可以模拟车辆背景噪声数据，或刻意的收集人类说数字的音频数据，然后添加进训练集。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E4%B8%8D%E5%8C%B9%E9%85%8D2.JPG" width="100%" height="100%"> 人工数据合成：</p>
+<ul>
+<li>例子如图：将人类说话的音频和汽车噪声的音频进行人工合成，合成为车内说话的音频数据。</li>
+<li>人工数据合成可以快速制造出更多的训练数据。但要注意，人工数据合成存在一个潜在问题：<ul>
+<li>假设你录制了10,000个小时的安静背景下的音频数据，录制了1个小时的汽车噪音数据，然后将汽车噪音重复播放10,000次叠加到安静背景下的音频数据。人类听起来，这些合成的音频数据没问题。但学习算法会对这1小时的汽车噪音过拟合。你收集得到的1小时汽车噪音背景下的音频数据只是所有存在的汽车噪音的一个很小的子集，从整个空间的很小的一个子集出发，去合成数据，神经网络可能最后会对这1个小时的汽车噪音过拟合。</li>
+<li>更好的做法是收集10,000个小时的汽车噪音，而不是重复播放1小时的汽车噪音10,000次。在不考虑成本的情况下，这种做法会使得学习算法取得更好的性能。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E4%B8%8D%E5%8C%B9%E9%85%8D3.JPG" width="90%" height="90%"> 人工数据合成的另一例：</p>
+<ul>
+<li>若对于汽车检测任务，用人工数据合成时，如果只是基于20种车的人工数据合成。20辆车只是所有可能出现的车辆的很小的子集。人眼看不出来，神经网络可能对这20种车过拟合。</li>
+</ul>
+<p>最后的总结：</p>
+<ul>
+<li>如果你认为存在数据不匹配问题，建议进行错误分析，查看训练集和开发集，尝试了解这个两个数据分布到底有什么不同，然后看看是否有办法收集更多像开发集的训练数据进行训练。</li>
+<li>其中一种办法是人工数据合成，人工数据合成确实有效，在语音识别系统中，已经看到人工数据合成显著提升了已经非常好的语音识别系统的表现。但当你使用人工数据合成时，一定要谨慎，要记住你有可能只是从所有可能性的空间选择了很小的一部分去模拟数据。</li>
+</ul>
+<h2 id="2-3-从多个任务中学习"><a href="#2-3-从多个任务中学习" class="headerlink" title="2.3 从多个任务中学习"></a>2.3 从多个任务中学习</h2><h3 id="迁移学习"><a href="#迁移学习" class="headerlink" title="迁移学习"></a>迁移学习</h3><p>深度学习中最强大的理念之一就是有时候神经网络可以从一个任务中学习到知识，并将这些知识应用到另一个独立的任务中。例如，你已经训练好一个可以识别猫的神经网络，然后可以用这些已学到的知识或部分知识去帮助你更好地阅读X射线扫描图。这就是所谓的<strong>迁移学习</strong>。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A01.JPG" width="100%" height="100%"> 迁移学习举例：</p>
+<ul>
+<li>例1：已经训练好一个图像识别的神经网络，然后将图像识别中学习到的知识应用/迁移到放射诊断任务中：<ul>
+<li>删去原神经网络中的最后一层及其权重，新建最后一层神经网络并随机初始化权重，即$W^{[l]}$，$b^{[l]}$ 。</li>
+<li>在新的放射诊断数据集上训练神经网络。如果放射诊断数据集较小，就只训练新的最后一层网络的参数$W^{[l]}$，$b^{[l]}$并保持原网络其他参数不变。如果放射诊断数据集很大，可以重新训练网络中的所有参数(以之前网络训练好的参数作为初始参数)。</li>
+<li>如果选择重新训练网络中的所有参数，那么图像识别任务的训练阶段称为<strong>预训练(pre-training)</strong>。然后在放射诊断数据上重新训练参数的过程，称为<strong>微调(fine tuning)</strong>。</li>
+</ul>
+</li>
+<li>有效的原因：在图像识别任务中，很多低层次的特征，比如边缘检测、曲线检测等结构信息知识，可能帮助放射诊断任务。</li>
+<li>例2：已经训练好一个语音识别的神经网络，然后迁移到唤醒/触发词检测系统中：<ul>
+<li>删去原神经网络的最后一层，在末端建立新的几层。</li>
+<li>若唤醒/触发词检测的数据量较小，则在唤醒/触发词检测数据集中，只训练新建的几层。若唤醒/触发词检测的数据量较大，可重新训练神经网络的所有参数。</li>
+<li>在语音识别任务中，预先学到的很多人类声音的特征，人类语言的组成部分等知识，可以帮助你建立一个很好的唤醒词检测器。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A02.JPG" width="90%" height="90%"> 什么时候迁移学习是有意义的：</p>
+<ul>
+<li>任务A和任务B有一样的输入x。<ul>
+<li>在上节的例1中，任务A和任务B的输入都是图像。</li>
+<li>在上节的例2中，任务A和任务B的输入都是音频。</li>
+</ul>
+</li>
+<li>任务A拥有的数据量要比任务B大得多。<ul>
+<li>在上节的例1中，任务A中图像识别有着大量的数据集，如1000,000张。而任务B中放射诊断数据集图像只有100张。</li>
+<li>在上节的例2中，任务A中语音识别数据集中有10,000小时的音频。而任务B唤醒词检测任务中只有1小时的音频。</li>
+</ul>
+</li>
+<li>任务A中的低层次特征可以帮助任务B的学习。</li>
+</ul>
+<h3 id="多任务学习"><a href="#多任务学习" class="headerlink" title="多任务学习"></a>多任务学习</h3><p>在迁移学习中，你的步骤是串行的：先从任务A中学习，然后迁移到任务B。在多任务学习中，你是同时开始学习的，试图让神经网络同时做几件事情，然后希望这里的每个任务都能帮助到其他所有任务。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%9A%E4%BB%BB%E5%8A%A1%E5%AD%A6%E4%B9%A01.JPG" width="100%" height="100%"> 以开发无人驾驶汽车为例：</p>
+<ul>
+<li>无人驾驶汽车需要同时检测不同的物体，如行人、车辆、停车标志及交通灯。</li>
+<li>此时输入为图像$x^{(i)}$,输出$y^{(i)}$为：<script type="math/tex">y^{(i)}= \left[ \begin{matrix} 0\\ 1\\ 1\\ 0 \end{matrix} \right]</script></li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%9A%E4%BB%BB%E5%8A%A1%E5%AD%A6%E4%B9%A02.JPG" width="100%" height="100%"> 神经网络结构，如图：</p>
+<ul>
+<li>神经网络的最后一层有四个结点，分别代表是否存在行人、车辆、停车标志及交通灯。即$\hat{y}$的维度为$(4,1)$</li>
+<li>代价函数为：<script type="math/tex">\frac1m\sum_{i=1}^m\sum_{j=1}^4L(\hat y_j^{(i)},y_j^{(i)})</script><ul>
+<li>其中，$L(\hat y_j^{(i)},y_j^{(i)})$是单个结点的损失，采用常用的逻辑损失，<script type="math/tex">L(\hat y_j^{(i)},y_j^{(i)})=-y_j^{(i)}log\ \hat y_j^{(i)}-(1-y_j^{(i)})log\ (1-\hat y_j^{(i)})</script></li>
+</ul>
+</li>
+<li>多任务学习<strong>与softmax回归的主要区别</strong>在于：softmax将单个标签分给单个样本。而多任务学习中，一张图片有多个(4个)标签（从代价函数中的形式中也可以看出来）。</li>
+<li>另外，多任务学习也可以用于处理图像中只有部分物体被标记的情况。<ul>
+<li>如某个样本只标记有行人和车辆，但没有标记是否有停车标志和交通灯，即样本标签形式为<script type="math/tex">y^{(i)}= \left[ \begin{matrix} 1\\ 1\\ ?\\ ? \end{matrix} \right]</script></li>
+<li>即便是这样的数据集，你也可以上面训练算法同时做四个任务。在训练时，数据中缺失的标签所对应的结点，不参加代价函数的求和即可。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E5%A4%9A%E4%BB%BB%E5%8A%A1%E5%AD%A6%E4%B9%A03.JPG" width="90%" height="90%"> 多任务学习什么时候有意义：</p>
+<ul>
+<li>如果你训练的一组任务可以公用低层次特征。</li>
+<li>如果每个任务的数据量很接近(这个准则没有那么绝对，并不一定是对的)。<ul>
+<li>例如，你有一百个任务，每个任务的数据集大小为1000，那么进行多任务学习，训练集大小将达100,000。</li>
+</ul>
+</li>
+<li>可以训练一个足够大的神经网络同时做好所有任务。<ul>
+<li>有研究表明：只要你可以训练一个足够大的神经网络进行多任务学习，几乎都比单独训练多个神经网络来单独完成各个任务的性能要好。</li>
+</ul>
+</li>
+</ul>
+<p>最后的总结：</p>
+<ul>
+<li>多任务学习能让你训练一个神经网络来同时进行多个任务，可以给你比单独完成各个任务更高的性能。</li>
+<li>多任务学习使用到的频率要比迁移学习使用到的频率低得多。<ul>
+<li>其中一个例外是计算机视觉中的目标检测。人们经常训练一个神经网络，同时检测许多不同的物体，这比训练单独的神经网络来检测物体要好。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-4-端到端的深度学习"><a href="#2-4-端到端的深度学习" class="headerlink" title="2.4 端到端的深度学习"></a>2.4 端到端的深度学习</h2><h3 id="什么是端到端的深度学习"><a href="#什么是端到端的深度学习" class="headerlink" title="什么是端到端的深度学习"></a>什么是端到端的深度学习</h3><p>深度学习中最令人兴奋最新发展之一就是端到端的深度学习的兴起。什么是端到端的深度学习，简而言之，以前有一些数据处理系统，它们需要多个阶段的处理。而端到端的深度学习就是将所有这些多个阶段用单个神经网络替代它。<br><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%BB%80%E4%B9%88%E6%98%AF%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A01.JPG" width="100%" height="100%"> 以语音识别为例：</p>
+<ul>
+<li>输入$x$是一段音频(audio clip)，输出$y$是这段音频的听写文本(transcript)。</li>
+<li>传统上，语音识别需要很多阶段的处理，首先你会提取一些手工设计的音频特征(如MFCC)，通过机器学习算法在音频片段中找到音位(声音的基本单位)，然后将音位串在一起构成独立的词，然后将词串起来构成音频片段的听写文本。</li>
+<li>端到端的深度学习是，训练一个巨大的神经网络，输入是音频，输出直接是听写文本。</li>
+<li><strong>端到端的深度学习的挑战之一是：需要大量数据才能让系统表现好</strong>。<ul>
+<li>若你只有3,000个小时的数据去训练语音识别系统，那么传统的流水线(pipeline)的效果很好。</li>
+<li>若你拥有非常大的数据集，如10,000小时甚至100,000小时的数据，那么端到端的学习方法就表现的很好了。</li>
+<li>如果你数据量适中，那么可以用折中的方法，如输入音频，然后让过特征提取，直接尝试从神经网络输出音位，然后其他阶段继续采用传统方法。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%BB%80%E4%B9%88%E6%98%AF%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A02.JPG" width="100%" height="100%"> 以门禁人脸识别系统为例，如图：</p>
+<ul>
+<li>端到端的学习方法：将相机拍摄到的图片作为输入，然后直接学习图像$x$到人类身份$y$的函数映射。<ul>
+<li>但事实证明，这不是最好的方法，因为人可以从很多不同的方向接近门禁(即人类可能以不同大小出现在照片的不同位置)。在实际构建这些门禁系统时，不是将原始图片喂给神经网络，然后尝试去找出人类的身份。</li>
+</ul>
+</li>
+<li>迄今为止最好的做法，是一个多步方法。首先，找出照片中人脸的位置，检测到人脸后，然后放大人脸图像的那部分，并剪裁图像，使得人脸居中显示。然后，再将人脸图片喂给神经网络，让网络去学习或估计人类的身份。</li>
+<li>两步方法更好的原因：<ul>
+<li>你解决的两个问题，每个都更简单。</li>
+<li>两个子任务的训练数据都很多。对于任务1，人脸检测的数据很多，$x$是图片，$y$是人脸位置。对于任务2，人脸识别的数据也很多。<strong>相比之下，直接输入门禁系统拍摄照片$x$，输出人类身份$y$的数据集很少</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E4%BB%80%E4%B9%88%E6%98%AF%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A03.JPG" width="100%" height="100%"> </p>
+<ul>
+<li>以机器翻译(machine translation)为例：<ul>
+<li>传统上，机器翻译系统也有很复杂的流水线：英语，文本，文本分析等等。</li>
+<li>而如今，<strong>端到端的机器翻译表现的很好，因为可以收集大量的数据对$(x,y)$，即英文句子对用的法文翻译</strong>。</li>
+</ul>
+</li>
+<li>以孩子手部的$x$光线图片，来估计年龄：<ul>
+<li>非端到端的学习方法：输入图片，分割出每一块骨头，弄清每一块骨头的长度，然后查找儿童手中骨头的平均长度，然后用它来估计孩子的年龄。</li>
+<li>端到端：<strong>通过图片直接估计孩子的年龄。那么需要大量数据去训练，在今天，还没有足够数据</strong>。</li>
+</ul>
+</li>
+</ul>
+<p>最后的总结：</p>
+<ul>
+<li>端到端学习是可行的，它可以表现得非常好，并简化系统，让你不需要构建那么多的手工设计的单独部件。</li>
+<li>但它也不是万能之计，并不是在所有任务中都有效。</li>
+</ul>
+<h3 id="是否使用端到端的深度学习"><a href="#是否使用端到端的深度学习" class="headerlink" title="是否使用端到端的深度学习"></a>是否使用端到端的深度学习</h3><p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%98%AF%E5%90%A6%E4%BD%BF%E7%94%A8%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A01.JPG" width="100%" height="100%"> <strong>端到端的深度学习的优缺点</strong>：<br>优点：</p>
+<ul>
+<li>让数据说话。<ul>
+<li>解释：如果有足够多的数据$(x,y)$，那么不管从$x$到$y$的最合适的函数映射是什么，一个足够大的神经网络能自己找到。而不是在如语音识别中，强制算法以“音位“为单位思考，也许让算法自己从大量数据中洞察到更好的表示方法更好。</li>
+</ul>
+</li>
+<li>需要更少的手工设计组件。<ul>
+<li>解释：简化系统，节省时间。</li>
+</ul>
+</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>需要大量的数据$(x,y)$。</li>
+<li>排除了潜在的有用的手工设计的组件。<ul>
+<li>解释：<strong>学习算法有两个主要的知识来源，一是数据，二是手工设计的组件或特征</strong>。当有大量数据时，手工设计的东西就不太重要了。但<strong>当没有大量数据时，手工设计的组件或特征，是把人类知识直接注入算法的最好途径</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://ozruihqgo.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AF%BE%E7%A8%8B3/%E6%98%AF%E5%90%A6%E4%BD%BF%E7%94%A8%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A02.JPG" width="90%" height="90%"><br>如果你在构建一个新的机器学习系统，而你在尝试决定是否使用端到端的深度学习，那么问题的关键是：<strong>你有足够的数据能够直接学习到从$x$映射到$y$的足够复杂的函数吗？</strong></p>
+<ul>
+<li>如果输入手的$x$射线图片，分割出骨头位置，不需要太多的数据就可以完成这个任务。</li>
+<li>如果输入人的图片，检测出人脸的位置，不需要太多的数据就可以完成这个任务。</li>
+<li>但如果输入手的$x$射线图片，直接估计出孩子的年龄，这种复杂的映射函数，就需要大量的数据。</li>
+</ul>
+<p>如图下半部分，以无人驾驶汽车为例：</p>
+<ul>
+<li>需要完成的任务：输入雷达图片，检测车辆和行人，规划路线，控制方向盘/油门/刹车。</li>
+<li>解决方法：用深度学习方法进行检测车辆和行人；用运动规划(motion planning)软件解决路径规划；用控制算法决定如何控制方向盘/油门/刹车。</li>
+<li>这个例子表明了：<ul>
+<li>你想用机器学习或深度学习来学习一些单独的组件。</li>
+<li>当你用监督学习时，应该仔细地选择你想要学习的$x$到$y$的映射，取决于哪些任务你可以收集到数据。</li>
+</ul>
+</li>
+<li>相比之下，若考虑使用端到端的深度学习：即输入图像$x$，直接得出方向盘角度等。<ul>
+<li>就目前能收集到的数据以及目前神经网络可以学习到的事物类型而言，这实际上不是最有前景的方向。这种纯粹的端到端的学习方法，其前景不如上述分步进行的方法。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/28/待修改/计算机网络笔记/" rel="next" title="计算机网络笔记">
+                <i class="fa fa-chevron-left"></i> 计算机网络笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/11/待修改/深度学习课程(四)卷积神经网络/" rel="prev" title="深度学习课程(四)卷积神经网络">
+                深度学习课程(四)卷积神经网络 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/me.jpg"
+                alt="min" />
+            
+              <p class="site-author-name" itemprop="name">min</p>
+              <p class="site-description motion-element" itemprop="description">防止遗忘</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="11172918@qq.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-机器学习策略-1"><span class="nav-text">1.机器学习策略(1)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-机器学习策略介绍"><span class="nav-text">1.1 机器学习策略介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么需要机器学习策略"><span class="nav-text">为什么需要机器学习策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正交化"><span class="nav-text">正交化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-设置你的目标"><span class="nav-text">1.2 设置你的目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单一数字评价指标"><span class="nav-text">单一数字评价指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#满足和优化指标"><span class="nav-text">满足和优化指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练-开发-测试集划分"><span class="nav-text">训练/开发/测试集划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发集和测试集的大小"><span class="nav-text">开发集和测试集的大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么时候改变开发-测试集和评价指标"><span class="nav-text">什么时候改变开发/测试集和评价指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-相比于人类的表现"><span class="nav-text">1.3 相比于人类的表现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么是人类的表现"><span class="nav-text">为什么是人类的表现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可避免偏差"><span class="nav-text">可避免偏差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解人类的表现"><span class="nav-text">理解人类的表现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#超越人的表现"><span class="nav-text">超越人的表现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改善你的模型表现"><span class="nav-text">改善你的模型表现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-机器学习策略-2"><span class="nav-text">2.机器学习策略(2)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-错误分析"><span class="nav-text">2.1 错误分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进行错误分析"><span class="nav-text">进行错误分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清理错误标记的数据"><span class="nav-text">清理错误标记的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速构建你的第一个系统，然后迭代"><span class="nav-text">快速构建你的第一个系统，然后迭代</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-不匹配的训练集和验证-测试集"><span class="nav-text">2.2 不匹配的训练集和验证/测试集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在不同分布上进行训练和测试"><span class="nav-text">在不同分布上进行训练和测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不匹配的数据分布的偏差和方差"><span class="nav-text">不匹配的数据分布的偏差和方差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理数据不匹配"><span class="nav-text">处理数据不匹配</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-从多个任务中学习"><span class="nav-text">2.3 从多个任务中学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#迁移学习"><span class="nav-text">迁移学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多任务学习"><span class="nav-text">多任务学习</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-端到端的深度学习"><span class="nav-text">2.4 端到端的深度学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是端到端的深度学习"><span class="nav-text">什么是端到端的深度学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#是否使用端到端的深度学习"><span class="nav-text">是否使用端到端的深度学习</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">min</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
